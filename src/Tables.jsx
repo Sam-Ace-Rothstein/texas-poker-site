@@ -1,7 +1,8 @@
 // src/Tables.jsx
 import { useState, useEffect } from 'react'
 
-const API_BASE = import.meta.env.VITE_API_BASE || ''
+const API_BASE     = import.meta.env.VITE_API_BASE || ''
+const BOT_USERNAME = import.meta.env.VITE_BOT_USERNAME
 
 export default function Tables() {
   const [tables, setTables]   = useState([])
@@ -24,26 +25,32 @@ export default function Tables() {
       })
   }, [])
 
-  if (err)     return <div className="text-red-600">Error: {err}</div>
+  if (err)     return <div className="text-red-500">Error: {err}</div>
   if (loading) return <div>Loading tables…</div>
-  if (!tables.length) return <div>No active tables found.</div>
+
+  // Only show truly live tables (players > 0)
+  const liveTables = tables.filter(t => t.players > 0)
+  if (!liveTables.length)
+    return <div>No active tables found.</div>
 
   return (
-    <div className="mt-6">
+    <div className="mt-6 space-y-2">
       <h2 className="text-xl font-bold mb-2">Live Tables</h2>
-      <ul className="space-y-4">
-        {tables.map(t => (
-          <li
+      {liveTables.map(t => {
+        const url = `https://t.me/${BOT_USERNAME}?startgroup=table_${t.id}`
+        return (
+          <a
             key={t.id}
-            className="bg-gray-800 p-4 rounded-lg shadow flex flex-col space-y-1"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block bg-gray-800 hover:bg-gray-700 p-3 rounded-lg shadow transition"
           >
-            <h3 className="text-lg font-semibold">Table {t.id}</h3>
-            <p>Players: {t.players} / {t.maxPlayers}</p>
-            <p>Pot: {t.pot} credits</p>
-            <p>Buy-in: {t.buyIn} credits</p>
-          </li>
-        ))}
-      </ul>
+            <span className="font-semibold">Table {t.id}:</span>{' '}
+            {t.players}/{t.maxPlayers} players — pot {t.pot} — buy-in {t.buyIn}
+          </a>
+        )
+      })}
     </div>
   )
 }
