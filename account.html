@@ -100,53 +100,69 @@
 								<section>
 								  <header><h3><a href="#">Play Texas Hold'em with $SOL</a></h3></header>
 								  <div id="wallet-ui">
-									<!-- Greeting with both name & ID -->
+									<!-- Greeting with both handle & ID -->
 									<p id="greeting">
 									  Hello, <strong><span id="tgHandle">Loading…</span></strong>
 									  (TG ID: <strong><span id="tgId">Loading…</span></strong>)
 									</p>
-									<button id="connectWallet" disabled>Connect Solana Wallet</button>
+									<button id="connectWallet" disabled>Connect Wallet</button>
 									<p id="walletAddr"></p>
 								  </div>
 								</section>
 								<hr />
 								<section>
-								  <header><h3><a href="#">Live Table Stats!</a></h3></header>
+								  <header><h3><a href="#">Live Table Stats</a></h3></header>
 								  <!-- … -->
 								</section>
 							  </div>
 							  
 							  <script type="module">
-								// 1) Fill in the TG info
-								const params   = new URLSearchParams(window.location.search);
-								const tgId     = params.get("username") || "";
-								const tgHandle = params.get("handle")   || "";
-							  
+								// 1) Fill in TG info
+								const params    = new URLSearchParams(window.location.search);
+								const tgId      = params.get("username") || "";
+								const tgHandle  = params.get("handle")   || "";
 								document.getElementById("tgId").textContent     = tgId || "unknown";
 								document.getElementById("tgHandle").textContent = tgHandle || "Player";
 							  
-								// 2) Generic Solana wallet–connect
+								// 2) Detect all injected Solana wallets
 								const connectBtn = document.getElementById("connectWallet");
 								const walletAddr = document.getElementById("walletAddr");
+								const providers  = [];
 							  
-								if (window.solana && typeof window.solana.connect === "function") {
+								if (window.solana)  providers.push({ name: window.solana.isPhantom ? "Phantom" : "Solana", provider: window.solana });
+								if (window.solflare) providers.push({ name: "Solflare", provider: window.solflare });
+								if (window.slope)    providers.push({ name: "Slope",    provider: window.slope });
+								// add other known wallets here...
+							  
+								// 3) Wire up connect logic
+								if (providers.length > 0) {
 								  connectBtn.disabled = false;
-								  connectBtn.textContent = "Connect Solana Wallet";
+								  connectBtn.textContent = "Connect Wallet";
 							  
 								  connectBtn.addEventListener("click", async () => {
+									// If multiple, ask which one
+									let chosen = providers[0].provider;
+									if (providers.length > 1) {
+									  const names = providers.map(w => w.name).join(", ");
+									  const pick  = prompt(`Select wallet: ${names}`);
+									  const entry = providers.find(w => w.name.toLowerCase() === (pick || "").toLowerCase());
+									  if (!entry) return alert("Wallet not found");
+									  chosen = entry.provider;
+									}
+							  
 									try {
-									  const resp = await window.solana.connect();
+									  const resp   = await chosen.connect();
 									  const pubkey = resp.publicKey.toString();
 									  walletAddr.textContent = `Wallet: ${pubkey}`;
-									  connectBtn.disabled = true;
+									  connectBtn.disabled   = true;
 									} catch (err) {
 									  console.error("Solana wallet connect failed:", err);
-									  alert("Failed to connect to your Solana wallet.");
+									  alert("Failed to connect wallet.");
 									}
 								  });
 								} else {
 								  connectBtn.textContent = "No Solana Wallet Detected";
-								  connectBtn.disabled = true;
+								  connectBtn.disabled    = true;
 								}
 							  </script>
 								<hr />
