@@ -98,43 +98,38 @@
 							<div class="col-4 col-12-mobile" id="sidebar">
 								<hr class="first" />
 								<section>
-								  <header>
-									<h3><a href="#">Play Texas Hold'em with $SOL</a></h3>
-								  </header>
-								  <p>
-									The gameplay is managed by Telegram messages. The Smart Contract swaps your Solana and gameplay tokens.
-								  </p>
+								  <header><h3><a href="#">Play Texas Hold'em with $SOL</a></h3></header>
 								  <div id="wallet-ui">
-									<p>Hello, <strong><span id="firstName">Loading…</span></strong> (TG ID: <strong><span id="tgId">Loading…</span></strong>)</p>
+									<!-- Greeting with both name & ID -->
+									<p id="greeting">Hello, <strong><span id="tgHandle">Loading…</span></strong>
+									  (TG ID: <strong><span id="tgId">Loading…</span></strong>)</p>
 									<button id="connectWallet" disabled>Connect Phantom Wallet</button>
 									<p id="walletAddr"></p>
 								  </div>
 								</section>
 								<hr />
 								<section>
-								  <header>
-									<h3><a href="#">Live Table Stats</a></h3>
-								  </header>
-								  <!-- ... -->
+								  <header><h3><a href="#">Live Table Stats</a></h3></header>
+								  <!-- … -->
 								</section>
 							  </div>
 							  
 							  <script type="module">
-								// 1) Read params from URL immediately
+								// 1) Parse both params immediately
 								const params    = new URLSearchParams(window.location.search);
-								const tgId      = params.get("username")    || "unknown";
-								const firstName = params.get("firstName")  || "Player";
+								const tgId      = params.get("username") || "";
+								const tgHandle  = params.get("handle")   || "";
 							  
-								// 2) Write into the page
-								const elId    = document.getElementById("tgId");
-								const elName  = document.getElementById("firstName");
-								if (elId)   elId.textContent   = tgId;
-								if (elName) elName.textContent = firstName;
+								// 2) Fill in the spans
+								const elId     = document.getElementById("tgId");
+								const elHandle = document.getElementById("tgHandle");
+								if (elId)     elId.textContent     = tgId || "unknown";
+								if (elHandle) elHandle.textContent = tgHandle || "Player";
 							  
-								// 3) Enable Connect button now that we have the user
+								// 3) Enable Connect button now we have values
 								document.getElementById("connectWallet").disabled = false;
 							  
-								// (Later: wallet-connect logic can follow here)
+								console.log("🍀 account.js parsed:", { tgId, tgHandle });
 							  </script>
 								<hr />
 								<section>
