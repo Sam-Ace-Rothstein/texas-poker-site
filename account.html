@@ -96,114 +96,49 @@
 								</article>
 							</div>
 							<div class="col-4 col-12-mobile" id="sidebar">
-							  <hr class="first" />
-							  <section>
-								<header>
-								  <h3><a href="#">Play Texas Hold'em with $SOL</a></h3>
-								</header>
-								<p>
-								  The gameplay is managed by Telegram messages. The Smart Contract swaps your Solana and gameplay tokens.
-								</p>
-								<div id="wallet-ui">
-								  <p>Your Telegram ID: <strong><span id="tgId">Loading…</span></strong></p>
-								  <button id="connectWallet">Connect Phantom Wallet</button>
-								  <p id="walletAddr"></p>
-							
-								  <div id="depositForm" style="display:none; margin-top:1rem;">
-									<h4>Deposit SOL</h4>
-									<label style="display:block; margin-bottom:.5rem;">
-									  Amount (SOL):
-									  <input
-										type="number"
-										id="solAmt"
-										value="0.1"
-										step="0.01"
-										min="0"
-										style="width:100%; padding:.5rem;"
-									  />
-									</label>
-									<button id="sendDeposit">Send Deposit</button>
-									<p id="depositStatus"></p>
+								<hr class="first" />
+								<section>
+								  <header>
+									<h3><a href="#">Play Texas Hold'em with $SOL!</a></h3>
+								  </header>
+								  <p>
+									The gameplay is managed by Telegram messages. The Smart Contract swaps your Solana and gameplay tokens.
+								  </p>
+								  <div id="wallet-ui">
+									<p>Your Telegram ID: <strong><span id="tgId">Loading…</span></strong></p>
+									<button id="connectWallet" disabled>Connect Phantom Wallet</button>
+									<p id="walletAddr"></p>
 								  </div>
-								</div>
-							  </section>
-							  <hr />
-							  <section>
-								<header>
-								  <h3><a href="#">Live Table Stats</a></h3>
-								</header>
-								<!-- ... -->
-							  </section>
-							</div>
-							
-							<script type="module">
-								import { Connection, SystemProgram, Transaction } from "https://cdn.skypack.dev/@solana/web3.js";
+								</section>
+								<hr />
+								<section>
+								  <header>
+									<h3><a href="#">Live Table Stats</a></h3>
+								  </header>
+								  <!-- ... -->
+								</section>
+							  </div>
 							  
+							  <script type="module">
 								// 1) Read Telegram ID from URL immediately
-								console.log("🍀 account.js running, URL =", window.location.href);
 								const params = new URLSearchParams(window.location.search);
 								const tgId   = params.get("username") || "unknown";
-								console.log("→ parsed tgId=", tgId);
-								document.getElementById("tgId").textContent = tgId;
 							  
-								// 2) Phantom wallet connect
-								const connectBtn = document.getElementById("connectWallet");
-								const walletAddr = document.getElementById("walletAddr");
-								let provider;
+								// 2) Debug-log to console
+								console.log("🍀 account.js running, parsed tgId =", tgId);
 							  
-								connectBtn.addEventListener("click", async () => {
-								  if (window.solana?.isPhantom) {
-									provider = window.solana;
-									const { publicKey } = await provider.connect();
-									walletAddr.textContent = `Wallet: ${publicKey.toString()}`;
-									connectBtn.disabled = true;
+								// 3) Write it into the span
+								const el = document.getElementById("tgId");
+								if (el) {
+								  el.textContent = tgId;
+								} else {
+								  console.error("❌ Could not find element #tgId");
+								}
 							  
-									// Pair Telegram ID ↔ wallet on the backend
-									await fetch("/api/registerWallet", {
-									  method: "POST",
-									  headers: { "Content-Type": "application/json" },
-									  body: JSON.stringify({ tgId, pubkey: publicKey.toString() })
-									});
+								// 4) Enable the Connect button now that we have tgId
+								document.getElementById("connectWallet").disabled = false;
 							  
-									// Show deposit form
-									document.getElementById("depositForm").style.display = "block";
-								  } else {
-									alert("Please install Phantom Wallet");
-								  }
-								});
-							  
-								// 3) Handle deposit submission
-								document.getElementById("sendDeposit").addEventListener("click", async () => {
-								  const solAmt = parseFloat(document.getElementById("solAmt").value);
-								  if (isNaN(solAmt) || solAmt <= 0) {
-									return alert("Enter a valid SOL amount");
-								  }
-								  const lamports = solAmt * 1e9;
-								  const connection = new Connection("https://api.mainnet-beta.solana.com");
-							  
-								  const tx = new Transaction().add(
-									SystemProgram.transfer({
-									  fromPubkey: provider.publicKey,
-									  toPubkey: "<YOUR_HOUSE_WALLET_PUBKEY>",
-									  lamports
-									})
-								  );
-							  
-								  // Sign, send, and confirm
-								  const signedTx = await provider.signTransaction(tx);
-								  const signature = await connection.sendRawTransaction(signedTx.serialize());
-								  document.getElementById("depositStatus").textContent = "Sending…";
-								  await connection.confirmTransaction(signature);
-								  document.getElementById("depositStatus").textContent =
-									`✅ Deposit sent! Tx: ${signature}`;
-							  
-								  // 4) Notify bot to credit user
-								  await fetch("/api/creditUser", {
-									method: "POST",
-									headers: { "Content-Type": "application/json" },
-									body: JSON.stringify({ tgId, lamports })
-								  });
-								});
+								// (Wallet-connect logic would go here later)
 							  </script>
 								<hr />
 								<section>
