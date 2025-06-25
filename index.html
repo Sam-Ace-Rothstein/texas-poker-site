@@ -327,17 +327,27 @@
 			<script src="assets/js/main.js"></script>
 
       <script>
+        // ← set this to the publicly-reachable URL of your website.js API
+        const API_BASE = 'https://YOUR-BACKEND-HOST';
+      
         async function loadStats() {
           try {
-            const res = await fetch('/api/stats');
-            if (!res.ok) throw new Error(res.statusText);
-            const { totalTables, totalPlayers, totalPot = 0, totalStacks = 0 } = await res.json();
-
+            const res = await fetch(`${API_BASE}/api/stats`);
+            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      
+            const {
+              totalTables,
+              totalPlayers,
+              totalPot     = 0,
+              totalStacks  = 0
+            } = await res.json();
+      
             document.getElementById('total-tables').textContent  = totalTables;
             document.getElementById('total-players').textContent = totalPlayers;
             document.getElementById('total-tokens').textContent  =
-+             (Number(totalPot)   || 0)
-+           + (Number(totalStacks) || 0);
+              (Number(totalPot)   || 0)
+            + (Number(totalStacks) || 0);
+      
           } catch (err) {
             console.error('Couldn’t load poker stats:', err);
           }

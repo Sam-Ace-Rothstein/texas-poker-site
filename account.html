@@ -30,7 +30,7 @@
 						<ul>
 							<li><a href="left-sidebar.html">$TEXAS</a></li>
 							<li><a href="index.html">Home</a></li>
-			<li><a href="right-sidebar.html">Simple Swap</a></li>
+			<li><a href="account.html">Simple Swap</a></li>
 						</ul>
 					</nav>
 
@@ -432,11 +432,14 @@
 			<script src="assets/js/main.js"></script>
 
 			<script>
+				// Set this to the publicly-reachable URL of your bot’s API
+				const API_BASE = 'https://YOUR-BACKEND-HOST';
+			  
 				async function loadStats() {
 				  try {
-					const res = await fetch('/api/stats');
-					if (!res.ok) throw new Error(res.statusText);
-				
+					const res = await fetch(`${API_BASE}/api/stats`);
+					if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+			  
 					const {
 					  totalTables,
 					  totalPublicTables,
@@ -455,7 +458,7 @@
 					  totalBets       = 0,
 					  totalWins       = 0
 					} = await res.json();
-				
+			  
 					document.getElementById('total-tables').textContent         = totalTables;
 					document.getElementById('total-public-tables').textContent  = totalPublicTables;
 					document.getElementById('total-private-tables').textContent = totalPrivateTables;
@@ -465,24 +468,24 @@
 					  (Number(totalPot)   || 0)
 					+ (Number(totalStacks) || 0);
 					document.getElementById('sum-wallets').textContent          = sumWallets;
-					document.getElementById('house-balance').textContent       = houseBalance;
-					document.getElementById('grand-total').textContent         = grandTotal;
-					document.getElementById('avg-stack').textContent           = avgStack;
-					document.getElementById('avg-pot').textContent             = avgPot;
-					document.getElementById('total-hands-dealt').textContent    = totalHandsDealt;
-					document.getElementById('total-all-in').textContent         = totalAllIn;
-					document.getElementById('total-bets').textContent           = totalBets;
-					document.getElementById('total-wins').textContent           = totalWins;
-				
+					document.getElementById('house-balance').textContent        = houseBalance;
+					document.getElementById('grand-total').textContent          = grandTotal;
+					document.getElementById('avg-stack').textContent            = avgStack;
+					document.getElementById('avg-pot').textContent              = avgPot;
+					document.getElementById('total-hands-dealt').textContent     = totalHandsDealt;
+					document.getElementById('total-all-in').textContent          = totalAllIn;
+					document.getElementById('total-bets').textContent            = totalBets;
+					document.getElementById('total-wins').textContent            = totalWins;
+			  
 				  } catch (err) {
 					console.error('Couldn’t load poker stats:', err);
 				  }
 				}
-				
+			  
 				// initial load
 				loadStats();
 				// refresh every 30 seconds
 				setInterval(loadStats, 30000);
-				</script>
+			  </script>
 	</body>
 </html>
