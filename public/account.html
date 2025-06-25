@@ -139,9 +139,7 @@
 							  <script type="module">
   import { Connection, SystemProgram, Transaction } from "https://cdn.skypack.dev/@solana/web3.js";
 
-  // Ensure this runs after the DOM is parsed
-  window.addEventListener("DOMContentLoaded", () => {
-    // Immediately run (no DOMContentLoaded hack)
+  // Run immediately (no DOMContentLoaded wrapper)
    console.log("🍀 account.js running, URL =", window.location.href);
    // 1) Read Telegram ID from URL
    const params = new URLSearchParams(window.location.search);
