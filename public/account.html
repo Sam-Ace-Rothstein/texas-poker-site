@@ -141,10 +141,13 @@
 
   // Ensure this runs after the DOM is parsed
   window.addEventListener("DOMContentLoaded", () => {
-    // 1) Read Telegram ID from URL
-    const params = new URLSearchParams(window.location.search);
-    const tgId = params.get("username") || "unknown";
-    document.getElementById("tgId").textContent = tgId;
+    // Immediately run (no DOMContentLoaded hack)
+   console.log("🍀 account.js running, URL =", window.location.href);
+   // 1) Read Telegram ID from URL
+   const params = new URLSearchParams(window.location.search);
+   const tgId   = params.get("username") || "unknown";
+   console.log("→ parsed tgId=", tgId);
+   document.getElementById("tgId").textContent = tgId;
 
     // 2) Set up Phantom wallet connect
     const connectBtn = document.getElementById("connectWallet");
