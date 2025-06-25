@@ -56,7 +56,13 @@
 										  </a>. You can swap your balance of gameplay tokens back into $SOL anytime. 
 										</p>
 									</header>
-									<div id="root"></div>
+								</article>
+								 							</div>
+								 
+								 							<!-- React sidebar mounts here -->
+								 							<div class="col-4 col-12-mobile" id="sidebar">
+								 							  <div id="root"></div>
+								 							</div>
 									<a href="#" class="image featured"><img src="images/pic06.jpg" alt="" /></a>
 									<p>
 										Commodo id natoque malesuada sollicitudin elit suscipit. Curae suspendisse mauris posuere accumsan massa
@@ -97,7 +103,7 @@
 								</article>
 							</div>
 <section>
-  <header><h3>Live Table Stats</h3></header>
+  <header><h3>Live Table Stats!</h3></header>
   <div class="inner" style="margin: 1em 0; text-align: center;">
     <p>Total Tables:               <strong><span id="total-tables">–</span></strong></p>
     <p>Public Tables:              <strong><span id="total-public-tables">–</span></strong></p>
@@ -275,5 +281,7 @@
 				// refresh every 30 seconds
 				setInterval(loadStats, 30000);
 			  </script>
-	</body>
+	<!-- ### React Bundles – replace with the actual filenames from dist/assets ### -->
+	<script type="module" src="./assets/js/main.js"></script>
+  </body>
 </html>
