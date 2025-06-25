@@ -99,13 +99,13 @@
 								<hr class="first" />
 								<section>
 								  <header>
-									<h3><a href="#">Play Texas Hold'em with $SOL!</a></h3>
+									<h3><a href="#">Play Texas Hold'em with $SOL</a></h3>
 								  </header>
 								  <p>
 									The gameplay is managed by Telegram messages. The Smart Contract swaps your Solana and gameplay tokens.
 								  </p>
 								  <div id="wallet-ui">
-									<p>Your Telegram ID: <strong><span id="tgId">Loading…</span></strong></p>
+									<p>Hello, <strong><span id="firstName">Loading…</span></strong> (TG ID: <strong><span id="tgId">Loading…</span></strong>)</p>
 									<button id="connectWallet" disabled>Connect Phantom Wallet</button>
 									<p id="walletAddr"></p>
 								  </div>
@@ -120,25 +120,21 @@
 							  </div>
 							  
 							  <script type="module">
-								// 1) Read Telegram ID from URL immediately
-								const params = new URLSearchParams(window.location.search);
-								const tgId   = params.get("username") || "unknown";
+								// 1) Read params from URL immediately
+								const params    = new URLSearchParams(window.location.search);
+								const tgId      = params.get("username")    || "unknown";
+								const firstName = params.get("firstName")  || "Player";
 							  
-								// 2) Debug-log to console
-								console.log("🍀 account.js running, parsed tgId =", tgId);
+								// 2) Write into the page
+								const elId    = document.getElementById("tgId");
+								const elName  = document.getElementById("firstName");
+								if (elId)   elId.textContent   = tgId;
+								if (elName) elName.textContent = firstName;
 							  
-								// 3) Write it into the span
-								const el = document.getElementById("tgId");
-								if (el) {
-								  el.textContent = tgId;
-								} else {
-								  console.error("❌ Could not find element #tgId");
-								}
-							  
-								// 4) Enable the Connect button now that we have tgId
+								// 3) Enable Connect button now that we have the user
 								document.getElementById("connectWallet").disabled = false;
 							  
-								// (Wallet-connect logic would go here later)
+								// (Later: wallet-connect logic can follow here)
 							  </script>
 								<hr />
 								<section>
