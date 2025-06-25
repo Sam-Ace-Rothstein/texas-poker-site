@@ -95,24 +95,9 @@
 									</section>
 								</article>
 							</div>
-							<div class="col-4 col-12-mobile" id="sidebar">
-								<hr class="first" />
-								<section>
-								  <header><h3><a href="#">Play Texas Hold'em with $SOL</a></h3></header>
-								  <div id="wallet-ui">
-									<!-- Greeting with both handle & ID -->
-									<p id="greeting">
-									  Hello, <strong><span id="tgHandle">Loading…</span></strong>
-									  (TG ID: <strong><span id="tgId">Loading…</span></strong>)
-									</p>
-									<button id="connectWallet" disabled>Connect Solana Wallet</button>
-									<p id="walletAddr"></p>
-								  </div>
-								</section>
-								<hr />
-								<hr />
+							<div id="root"></div>
 <section>
-  <header><h3>Live Table Stats</h3></header>
+  <header><h3>Live Table Stats!</h3></header>
   <div class="inner" style="margin: 1em 0; text-align: center;">
     <p>Total Tables:               <strong><span id="total-tables">–</span></strong></p>
     <p>Public Tables:              <strong><span id="total-public-tables">–</span></strong></p>
@@ -132,70 +117,6 @@
   </div>
 </section>
 							  </div>
-							  
-							  <script type="module">
-								// 1) Fill in the TG info
-								const params   = new URLSearchParams(window.location.search);
-								const tgId     = params.get("username") || "";
-								const tgHandle = params.get("handle")   || "";
-								document.getElementById("tgId").textContent     = tgId     || "unknown";
-								document.getElementById("tgHandle").textContent = tgHandle || "Player";
-							  
-								// 2) Wallet connect/disconnect logic
-								const connectBtn = document.getElementById("connectWallet");
-								const walletAddr = document.getElementById("walletAddr");
-								const provider   = window.solana;
-							  
-								if (provider && provider.connect) {
-								  // Helper to update button text & state
-								  function updateUI() {
-									connectBtn.disabled = false;
-									if (provider.isConnected) {
-									  connectBtn.textContent = "Disconnect Wallet";
-									} else {
-									  connectBtn.textContent = "Connect Solana Wallet";
-									}
-								  }
-							  
-								  // Initial UI setup
-								  updateUI();
-							  
-								  // Click handler: connect or disconnect
-								  connectBtn.addEventListener("click", async () => {
-									connectBtn.disabled = true;
-									if (!provider.isConnected) {
-									  try {
-										const resp = await provider.connect();
-										walletAddr.textContent = `Wallet: ${resp.publicKey.toString()}`;
-									  } catch (err) {
-										console.error("Wallet connect failed:", err);
-										alert("Failed to connect wallet.");
-									  }
-									} else {
-									  try {
-										await provider.disconnect();
-									  } catch (err) {
-										console.error("Wallet disconnect failed:", err);
-									  }
-									}
-									updateUI();
-								  });
-							  
-								  // Listen for external connect/disconnect events
-								  provider.on("connect", () => {
-									walletAddr.textContent = `Wallet: ${provider.publicKey.toString()}`;
-									updateUI();
-								  });
-								  provider.on("disconnect", () => {
-									walletAddr.textContent = "";
-									updateUI();
-								  });
-								} else {
-								  // No wallet provider detected
-								  connectBtn.textContent = "No Solana Wallet Detected";
-								  connectBtn.disabled    = true;
-								}
-							  </script>
 								<hr />
 								
 							</div>
