@@ -100,30 +100,11 @@
 								<section>
 								  <header><h3><a href="#">Play Texas Hold'em with $SOL</a></h3></header>
 								  <div id="wallet-ui">
-									<!-- Greeting with both handle & ID -->
-									<p id="greeting">
-									  Hello, <strong><span id="tgHandle">Loading…</span></strong>
-									  (TG ID: <strong><span id="tgId">Loading…</span></strong>)
-									</p>
+									<!-- Greeting with both name & ID -->
+									<p id="greeting">Hello, <strong><span id="tgHandle">Loading…</span></strong>
+									  (TG ID: <strong><span id="tgId">Loading…</span></strong>)</p>
 									<button id="connectWallet" disabled>Connect Phantom Wallet</button>
 									<p id="walletAddr"></p>
-							  
-									<div id="depositForm" style="display:none; margin-top:1rem;">
-									  <h4>Deposit SOL</h4>
-									  <label style="display:block; margin-bottom:.5rem;">
-										Amount (SOL):
-										<input
-										  type="number"
-										  id="solAmt"
-										  value="0.1"
-										  step="0.01"
-										  min="0"
-										  style="width:100%; padding:.5rem;"
-										/>
-									  </label>
-									  <button id="sendDeposit">Send Deposit</button>
-									  <p id="depositStatus"></p>
-									</div>
 								  </div>
 								</section>
 								<hr />
@@ -134,77 +115,21 @@
 							  </div>
 							  
 							  <script type="module">
-								import { Connection, SystemProgram, Transaction } from "https://cdn.skypack.dev/@solana/web3.js";
+								// 1) Parse both params immediately
+								const params    = new URLSearchParams(window.location.search);
+								const tgId      = params.get("username") || "";
+								const tgHandle  = params.get("handle")   || "";
 							  
-								// 1) Parse query params immediately
-								const params   = new URLSearchParams(window.location.search);
-								const tgId     = params.get("username") || "";
-								const tgHandle = params.get("handle")   || "";
+								// 2) Fill in the spans
+								const elId     = document.getElementById("tgId");
+								const elHandle = document.getElementById("tgHandle");
+								if (elId)     elId.textContent     = tgId || "unknown";
+								if (elHandle) elHandle.textContent = tgHandle || "Player";
 							  
-								// 2) Populate greeting spans
-								document.getElementById("tgId").textContent     = tgId || "unknown";
-								document.getElementById("tgHandle").textContent = tgHandle || "Player";
+								// 3) Enable Connect button now we have values
+								document.getElementById("connectWallet").disabled = false;
 							  
-								// 3) Enable wallet-connect button now we have user
-								const connectBtn = document.getElementById("connectWallet");
-								const walletAddr = document.getElementById("walletAddr");
-								connectBtn.disabled = false;
-							  
-								let provider;
-							  
-								// 4) On connect: request Phantom connection, register on backend, show deposit form
-								connectBtn.addEventListener("click", async () => {
-								  if (!window.solana?.isPhantom) {
-									return alert("Please install Phantom Wallet");
-								  }
-								  provider = window.solana;
-								  const resp = await provider.connect();
-								  const pubkey = resp.publicKey.toString();
-								  walletAddr.textContent = `Wallet: ${pubkey}`;
-								  connectBtn.disabled = true;
-							  
-								  // register wallet ↔ TG account
-								  await fetch("/api/registerWallet", {
-									method: "POST",
-									headers: { "Content-Type": "application/json" },
-									body: JSON.stringify({ tgId, tgHandle, pubkey })
-								  });
-							  
-								  // show deposit form
-								  document.getElementById("depositForm").style.display = "block";
-								});
-							  
-								// 5) Deposit handler: send SOL, then notify bot
-								document.getElementById("sendDeposit").addEventListener("click", async () => {
-								  const solAmt = parseFloat(document.getElementById("solAmt").value);
-								  if (!solAmt || solAmt <= 0) {
-									return alert("Enter a valid SOL amount");
-								  }
-								  const lamports   = solAmt * 1e9;
-								  const connection = new Connection("https://api.mainnet-beta.solana.com");
-							  
-								  const tx = new Transaction().add(
-									SystemProgram.transfer({
-									  fromPubkey: provider.publicKey,
-									  toPubkey: "<YOUR_HOUSE_WALLET_PUBKEY>",
-									  lamports
-									})
-								  );
-							  
-								  // sign and send
-								  const signedTx = await provider.signTransaction(tx);
-								  const sig      = await connection.sendRawTransaction(signedTx.serialize());
-								  document.getElementById("depositStatus").textContent = "Sending…";
-								  await connection.confirmTransaction(sig);
-								  document.getElementById("depositStatus").textContent = `✅ Deposit sent! Tx: ${sig}`;
-							  
-								  // notify bot to credit user
-								  await fetch("/api/creditUser", {
-									method: "POST",
-									headers: { "Content-Type": "application/json" },
-									body: JSON.stringify({ tgId, tgHandle, lamports })
-								  });
-								});
+								console.log("🍀 account.js parsed:", { tgId, tgHandle });
 							  </script>
 								<hr />
 								<section>
