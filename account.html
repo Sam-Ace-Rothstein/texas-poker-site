@@ -124,42 +124,57 @@
 								document.getElementById("tgId").textContent     = tgId     || "unknown";
 								document.getElementById("tgHandle").textContent = tgHandle || "Player";
 							  
-								// 2) Wallet-connect/disconnect logic
+								// 2) Wallet connect/disconnect logic
 								const connectBtn = document.getElementById("connectWallet");
 								const walletAddr = document.getElementById("walletAddr");
 								const provider   = window.solana;
 							  
-								if (provider && typeof provider.connect === "function") {
-								  // Initialize button state
-								  connectBtn.disabled = false;
-								  connectBtn.textContent = provider.isConnected
-									? "Disconnect Wallet"
-									: "Connect Solana Wallet";
+								if (provider && provider.connect) {
+								  // Helper to update button text & state
+								  function updateUI() {
+									connectBtn.disabled = false;
+									if (provider.isConnected) {
+									  connectBtn.textContent = "Disconnect Wallet";
+									} else {
+									  connectBtn.textContent = "Connect Solana Wallet";
+									}
+								  }
 							  
+								  // Initial UI setup
+								  updateUI();
+							  
+								  // Click handler: connect or disconnect
 								  connectBtn.addEventListener("click", async () => {
+									connectBtn.disabled = true;
 									if (!provider.isConnected) {
-									  // Connect
 									  try {
 										const resp = await provider.connect();
 										walletAddr.textContent = `Wallet: ${resp.publicKey.toString()}`;
-										connectBtn.textContent = "Disconnect Wallet";
 									  } catch (err) {
 										console.error("Wallet connect failed:", err);
 										alert("Failed to connect wallet.");
 									  }
 									} else {
-									  // Disconnect
 									  try {
 										await provider.disconnect();
 									  } catch (err) {
 										console.error("Wallet disconnect failed:", err);
 									  }
-									  walletAddr.textContent = "";
-									  connectBtn.textContent = "Connect Solana Wallet";
 									}
+									updateUI();
+								  });
+							  
+								  // Listen for external connect/disconnect events
+								  provider.on("connect", () => {
+									walletAddr.textContent = `Wallet: ${provider.publicKey.toString()}`;
+									updateUI();
+								  });
+								  provider.on("disconnect", () => {
+									walletAddr.textContent = "";
+									updateUI();
 								  });
 								} else {
-								  // No Solana provider detected
+								  // No wallet provider detected
 								  connectBtn.textContent = "No Solana Wallet Detected";
 								  connectBtn.disabled    = true;
 								}
