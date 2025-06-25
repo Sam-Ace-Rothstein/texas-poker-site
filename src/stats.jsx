@@ -25,9 +25,9 @@ export default function Stats() {
     <div className="space-y-2">
       <h2 className="text-xl font-bold">Platform Overview</h2>
       <ul className="list-disc list-inside">
-        <li>Tables live: {data.totalTables}</li>
-        <li>Players total: {data.totalPlayers}</li>
-        <li>Total pot size: {data.totalPot}</li>
+        <li>Total Tables: {data.totalTables}</li>
+        <li>Total Players: {data.totalPlayers}</li>
+        <li>Total Pots: {data.totalPot}</li>
       </ul>
     </div>
   )
