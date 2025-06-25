@@ -10,7 +10,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<noscript></noscript>
-		<script type="module" crossorigin src="/texas-poker-site/assets/account-D1JNf17T.js"></script>
+		<script type="module" crossorigin src="/texas-poker-site/assets/account-JzzGwM-d.js"></script>
 		<link rel="stylesheet" crossorigin href="/texas-poker-site/assets/noscript-B5JlcOPU.css">
 	</head>
 	<body class="right-sidebar is-preload">
@@ -115,6 +115,22 @@
 								</section>
 							  </div>
 							  
+
+    // sign and send
+    const signedTx = await provider.signTransaction(tx);
+    const sig      = await connection.sendRawTransaction(signedTx.serialize());
+    document.getElementById("depositStatus").textContent = "Sending…";
+    await connection.confirmTransaction(sig);
+    document.getElementById("depositStatus").textContent = `✅ Deposit sent! Tx: ${sig}`;
+
+    // notify bot to credit user
+    await fetch("/api/creditUser", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tgId, tgHandle, lamports })
+    });
+  });
+</script>
 								<hr />
 								<section>
 									<header>

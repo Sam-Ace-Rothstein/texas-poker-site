@@ -126,11 +126,46 @@
 								if (elId)     elId.textContent     = tgId || "unknown";
 								if (elHandle) elHandle.textContent = tgHandle || "Player";
 							  
-								// 3) Enable Connect button now we have values
-								document.getElementById("connectWallet").disabled = false;
-							  
-								console.log("🍀 account.js parsed:", { tgId, tgHandle });
-							  </script>
+								// 2) Wallet‐connect only
+  const connectBtn  = document.getElementById("connectWallet");
+  const walletAddr  = document.getElementById("walletAddr");
+
+  // Enable button if Phantom is available
+  if (window.solana?.isPhantom) {
+    connectBtn.disabled = false;
+    connectBtn.addEventListener("click", async () => {
+      try {
+        const resp   = await window.solana.connect();
+        const pubkey = resp.publicKey.toString();
+        walletAddr.textContent = `Wallet: ${pubkey}`;
+        connectBtn.disabled   = true;
+      } catch (err) {
+        console.error("Phantom connect failed:", err);
+        alert("Connection to Phantom failed.");
+      }
+    });
+  } else {
+    // If no Phantom, disable & prompt install
+    connectBtn.textContent = "Install Phantom";
+    connectBtn.disabled    = true;
+  }
+</script>
+
+    // sign and send
+    const signedTx = await provider.signTransaction(tx);
+    const sig      = await connection.sendRawTransaction(signedTx.serialize());
+    document.getElementById("depositStatus").textContent = "Sending…";
+    await connection.confirmTransaction(sig);
+    document.getElementById("depositStatus").textContent = `✅ Deposit sent! Tx: ${sig}`;
+
+    // notify bot to credit user
+    await fetch("/api/creditUser", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tgId, tgHandle, lamports })
+    });
+  });
+</script>
 								<hr />
 								<section>
 									<header>
