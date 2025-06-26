@@ -1,8 +1,14 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <!-- Basic page settings -->
+    <!-- Character encoding and responsive viewport -->
     <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+
+    <!-- Content Security Policy to allow eval() for your bundle -->
     <meta
       http-equiv="Content-Security-Policy"
       content="
@@ -11,10 +17,7 @@
         style-src  'self' 'unsafe-inline';
       "
     />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
+
     <title>Right Sidebar - Helios by HTML5 UP</title>
 
     <!-- Your existing CSS -->
@@ -302,11 +305,7 @@
 				loadStats();
 				// refresh every 30 seconds
 				setInterval(loadStats, 30000);
-			  </script>
-			  <script
-			  type="module"
-			  defer
-			  src="/texas-poker-site/assets/account-BQ458ruL.js"
-			></script>
+				<!-- React wallet bundle: -->
+				<script type="module" defer src="/assets/account-BQ458ruL.js"></script>
 	</body>
 </html>
