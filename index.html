@@ -360,42 +360,52 @@
 
 	<!-- Fill in TG info & stats loader -->
 	<script>
+    // ← this was missing!
+    const API_BASE = "https://texas-poker-production.up.railway.app";
+    
     const ID_TO_PROP = {
-      "total-tables":       "totalTables",
-      "total-public-tables":"totalPublicTables",
+      "total-tables":        "totalTables",
+      "total-public-tables": "totalPublicTables",
       "total-private-tables":"totalPrivateTables",
-      "total-players":      "totalPlayers",
-      "total-transfers-in": "totalTransfersIn",
-      "total-on-table":     "totalOnTable",
-      "sum-wallets":        "sumWallets",
-      "house-balance":      "houseBalance",
-      "grand-total":        "grandTotal",
-      "avg-stack":          "avgStack",
-      "avg-pot":            "avgPot",
-      "total-hands-dealt":  "totalHandsDealt",
-      "total-all-in":       "totalAllIn",
-      "total-bets":         "totalBets",
-      "total-wins":         "totalWins"
+      "total-players":       "totalPlayers",
+      "total-transfers-in":  "totalTransfersIn",
+      "total-on-table":      "totalOnTable",
+      "sum-wallets":         "sumWallets",
+      "house-balance":       "houseBalance",
+      "grand-total":         "grandTotal",
+      "avg-stack":           "avgStack",
+      "avg-pot":             "avgPot",
+      "total-hands-dealt":   "totalHandsDealt",
+      "total-all-in":        "totalAllIn",
+      "total-bets":          "totalBets",
+      "total-wins":          "totalWins"
+      // (and if you still want your mini-stats bar: 
+      //   "total-tokens": "totalTokens")
     };
-  
+    
     async function loadStats() {
       try {
         const res  = await fetch(`${API_BASE}/api/stats`);
         const data = await res.json();
+        console.log("stats→", data);          // ← sanity-check
         for (let [id, prop] of Object.entries(ID_TO_PROP)) {
-          if (data[prop] != null) {
-            document.getElementById(id).textContent = data[prop];
-          }
+          // update *all* matching elements, not just first
+          document
+            .querySelectorAll(`#${id}`)
+            .forEach(el => {
+              el.textContent = data[prop] != null 
+                ? data[prop] 
+                : "0";
+            });
         }
       } catch(e) {
         console.error("Couldn’t load poker stats:", e);
       }
     }
     loadStats();
-    setInterval(loadStats, 30000);
+    setInterval(loadStats, 30_000);
   </script>
       <!-- Point Vite to your account.jsx entry -->
-  <script type="module" src="/src/account.jsx"></script>
 
 	</body>
 </html>
