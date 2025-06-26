@@ -374,6 +374,13 @@
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 
+  <!-- Telegram info loader (gave this to account.html; needs adding here too) -->
+  <script>
+      const params = new URLSearchParams(window.location.search);
+      document.getElementById("tgHandle").textContent = params.get("handle")  || 'Player';
+      document.getElementById("tgId").    textContent = params.get("username") || 'unknown';
+    </script>
+
 	<!-- Fill in TG info & stats loader -->
 	<script>
     // ← this was missing!
