@@ -66,12 +66,12 @@
                      											</p>
                      										</td>
                      										<td style="text-align: right; vertical-align: middle;">
-                                                 <!-- React mount point for wallet button (hidden by default) -->
-       <div id="wallet-root"
-            style="display:none; justify-content:flex-end; align-items:flex-start; height:auto;">
-                                                   <!-- React will mount the button here -->
-                                                 </div>
-                                               </td>
+                     											<!-- React mount point for wallet button -->
+                                           <div id="root" 
+                                           style="display:flex; justify-content:flex-end; align-items:flex-start; height:auto; margin:0; padding:0;">
+                                        <!-- React will mount the button here -->
+                                      </div>
+                     										</td>
                      									</tr>
                      								</table>
                      							</div>
@@ -378,24 +378,27 @@
 	<script src="assets/js/main.js"></script>
 
   <!-- Telegram info loader -->
-  <script>
-    const params   = new URLSearchParams(window.location.search);
-    const handle   = params.get("handle");
-    const userId   = params.get("username");
-    const greeting = document.getElementById("greeting");
-  - const walletEl = document.getElementById("wallet-root"); // change this line if needed
-  + const walletEl = document.getElementById("wallet-root");
-  
-    if (handle && userId) {
-      greeting.innerHTML =
-        `Hello, <strong>${handle}</strong> (TG ID: <strong>${userId}</strong>)`;
-      walletEl.style.display = "flex";
-    } else {
-      greeting.textContent =
-        "Welcome! To connect your account, DM @texas-poker-dealer-bot, type “menu”, then select “Account.”";
-      walletEl.style.display = "none";
-    }
-  </script>
+<script>
+  const params     = new URLSearchParams(window.location.search);
+  const handle     = params.get("handle");
+  const userId     = params.get("username");
+  const greetingEl = document.getElementById("greeting");
+  const walletEl   = document.getElementById("wallet-root");
+
+  if (handle && userId) {
+    // show logged-in greeting
+    greetingEl.innerHTML =
+      `Hello, <strong>${handle}</strong> (TG ID: <strong>${userId}</strong>)`;
+    // unhide wallet connect
+    walletEl.style.display = "flex";
+  } else {
+    // public visitor view
+    greetingEl.textContent =
+      "Welcome! To connect your account, DM @texas-poker-dealer-bot, type “menu”, then select “Account.”";
+    // keep wallet hidden
+    walletEl.style.display = "none";
+  }
+</script>
 
 	<!-- Fill in TG info & stats loader -->
 	<script>
