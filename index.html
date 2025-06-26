@@ -374,12 +374,23 @@
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 
-  <!-- Telegram info loader (gave this to account.html; needs adding here too) -->
-  <script>
-      const params = new URLSearchParams(window.location.search);
-      document.getElementById("tgHandle").textContent = params.get("handle")  || 'Player';
-      document.getElementById("tgId").    textContent = params.get("username") || 'unknown';
-    </script>
+  <!-- Telegram info loader -->
+<script>
+  const params     = new URLSearchParams(window.location.search);
+  const greetingEl = document.getElementById("greeting");
+  const handle     = params.get("handle");
+  const userId     = params.get("username");
+
+  if (handle && userId) {
+    // logged-in view
+    greetingEl.innerHTML =
+      `Hello, <strong>${handle}</strong> (TG ID: <strong>${userId}</strong>)`;
+  } else {
+    // public visitor view
+    greetingEl.textContent =
+      "Welcome! To connect your account, DM @texas-poker-dealer-bot, type “menu”, then select “Account.”";
+  }
+</script>
 
 	<!-- Fill in TG info & stats loader -->
 	<script>
