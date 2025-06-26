@@ -1,27 +1,30 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <!-- Basic page settings -->
+    <!-- Character encoding and responsive viewport -->
     <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+
+    <!-- Content Security Policy: allow data URIs for images -->
     <meta
       http-equiv="Content-Security-Policy"
       content="
         default-src 'self';
         script-src 'self' 'unsafe-eval' 'unsafe-inline';
-        style-src  'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data:;
       "
     />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
+
     <title>Right Sidebar - Helios by HTML5 UP</title>
 
-    <!-- Your existing CSS -->
+    <!-- Helios CSS (root-relative path) -->
     <link
       rel="stylesheet"
-      crossorigin
-      href="/texas-poker-site/assets/noscript-B5JlcOPU.css"
+      href="/assets/noscript-B5JlcOPU.css"
     />
   </head>
   <body class="right-sidebar is-preload">
