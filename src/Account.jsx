@@ -58,7 +58,7 @@ function BalanceDisplay({ tgId }) {
 }
 
 const App = () => {
-  const endpoint = 'https://api.mainnet.rpcpool.com';
+  const endpoint = 'https://rpc.ankr.com/solana';
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
