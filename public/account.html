@@ -10,7 +10,13 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 	<noscript></noscript>
-  <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/account-B5JlcOPU.css">
+
+  />
+  <title>Local Solana Wallet Test</title>
+
+  <!-- Wallet Adapter styles (from node_modules) -->
+  <script type="module" crossorigin src="/texas-poker-site/assets/account-LBpPfpLg.js"></script>
+  <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/account-gQLI1xN8.css">
 </head>
 <body class="right-sidebar is-preload">
 	<div id="page-wrapper">
@@ -72,9 +78,10 @@
 									Hello, <strong><span id="tgHandle">Loading…</span></strong>
 									(TG ID: <strong><span id="tgId">Loading…</span></strong>)
 								</p>
-								<!-- 2) Wallet connect -->
-								<button id="connectBtn" disabled>Detecting Wallet…</button>
-								<p id="walletAddr" style="margin-top:0.5em;"></p>
+								<div id="root" 
+       style="display:flex; justify-content:center; align-items:center; height:100vh;">
+    <!-- React will mount the button here -->
+  </div>
 							</div>
 						</section>
 						<hr />
@@ -145,6 +152,7 @@
 		</div>
 
 	</div>
+	<!-- Point Vite to your account.jsx entry -->
 
 	<!-- jQuery & Helios scripts -->
 	<script src="assets/js/jquery.min.js"></script>
