@@ -72,27 +72,6 @@
                      										</td>
                      									</tr>
                      								</table>
-                                     <ol class="help-list" style="margin:0; padding-left:1.2em;">
-                                           <li>
-                                             <!-- 1) Telegram info -->
-                     											<p id="greeting">
-                                            Hello, <strong><span id="tgHandle">Loading…</span></strong>
-                                            (TG ID: <strong><span id="tgId">Loading…</span></strong>)
-                                          </p>
-                                           </li>
-                                           <li>
-                                             <strong>Connect and link your Solana Wallet</strong><br/>
-                                             <!-- React mount point for wallet button -->
-                                           <div id="root" 
-                                           style="display:flex; justify-content:flex-end; align-items:flex-start; height:auto; margin:0; padding:0;">
-                                        <!-- React will mount the button here -->
-                                             </div>
-                                           </li>
-                                           <li>
-                                             <strong>Simple Swap $SOL / Gameplay Tokens</strong><br/>
-                                             Info to come.
-                                           </li>
-                                         </ol>
                      							</div>
 
 
@@ -398,23 +377,18 @@
   <!-- Telegram info loader -->
 <script>
   const params     = new URLSearchParams(window.location.search);
+  const greetingEl = document.getElementById("greeting");
   const handle     = params.get("handle");
   const userId     = params.get("username");
-  const greetingEl = document.getElementById("greeting");
-  const walletEl   = document.getElementById("wallet-root");
 
   if (handle && userId) {
-    // show logged-in greeting
+    // logged-in view
     greetingEl.innerHTML =
       `Hello, <strong>${handle}</strong> (TG ID: <strong>${userId}</strong>)`;
-    // unhide wallet connect
-    walletEl.style.display = "flex";
   } else {
     // public visitor view
     greetingEl.textContent =
       "Welcome! To connect your account, DM @texas-poker-dealer-bot, type “menu”, then select “Account.”";
-    // keep wallet hidden
-    walletEl.style.display = "none";
   }
 </script>
 
