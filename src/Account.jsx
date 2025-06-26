@@ -58,7 +58,7 @@ function BalanceDisplay({ tgId }) {
 }
 
 const App = () => {
-  const endpoint = 'https://rpc.ankr.com/solana';
+  const endpoint = 'https://ssc-dao.genesysgo.net';
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
