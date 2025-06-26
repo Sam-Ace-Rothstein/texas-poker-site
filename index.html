@@ -52,6 +52,28 @@
 									Simple Swap Solana for gameplay tokens, and take a seat at any Telegram public table. 
                   Easily create and manage your own tables (public or private).
                   Full casino rules Texas Holdem gameplay. Trustless smart contract. Powered by $TEXAS.  
+
+                  <div id="wallet-ui">
+                     								<table style="width:100%; border-collapse: collapse;">
+                     									<tr>
+                     										<td>
+                     											<!-- 1) Telegram info -->
+                     											<p id="greeting">
+                     												Hello, <strong><span id="tgHandle">Loading…</span></strong>
+                     												(TG ID: <strong><span id="tgId">Loading…</span></strong>)
+                     											</p>
+                     										</td>
+                     										<td style="text-align: right; vertical-align: middle;">
+                     											<!-- React mount point for wallet button -->
+                     											<div id="wallet-root" style="display:inline-block;">
+                     												<!-- Connect Wallet button will render here -->
+                     											</div>
+                     										</td>
+                     									</tr>
+                     								</table>
+                     							</div>
+
+
                 <!-- Live Poker Stats -->
     <div id="poker-stats" class="inner" style="margin: 1em 0; text-align: center;">
       <ul style="list-style: none; padding: 0; display: flex; justify-content: center; gap: 2em;">
@@ -59,10 +81,6 @@
         <li>Total Players: <strong><span id="total-players">–</span></strong></li>
         <li>Total In-Play:  <strong><span id="total-tokens">–</span></strong></li>
       </ul>
-      <div id="root" 
-       style="display:flex; justify-content:center; align-items:center; height:100vh;">
-    <!-- React will mount the button here -->
-  </div>
 
   <!-- Point Vite to your account.jsx entry -->
     </div>
