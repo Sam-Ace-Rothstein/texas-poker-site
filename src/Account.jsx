@@ -58,7 +58,7 @@ function BalanceDisplay({ tgId }) {
 }
 
 const App = () => {
-  const endpoint = clusterApiUrl('mainnet-beta');
+  const endpoint = 'https://solana-api.projectserum.com';
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
