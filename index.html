@@ -14,7 +14,7 @@
       <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
     <!-- only one wallet-adapter stylesheet -->
-    <script type="module" crossorigin src="/texas-poker-site/assets/main-D5aK4xCe.js"></script>
+    <script type="module" crossorigin src="/texas-poker-site/assets/main-CEeJGdTe.js"></script>
     <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
   </head>
 	<body class="no-sidebar is-preload">
@@ -57,29 +57,33 @@
                     <tr>
                       <td>
                         <!-- 1) Telegram info -->
-                        <p id="greeting">
-                          Hello, <strong><span id="tgHandle">Loading…</span></strong>
-                          (TG ID: <strong><span id="tgId">Loading…</span></strong>)
-                        </p>
-                      </td>
-                      <td style="text-align: right; vertical-align: middle;">
-                        <!-- React mount point for wallet button -->
-                        <div
-                          id="root"
-                          style="display:flex; justify-content:flex-end; align-items:flex-start; height:auto; margin:0; padding:0;"
-                        >
-                          <!-- React will mount the button here -->
-                        </div>
-                      </td>
-                    </tr>
-                  
-                    <tr>
-                      <td colspan="2">
-                        <p id="sol-balance">
-                          Total SOL: <strong>–</strong>
-                        </p>
-                      </td>
-                    </tr>
+      <p id="greeting">
+        Hello, <strong><span id="tgHandle">Loading…</span></strong>
+        (TG ID: <strong><span id="tgId">Loading…</span></strong>)
+      </p>
+    </td>
+    <td style="text-align: right; vertical-align: middle;">
+      <!-- React mounts the wallet button + balances here -->
+      <div
+        id="root"
+        data-tgid=""
+        style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;"
+      >
+        <!-- React will render:
+             1) <WalletMultiButton />
+             2) <BalanceDisplay />
+             3) future swap UI -->
+      </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan="2">
+      <p id="sol-balance">
+        Total SOL: <strong>–</strong>
+      </p>
+    </td>
+  </tr>
                   
                     <tr>
                       <td colspan="2">
@@ -112,25 +116,6 @@
                       </td>
                     </tr>
                   </table>
-                  
-                     								<table style="width:100%; border-collapse: collapse;">
-                     									<tr>
-                     										<td>
-                     											<!-- 1) Telegram info -->
-                     											<p id="greeting">
-                     												Hello, <strong><span id="tgHandle">Loading…</span></strong>
-                     												(TG ID: <strong><span id="tgId">Loading…</span></strong>)
-                     											</p>
-                     										</td>
-                     										<td style="text-align: right; vertical-align: middle;">
-                     											<!-- React mount point for wallet button -->
-                                           <div id="root" 
-                                           style="display:flex; justify-content:flex-end; align-items:flex-start; height:auto; margin:0; padding:0;">
-                                        <!-- React will mount the button here -->
-                                      </div>
-                     										</td>
-                     									</tr>
-                     								</table>
                      							</div>
 
 
