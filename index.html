@@ -11,6 +11,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+  />
+  <title>Local Solana Wallet Test</title>
+
+  <!-- Wallet Adapter styles (from node_modules) -->
+  <link
+    rel="stylesheet"
+    href="/node_modules/@solana/wallet-adapter-react-ui/styles.css"
+  />
 	</head>
 	<body class="no-sidebar is-preload">
 		<div id="page-wrapper">
@@ -42,7 +50,7 @@
 					<div class="container">
 						<article id="main" class="special">
 							<header>
-								<h2><a href="#">♤ Shuffle Up Your Solana and Deal, High Roller ♤</a></h2>
+								<h2><a href="#">♤ Shuffle Up Your Solana and Deal, High Roller! ♤</a></h2>
 								<p>
 									Simple Swap Solana for gameplay tokens, and take a seat at any Telegram public table. 
                   Easily create and manage your own tables (public or private).
@@ -54,6 +62,13 @@
         <li>Total Players: <strong><span id="total-players">–</span></strong></li>
         <li>Total In-Play:  <strong><span id="total-tokens">–</span></strong></li>
       </ul>
+      <div id="root" 
+       style="display:flex; justify-content:center; align-items:center; height:100vh;">
+    <!-- React will mount the button here -->
+  </div>
+
+  <!-- Point Vite to your account.jsx entry -->
+  <script type="module" src="/src/account.jsx"></script>
     </div>
 							</header>
 							<a href="#" class="image featured"><img src="images/Ace, it’s your turn.png" alt="" /></a>
@@ -358,6 +373,8 @@
         // refresh every 30 seconds
         setInterval(loadStats, 30_000);
       </script>
+      <!-- Point Vite to your account.jsx entry -->
+  <script type="module" src="/src/account.jsx"></script>
 
 	</body>
 </html>
