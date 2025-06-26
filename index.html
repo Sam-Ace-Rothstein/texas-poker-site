@@ -55,7 +55,66 @@
                   Easily create and manage your own tables (public or private).
                   Full casino rules Texas Holdem gameplay. Trustless smart contract. Powered by $TEXAS.  
 
-                  <div id="wallet-ui">
+                  <div id="wallet-ui"><table style="width:100%; border-collapse: collapse;">
+                    <tr>
+                      <td>
+                        <!-- 1) Telegram info -->
+                        <p id="greeting">
+                          Hello, <strong><span id="tgHandle">Loading…</span></strong>
+                          (TG ID: <strong><span id="tgId">Loading…</span></strong>)
+                        </p>
+                      </td>
+                      <td style="text-align: right; vertical-align: middle;">
+                        <!-- React mount point for wallet button -->
+                        <div
+                          id="root"
+                          style="display:flex; justify-content:flex-end; align-items:flex-start; height:auto; margin:0; padding:0;"
+                        >
+                          <!-- React will mount the button here -->
+                        </div>
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td colspan="2">
+                        <p id="sol-balance">
+                          Total SOL: <strong>–</strong>
+                        </p>
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td colspan="2">
+                        <p id="token-balance">
+                          Total Tokens: <strong>–</strong>
+                        </p>
+                      </td>
+                    </tr>
+                  
+                    <!-- Placeholder rows for future swap UI logic -->
+                  
+                    <tr>
+                      <td colspan="2">
+                        <!-- TODO: Swap amount input field -->
+                        <div id="swap-amount-placeholder"></div>
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td colspan="2">
+                        <!-- TODO: Conversion rate display -->
+                        <div id="conversion-rate-placeholder"></div>
+                      </td>
+                    </tr>
+                  
+                    <tr>
+                      <td colspan="2">
+                        <!-- TODO: Swap action button -->
+                        <div id="swap-action-placeholder"></div>
+                      </td>
+                    </tr>
+                  </table>
+                  
                      								<table style="width:100%; border-collapse: collapse;">
                      									<tr>
                      										<td>
