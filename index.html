@@ -6,18 +6,17 @@
 -->
 <html>
 	<head>
-		<title>No Sidebar - Helios by HTML5 UP</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-  />
-  <title>Local Solana Wallet Test</title>
-
-  <!-- Wallet Adapter styles (from node_modules) -->
-		<script type="module" crossorigin src="/texas-poker-site/assets/main-D5aK4xCe.js"></script>
-		<link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
-	</head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>♤ Shuffle Up Your Solana and Deal | Helios</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript>
+      <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+    <!-- only one wallet-adapter stylesheet -->
+    <script type="module" crossorigin src="/texas-poker-site/assets/main-D5aK4xCe.js"></script>
+    <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
+  </head>
 	<body class="no-sidebar is-preload">
 		<div id="page-wrapper">
 
@@ -358,31 +357,40 @@
 
 	<!-- Fill in TG info & stats loader -->
 	<script>
-		// 1) Telegram info
-		const params   = new URLSearchParams(window.location.search);
-		document.getElementById("tgId").textContent     = params.get("username") || "unknown";
-		document.getElementById("tgHandle").textContent = params.get("handle") || "Player";
-
-		// 2) Live stats
-		const API_BASE = "https://texas-poker-production.up.railway.app";
-		async function loadStats() {
-			try {
-				const res = await fetch(`${API_BASE}/api/stats`);
-				const data = await res.json();
-				[
-					"total-tables","total-public-tables","total-private-tables","total-players",
-					"total-transfers-in","total-on-table","sum-wallets","house-balance","grand-total",
-					"avg-stack","avg-pot","total-hands-dealt","total-all-in","total-bets","total-wins"
-				].forEach(key => {
-					if (data[key.replace(/-/g,"")] != null) {
-						document.getElementById(key).textContent = data[key.replace(/-/g,"")] || 0;
-					}
-				});
-			} catch(e){ console.error("Couldn’t load poker stats:",e); }
-		}
-		loadStats();
-		setInterval(loadStats, 30000);
-	</script>
+    const ID_TO_PROP = {
+      "total-tables":       "totalTables",
+      "total-public-tables":"totalPublicTables",
+      "total-private-tables":"totalPrivateTables",
+      "total-players":      "totalPlayers",
+      "total-transfers-in": "totalTransfersIn",
+      "total-on-table":     "totalOnTable",
+      "sum-wallets":        "sumWallets",
+      "house-balance":      "houseBalance",
+      "grand-total":        "grandTotal",
+      "avg-stack":          "avgStack",
+      "avg-pot":            "avgPot",
+      "total-hands-dealt":  "totalHandsDealt",
+      "total-all-in":       "totalAllIn",
+      "total-bets":         "totalBets",
+      "total-wins":         "totalWins"
+    };
+  
+    async function loadStats() {
+      try {
+        const res  = await fetch(`${API_BASE}/api/stats`);
+        const data = await res.json();
+        for (let [id, prop] of Object.entries(ID_TO_PROP)) {
+          if (data[prop] != null) {
+            document.getElementById(id).textContent = data[prop];
+          }
+        }
+      } catch(e) {
+        console.error("Couldn’t load poker stats:", e);
+      }
+    }
+    loadStats();
+    setInterval(loadStats, 30000);
+  </script>
       <!-- Point Vite to your account.jsx entry -->
 
 	</body>
