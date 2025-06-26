@@ -1,16 +1,23 @@
 {
   "name": "texas-poker-site",
+  "version": "0.1.0",
   "private": true,
-  "homepage": "https://Sam-Ace-Rothstein.github.io/texas-poker-site",
-  "version": "0.0.0",
+  "description": "A Solana-powered Texas Poker Bot site",
+  "homepage": "https://Sam-Ace-Rothstein.github.io/texas-poker-site/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sam-Ace-Rothstein/texas-poker-site.git"
+  },
+  "author": "Sam Ace Rothstein <you@example.com>",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist",
+    "build": "vite build --base /texas-poker-site/",
+    "preview": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@solana/wallet-adapter-react": "^0.15.39",
