@@ -3,8 +3,7 @@ import { createRoot } from 'react-dom/client';
 import {
   ConnectionProvider,
   WalletProvider,
-  useWallet,
-  useConnection
+  useWallet
 } from '@solana/wallet-adapter-react';
 import {
   WalletModalProvider,
@@ -14,34 +13,38 @@ import {
   PhantomWalletAdapter,
   SolflareWalletAdapter
 } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { clusterApiUrl } from '@solana/web3.js';
 
 // Default styles for the wallet adapter UI
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-// Component to display on-chain SOL and in-bot token balances
+// Component to display on-chain SOL (via backend proxy) and in-bot token balances
 function BalanceDisplay({ tgId }) {
   const { publicKey, connected } = useWallet();
-  const { connection } = useConnection();
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
 
-  // Fetch SOL balance when wallet connects
+  // Fetch SOL balance via backend proxy when wallet connects
   useEffect(() => {
     if (connected && publicKey) {
-      connection.getBalance(publicKey)
-        .then(lamports => setSolBalance(lamports / LAMPORTS_PER_SOL))
-        .catch(console.error);
+      fetch(
+        `https://texas-poker-production.up.railway.app/api/sol-balance?pubkey=${publicKey.toBase58()}`
+      )
+        .then(res => res.json())
+        .then(data => setSolBalance(data.sol))
+        .catch(err => console.error('🛠 sol-balance error', err));
     }
-  }, [connected, publicKey, connection]);
+  }, [connected, publicKey]);
 
   // Fetch token balance from Telegram-bot API
   useEffect(() => {
     if (tgId) {
-      fetch(`https://texas-poker-production.up.railway.app/api/telegram-balance?tgId=${tgId}`)
+      fetch(
+        `https://texas-poker-production.up.railway.app/api/telegram-balance?tgId=${tgId}`
+      )
         .then(res => res.json())
         .then(data => setTokenBalance(data.tokens))
-        .catch(console.error);
+        .catch(err => console.error('🛠 token-balance error', err));
     }
   }, [tgId]);
 
@@ -58,7 +61,7 @@ function BalanceDisplay({ tgId }) {
 }
 
 const App = () => {
-  const endpoint = 'https://ssc-dao.genesysgo.net';
+  const endpoint = clusterApiUrl('mainnet-beta');
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
