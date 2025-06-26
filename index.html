@@ -70,6 +70,24 @@
 							</header>
 							<a href="#" class="image featured"><img src="images/Ace, it’s your turn.png" alt="" /></a>
 							<section>
+                <header><h3>Live Table Stats!!</h3></header>
+							<div class="inner" style="margin:1em 0; text-align:center;">
+								<p>Total Tables:               <strong><span id="total-tables">–</span></strong></p>
+								<p>Public Tables:              <strong><span id="total-public-tables">–</span></strong></p>
+								<p>Private Tables:             <strong><span id="total-private-tables">–</span></strong></p>
+								<p>Total Players:              <strong><span id="total-players">–</span></strong></p>
+								<p>Total Tokens Transferred In:<strong><span id="total-transfers-in">–</span></strong></p>
+								<p>Total Tokens On-Table:      <strong><span id="total-on-table">–</span></strong></p>
+								<p>Off-Table Tokens:           <strong><span id="sum-wallets">–</span></strong></p>
+								<p>House Wallet Balance:       <strong><span id="house-balance">–</span></strong></p>
+								<p>Grand Total Managed:        <strong><span id="grand-total">–</span></strong></p>
+								<p>Avg Stack per Table:        <strong><span id="avg-stack">–</span></strong></p>
+								<p>Avg Pot per Table:          <strong><span id="avg-pot">–</span></strong></p>
+								<p>Total Hands Dealt:          <strong><span id="total-hands-dealt">–</span></strong></p>
+								<p>Total All-In Moves:         <strong><span id="total-all-in">–</span></strong></p>
+								<p>Total Bets Placed:          <strong><span id="total-bets">–</span></strong></p>
+								<p>Total Wins Paid:            <strong><span id="total-wins">–</span></strong></p>
+							</div>
                 <header>
                   <h3>♤ ♡ ♧ ♢ Welcome to the Felt ♤ ♡ ♧ ♢</h3>
                 </header>
@@ -328,48 +346,43 @@
 					</div>
 				</div>
 		</div>
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+		<!-- jQuery & Helios scripts -->
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.dropotron.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
-      <script>
-        // ← set this to the publicly-reachable URL of your website.js API
-        const API_BASE = 'https://texas-poker-production.up.railway.app';
-      
-        async function loadStats() {
-          try {
-            const res = await fetch(`${API_BASE}/api/stats`);
-            if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-      
-            const {
-              totalTables,
-              totalPlayers,
-              totalPot     = 0,
-              totalStacks  = 0
-            } = await res.json();
-      
-            document.getElementById('total-tables').textContent  = totalTables;
-            document.getElementById('total-players').textContent = totalPlayers;
-            document.getElementById('total-tokens').textContent  =
-              (Number(totalPot)   || 0)
-            + (Number(totalStacks) || 0);
-      
-          } catch (err) {
-            console.error('Couldn’t load poker stats:', err);
-          }
-        }
-      
-        // initial load
-        loadStats();
-        // refresh every 30 seconds
-        setInterval(loadStats, 30_000);
-      </script>
+	<!-- Fill in TG info & stats loader -->
+	<script>
+		// 1) Telegram info
+		const params   = new URLSearchParams(window.location.search);
+		document.getElementById("tgId").textContent     = params.get("username") || "unknown";
+		document.getElementById("tgHandle").textContent = params.get("handle") || "Player";
+
+		// 2) Live stats
+		const API_BASE = "https://texas-poker-production.up.railway.app";
+		async function loadStats() {
+			try {
+				const res = await fetch(`${API_BASE}/api/stats`);
+				const data = await res.json();
+				[
+					"total-tables","total-public-tables","total-private-tables","total-players",
+					"total-transfers-in","total-on-table","sum-wallets","house-balance","grand-total",
+					"avg-stack","avg-pot","total-hands-dealt","total-all-in","total-bets","total-wins"
+				].forEach(key => {
+					if (data[key.replace(/-/g,"")] != null) {
+						document.getElementById(key).textContent = data[key.replace(/-/g,"")] || 0;
+					}
+				});
+			} catch(e){ console.error("Couldn’t load poker stats:",e); }
+		}
+		loadStats();
+		setInterval(loadStats, 30000);
+	</script>
       <!-- Point Vite to your account.jsx entry -->
 
 	</body>
