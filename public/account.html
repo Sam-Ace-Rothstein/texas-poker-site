@@ -1,358 +1,63 @@
-<!DOCTYPE HTML>
-<!--
-	Helios by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Right Sidebar - Helios by HTML5 UP</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="right-sidebar is-preload">
-		<div id="page-wrapper">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Solana Wallet Connect Test</title>
 
-			<!-- Header -->
-				<div id="header">
+    <!-- Wallet Adapter default styles -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@solana/wallet-adapter-react-ui/styles.css"
+    />
+  </head>
+  <body>
+    <!-- Mount point for React -->
+    <div id="root" style="display:flex; justify-content:center; margin-top:2rem;"></div>
 
-					<!-- Inner -->
-						<div class="inner">
-							<header>
-								<h1><a href="index.html" id="logo">♤ ♡ ♧ ♢ $Texas Poker Bot ♤ ♡ ♧ ♢</a></h1>
-							</header>
-						</div>
+    <!-- All logic in one module script -->
+    <script type="module">
+      import React from 'https://esm.sh/react@19';
+      import { createRoot } from 'https://esm.sh/react-dom@19/client';
 
-					<!-- Nav -->
-					<nav id="nav">
-						<ul>
-							<li><a href="left-sidebar.html">$TEXAS</a></li>
-							<li><a href="index.html">Home</a></li>
-			<li><a href="account.html">Simple Swap</a></li>
-						</ul>
-					</nav>
+      import {
+        ConnectionProvider,
+        WalletProvider
+      } from 'https://esm.sh/@solana/wallet-adapter-react';
+      import {
+        WalletModalProvider,
+        WalletMultiButton
+      } from 'https://esm.sh/@solana/wallet-adapter-react-ui';
+      import {
+        PhantomWalletAdapter,
+        SolflareWalletAdapter
+      } from 'https://esm.sh/@solana/wallet-adapter-wallets';
+      import { clusterApiUrl } from 'https://esm.sh/@solana/web3.js';
 
-			</div>
+      const App = () => {
+        const endpoint = clusterApiUrl('mainnet-beta');
+        const wallets = [
+          new PhantomWalletAdapter(),
+          new SolflareWalletAdapter()
+        ];
 
-			<!-- Main -->
-				<div class="wrapper style1">
+        return (
+          <ConnectionProvider endpoint={endpoint}>
+            <WalletProvider wallets={wallets} autoConnect>
+              <WalletModalProvider>
+                {/* Renders the “Connect Wallet” button */}
+                <WalletMultiButton />
+              </WalletModalProvider>
+            </WalletProvider>
+          </ConnectionProvider>
+        );
+      };
 
-					<div class="container">
-						<div class="row gtr-200">
-							<div class="col-8 col-12-mobile" id="content">
-								<article id="main">
-									<header>
-										<h2><a href="#">Simple Swap & Play</a></h2>
-										<p>
-											Swap your $SOL into gameplay tokens. 1 SOLANA = 1000 Gameplay Tokens. Gameplay tokens are for usage in the <a
-											href="https://t.me/texas_holdem_dealer_bot"
-											target="_blank"
-											rel="noopener"
-											style="text-decoration: underline; font-weight: bold;"
-										  >
-											@texas_holdem_dealer_bot
-										  </a>. You can swap your balance of gameplay tokens back into $SOL anytime. 
-										</p>
-									</header>
-									<a href="#" class="image featured"><img src="images/pic06.jpg" alt="" /></a>
-									<p>
-										Commodo id natoque malesuada sollicitudin elit suscipit. Curae suspendisse mauris posuere accumsan massa
-										posuere lacus convallis tellus interdum. Amet nullam fringilla nibh nulla convallis ut venenatis purus
-										lobortis. Auctor etiam porttitor phasellus tempus cubilia ultrices tempor sagittis. Nisl fermentum
-										consequat integer interdum integer purus sapien. Nibh eleifend nulla nascetur pharetra commodo mi augue
-										interdum tellus. Ornare cursus augue feugiat sodales velit lorem. Semper elementum ullamcorper lacinia
-										natoque aenean scelerisque vel lacinia mollis quam sodales congue.
-									</p>
-									<section>
-										<header>
-											<h3>Ultrices tempor sagittis nisl</h3>
-										</header>
-										<p>
-											Nascetur volutpat nibh ullamcorper vivamus at purus. Cursus ultrices porttitor sollicitudin imperdiet
-											at pretium tellus in euismod a integer sodales neque. Nibh quis dui quis mattis eget imperdiet venenatis
-											feugiat. Neque primis ligula cum erat aenean tristique luctus risus ipsum praesent iaculis. Fermentum elit
-											fringilla consequat dis arcu. Pellentesque mus tempor vitae pretium sodales porttitor lacus. Phasellus
-											egestas odio nisl duis sociis purus faucibus morbi. Eget massa mus etiam sociis pharetra magna.
-										</p>
-										<p>
-											Eleifend auctor turpis magnis sed porta nisl pretium. Aenean suspendisse nulla eget sed etiam parturient
-											orci cursus nibh. Quisque eu nec neque felis laoreet diam morbi egestas. Dignissim cras rutrum consectetur
-											ut penatibus fermentum nibh erat malesuada varius.
-										</p>
-									</section>
-									<section>
-										<header>
-											<h3>Augue euismod feugiat tempus</h3>
-										</header>
-										<p>
-											Pretium tellus in euismod a integer sodales neque. Nibh quis dui quis mattis eget imperdiet venenatis
-											feugiat. Neque primis ligula cum erat aenean tristique luctus risus ipsum praesent iaculis. Fermentum elit
-											ut nunc urna volutpat donec cubilia commodo risus morbi. Lobortis vestibulum velit malesuada ante
-											egestas odio nisl duis sociis purus faucibus morbi. Eget massa mus etiam sociis pharetra magna.
-										</p>
-									</section>
-								</article>
-							</div>
-							<div class="col-4 col-12-mobile" id="sidebar">
-								<hr class="first" />
-								<section>
-								  <header><h3><a href="#">Play Texas Hold'em with $SOL</a></h3></header>
-								  <div id="wallet-ui">
-									<!-- Greeting with both handle & ID -->
-									<p id="greeting">
-									  Hello, <strong><span id="tgHandle">Loading…</span></strong>
-									  (TG ID: <strong><span id="tgId">Loading…</span></strong>)
-									</p>
-									<button id="connectWallet" disabled>Connect Solana Wallet</button>
-									<p id="walletAddr"></p>
-								  </div>
-								</section>
-								<hr />
-								<hr />
-<section>
-  <header><h3>Live Table Stats</h3></header>
-  <div class="inner" style="margin: 1em 0; text-align: center;">
-    <p>Total Tables:               <strong><span id="total-tables">–</span></strong></p>
-    <p>Public Tables:              <strong><span id="total-public-tables">–</span></strong></p>
-    <p>Private Tables:             <strong><span id="total-private-tables">–</span></strong></p>
-    <p>Total Players:              <strong><span id="total-players">–</span></strong></p>
-    <p>Total Tokens Transferred In:<strong><span id="total-transfers-in">–</span></strong></p>
-    <p>Total Tokens On-Table:      <strong><span id="total-on-table">–</span></strong></p>
-    <p>Off-Table Tokens:           <strong><span id="sum-wallets">–</span></strong></p>
-    <p>House Wallet Balance:       <strong><span id="house-balance">–</span></strong></p>
-    <p>Grand Total Managed:        <strong><span id="grand-total">–</span></strong></p>
-    <p>Avg Stack per Table:        <strong><span id="avg-stack">–</span></strong></p>
-    <p>Avg Pot per Table:          <strong><span id="avg-pot">–</span></strong></p>
-    <p>Total Hands Dealt:          <strong><span id="total-hands-dealt">–</span></strong></p>
-    <p>Total All-In Moves:         <strong><span id="total-all-in">–</span></strong></p>
-    <p>Total Bets Placed:          <strong><span id="total-bets">–</span></strong></p>
-    <p>Total Wins Paid:            <strong><span id="total-wins">–</span></strong></p>
-  </div>
-</section>
-							  </div>
-							  
-							  <script type="module">
-								// 1) Fill in the TG info
-								const params   = new URLSearchParams(window.location.search);
-								const tgId     = params.get("username") || "";
-								const tgHandle = params.get("handle")   || "";
-								document.getElementById("tgId").textContent     = tgId     || "unknown";
-								document.getElementById("tgHandle").textContent = tgHandle || "Player";
-							  
-								// 2) Wallet connect/disconnect logic
-								const connectBtn = document.getElementById("connectWallet");
-								const walletAddr = document.getElementById("walletAddr");
-								const provider   = window.solana;
-							  
-								if (provider && provider.connect) {
-								  // Helper to update button text & state
-								  function updateUI() {
-									connectBtn.disabled = false;
-									if (provider.isConnected) {
-									  connectBtn.textContent = "Disconnect Wallet";
-									} else {
-									  connectBtn.textContent = "Connect Solana Wallet";
-									}
-								  }
-							  
-								  // Initial UI setup
-								  updateUI();
-							  
-								  // Click handler: connect or disconnect
-								  connectBtn.addEventListener("click", async () => {
-									connectBtn.disabled = true;
-									if (!provider.isConnected) {
-									  try {
-										const resp = await provider.connect();
-										walletAddr.textContent = `Wallet: ${resp.publicKey.toString()}`;
-									  } catch (err) {
-										console.error("Wallet connect failed:", err);
-										alert("Failed to connect wallet.");
-									  }
-									} else {
-									  try {
-										await provider.disconnect();
-									  } catch (err) {
-										console.error("Wallet disconnect failed:", err);
-									  }
-									}
-									updateUI();
-								  });
-							  
-								  // Listen for external connect/disconnect events
-								  provider.on("connect", () => {
-									walletAddr.textContent = `Wallet: ${provider.publicKey.toString()}`;
-									updateUI();
-								  });
-								  provider.on("disconnect", () => {
-									walletAddr.textContent = "";
-									updateUI();
-								  });
-								} else {
-								  // No wallet provider detected
-								  connectBtn.textContent = "No Solana Wallet Detected";
-								  connectBtn.disabled    = true;
-								}
-							  </script>
-								<hr />
-								
-							</div>
-						</div>
-						<hr />
-					</div>
-				</div>
-
-			<!-- Footer -->
-				<div id="footer">
-					<div class="container">
-						<div class="row">
-
-							<!-- Tweets -->
-								<section class="col-4 col-12-mobile">
-									<header>
-										<h2 class="icon brands fa-twitter circled"><span class="label">Tweets</span></h2>
-									</header>
-									<ul class="divided">
-										<li>
-											<article class="tweet">
-												Lacus natoque cras rhoncus curae dignissim ultricies. Convallis orci aliquet.
-												<span class="timestamp">5 hours ago</span>
-											</article>
-										</li>
-									</ul>
-								</section>
-
-							<!-- Posts -->
-								<section class="col-4 col-12-mobile">
-									<header>
-										<h2 class="icon solid fa-file circled"><span class="label">Posts</span></h2>
-									</header>
-									<ul class="divided">
-										<li>
-											<article class="post stub">
-												<header>
-													<h3><a href="#">Feugiat lorem ipsum</a></h3>
-												</header>
-												<span class="timestamp">2 days ago</span>
-											</article>
-										</li>
-									</ul>
-								</section>
-
-							<!-- Photos -->
-								<section class="col-4 col-12-mobile">
-									<header>
-										<h2 class="icon solid fa-camera circled"><span class="label">Photos</span></h2>
-									</header>
-									<div class="row gtr-25">
-										<div class="col-6">
-											<a href="#" class="image fit"><img src="images/pic14.jpg" alt="" /></a>
-										</div>
-										<div class="col-6">
-											<a href="#" class="image fit"><img src="images/pic15.jpg" alt="" /></a>
-										</div>
-									</div>
-								</section>
-
-						</div>
-						<hr />
-						<div class="row">
-							<div class="col-12">
-
-								<!-- Contact -->
-									<section class="contact">
-										<header>
-											<h3>Nisl turpis nascetur interdum?</h3>
-										</header>
-										<p>Urna nisl non quis interdum mus ornare ridiculus egestas ridiculus lobortis vivamus tempor aliquet.</p>
-										<ul class="icons">
-											<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-											<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-										</ul>
-									</section>
-
-								<!-- Copyright -->
-									<div class="copyright">
-										<ul class="menu">
-											<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-										</ul>
-									</div>
-
-							</div>
-
-						</div>
-					</div>
-				</div>
-
-		</div>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.dropotron.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-
-			<script>
-				// Set this to the publicly-reachable URL of your bot’s API
-				const API_BASE = 'https://texas-poker-production.up.railway.app';
-			  
-				async function loadStats() {
-				  try {
-					const res = await fetch(`${API_BASE}/api/stats`);
-					if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-			  
-					const {
-					  totalTables,
-					  totalPublicTables,
-					  totalPrivateTables,
-					  totalPlayers,
-					  totalTransfersIn,
-					  totalPot        = 0,
-					  totalStacks     = 0,
-					  sumWallets      = 0,
-					  houseBalance    = 0,
-					  grandTotal      = 0,
-					  avgStack        = 0,
-					  avgPot          = 0,
-					  totalHandsDealt = 0,
-					  totalAllIn      = 0,
-					  totalBets       = 0,
-					  totalWins       = 0
-					} = await res.json();
-			  
-					document.getElementById('total-tables').textContent         = totalTables;
-					document.getElementById('total-public-tables').textContent  = totalPublicTables;
-					document.getElementById('total-private-tables').textContent = totalPrivateTables;
-					document.getElementById('total-players').textContent        = totalPlayers;
-					document.getElementById('total-transfers-in').textContent   = totalTransfersIn;
-					document.getElementById('total-on-table').textContent       =
-					  (Number(totalPot)   || 0)
-					+ (Number(totalStacks) || 0);
-					document.getElementById('sum-wallets').textContent          = sumWallets;
-					document.getElementById('house-balance').textContent        = houseBalance;
-					document.getElementById('grand-total').textContent          = grandTotal;
-					document.getElementById('avg-stack').textContent            = avgStack;
-					document.getElementById('avg-pot').textContent              = avgPot;
-					document.getElementById('total-hands-dealt').textContent     = totalHandsDealt;
-					document.getElementById('total-all-in').textContent          = totalAllIn;
-					document.getElementById('total-bets').textContent            = totalBets;
-					document.getElementById('total-wins').textContent            = totalWins;
-			  
-				  } catch (err) {
-					console.error('Couldn’t load poker stats:', err);
-				  }
-				}
-			  
-				// initial load
-				loadStats();
-				// refresh every 30 seconds
-				setInterval(loadStats, 30000);
-			  </script>
-	</body>
+      const container = document.getElementById('root');
+      createRoot(container).render(<App />);
+    </script>
+  </body>
 </html>
