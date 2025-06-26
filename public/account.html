@@ -1,20 +1,34 @@
 <!DOCTYPE HTML>
-<!--
-	Helios by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
 <html>
-	<head>
-		<title>Right Sidebar - Helios by HTML5 UP</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<noscript></noscript>
-		<script type="module" crossorigin src="/texas-poker-site/assets/account-BQ458ruL.js"></script>
-		<link rel="stylesheet" crossorigin href="/texas-poker-site/assets/noscript-B5JlcOPU.css">
-	</head>
-	<body class="right-sidebar is-preload">
-		<div id="page-wrapper">
+  <head>
+    <!-- Character encoding and responsive viewport -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+
+    <!-- Content Security Policy to allow eval() for your bundle -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        script-src 'self' 'unsafe-eval' 'unsafe-inline';
+        style-src  'self' 'unsafe-inline';
+      "
+    />
+
+    <title>Right Sidebar - Helios by HTML5 UP</title>
+
+    <!-- Your existing CSS -->
+    <link
+      rel="stylesheet"
+      crossorigin
+      href="/texas-poker-site/assets/noscript-B5JlcOPU.css"
+    />
+  </head>
+  <body class="right-sidebar is-preload">
+    <div id="page-wrapper">
 
 			<!-- Header -->
 				<div id="header">
@@ -106,14 +120,13 @@
 									  Hello, <strong><span id="tgHandle">Loading…</span></strong>
 									  (TG ID: <strong><span id="tgId">Loading…</span></strong>)
 									</p>
-									<button id="connectWallet" disabled>Connect Solana Wallet</button>
-									<p id="walletAddr"></p>
+									<div id="root"></div>
 								  </div>
 								</section>
 								<hr />
 								<hr />
 <section>
-  <header><h3>Live Table Stats</h3></header>
+  <header><h3>Live Table Stats!!</h3></header>
   <div class="inner" style="margin: 1em 0; text-align: center;">
     <p>Total Tables:               <strong><span id="total-tables">–</span></strong></p>
     <p>Public Tables:              <strong><span id="total-public-tables">–</span></strong></p>
@@ -133,7 +146,8 @@
   </div>
 </section>
 							  </div>
-							  
+							  
+
 								<hr />
 								
 							</div>
@@ -291,6 +305,7 @@
 				loadStats();
 				// refresh every 30 seconds
 				setInterval(loadStats, 30000);
-			  </script>
+				<!-- React wallet bundle: -->
+				<script type="module" defer src="/assets/account-BQ458ruL.js"></script>
 	</body>
 </html>
