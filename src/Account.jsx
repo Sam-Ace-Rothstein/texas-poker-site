@@ -15,39 +15,9 @@ import {
 } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 
-// Default styles for the wallet adapter UI
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-// Component to display on-chain SOL (via backend proxy) and in-bot token balances
-function BalanceDisplay({ username }) {
-  const { publicKey, connected } = useWallet();
-  const [solBalance, setSolBalance] = useState(null);
-  const [tokenBalance, setTokenBalance] = useState(null);
-
-  // Fetch SOL balance via backend proxy when wallet connects
-  useEffect(() => {
-    if (connected && publicKey) {
-      fetch(
-        `https://texas-poker-production.up.railway.app/api/sol-balance?pubkey=${publicKey.toBase58()}`
-      )
-        .then(res => res.json())
-        .then(data => setSolBalance(data.sol))
-        .catch(err => console.error('🛠 sol-balance error', err));
-    }
-  }, [connected, publicKey]);
-
-  // Fetch token balance from Telegram-bot API
-  useEffect(() => {
-    if (username) {
-      fetch(
-        `https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`
-      )
-        .then(res => res.json())
-        .then(data => setTokenBalance(data.tokens))
-        .catch(err => console.error('🛠 token-balance error', err));
-    }
-  }, [username]);
-
+function BalanceDisplay({ solBalance, tokenBalance }) {
   return (
     <div style={{ marginTop: '1rem' }}>
       <p id="sol-balance">
@@ -62,24 +32,100 @@ function BalanceDisplay({ username }) {
 
 const App = () => {
   const endpoint = clusterApiUrl('mainnet-beta');
-  const wallets = [
-    new PhantomWalletAdapter(),
-    new SolflareWalletAdapter(),
-    // Add more adapters here if desired
-  ];
+  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+  const { publicKey, connected } = useWallet();
 
-  // Read Telegram ID from URL query param (e.g., ?handle=...&username=...)
+  const [solBalance, setSolBalance] = useState(null);
+  const [tokenBalance, setTokenBalance] = useState(null);
+
   const params = new URLSearchParams(window.location.search);
   const username = params.get('username');
+
+  // Fetch SOL
+  useEffect(() => {
+    if (connected && publicKey) {
+      fetch(
+        `https://texas-poker-production.up.railway.app/api/sol-balance?pubkey=${publicKey.toBase58()}`
+      )
+        .then(res => res.json())
+        .then(data => setSolBalance(data.sol))
+        .catch(err => console.error('🛠 sol-balance error', err));
+    }
+  }, [connected, publicKey]);
+
+  // Fetch Tokens
+  useEffect(() => {
+    if (username) {
+      fetch(
+        `https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`
+      )
+        .then(res => res.json())
+        .then(data => setTokenBalance(data.tokens))
+        .catch(err => console.error('🛠 token-balance error', err));
+    }
+  }, [username]);
+
+  const handleWithdraw = async () => {
+    if (!publicKey || !username || !tokenBalance) {
+      alert("Please connect your wallet and make sure token balance is loaded.");
+      return;
+    }
+
+    const walletPubkey = publicKey.toBase58();
+    const nonce = Date.now();
+
+    try {
+      const res = await fetch("https://texas-poker-production.up.railway.app/api/request-voucher", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          wallet: walletPubkey,
+          username,
+          amount: tokenBalance,
+          nonce
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        alert("Voucher rejected: " + data.error);
+        return;
+      }
+
+      console.log("✅ Voucher received:", data.voucher);
+      alert("Voucher received! Now send to smart contract.");
+
+      // Optional: trigger transaction signing step here
+
+    } catch (err) {
+      console.error("Voucher request failed:", err);
+      alert("Error requesting voucher.");
+    }
+  };
 
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          {/* Connect Wallet button */}
           <WalletMultiButton />
-          {/* Display balances */}
-          <BalanceDisplay username={username} />
+          <BalanceDisplay solBalance={solBalance} tokenBalance={tokenBalance} />
+          <button
+            style={{
+              marginTop: '1rem',
+              padding: '0.5rem 1rem',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              background: '#2c2',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer'
+            }}
+            onClick={handleWithdraw}
+          >
+            Withdraw Gameplay Tokens to SOL
+          </button>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
