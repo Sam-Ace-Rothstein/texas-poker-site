@@ -19,7 +19,7 @@ import { clusterApiUrl } from '@solana/web3.js';
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 // Component to display on-chain SOL (via backend proxy) and in-bot token balances
-function BalanceDisplay({ tgId }) {
+function BalanceDisplay({ username }) {
   const { publicKey, connected } = useWallet();
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
@@ -38,15 +38,15 @@ function BalanceDisplay({ tgId }) {
 
   // Fetch token balance from Telegram-bot API
   useEffect(() => {
-    if (tgId) {
+    if (username) {
       fetch(
-        `https://texas-poker-production.up.railway.app/api/telegram-balance?tgId=${tgId}`
+        `https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`
       )
         .then(res => res.json())
         .then(data => setTokenBalance(data.tokens))
         .catch(err => console.error('🛠 token-balance error', err));
     }
-  }, [tgId]);
+  }, [username]);
 
   return (
     <div style={{ marginTop: '1rem' }}>
@@ -70,7 +70,7 @@ const App = () => {
 
   // Read Telegram ID from URL query param (e.g., ?handle=...&username=...)
   const params = new URLSearchParams(window.location.search);
-  const tgId = params.get('username');
+  const username = params.get('username');
 
   return (
     <ConnectionProvider endpoint={endpoint}>
@@ -79,7 +79,7 @@ const App = () => {
           {/* Connect Wallet button */}
           <WalletMultiButton />
           {/* Display balances */}
-          <BalanceDisplay tgId={tgId} />
+          <BalanceDisplay username={username} />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
