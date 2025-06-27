@@ -17,31 +17,14 @@ import { clusterApiUrl } from '@solana/web3.js';
 
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-function BalanceDisplay({ solBalance, tokenBalance }) {
-  return (
-    <div style={{ marginTop: '1rem' }}>
-      <p id="sol-balance">
-        Total SOL: <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
-      </p>
-      <p id="token-balance">
-        Total Gameplay Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
-      </p>
-    </div>
-  );
-}
-
-const App = () => {
-  const endpoint = clusterApiUrl('mainnet-beta');
-  const wallets = [new PhantomWalletAdapter(), new SolflareWalletAdapter()];
+// ─────────────────────────────────────────────
+// Combined display + withdraw logic component
+function BalanceDisplay({ username }) {
   const { publicKey, connected } = useWallet();
-
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
 
-  const params = new URLSearchParams(window.location.search);
-  const username = params.get('username');
-
-  // Fetch SOL
+  // Fetch SOL balance
   useEffect(() => {
     if (connected && publicKey) {
       fetch(
@@ -53,7 +36,7 @@ const App = () => {
     }
   }, [connected, publicKey]);
 
-  // Fetch Tokens
+  // Fetch gameplay token balance
   useEffect(() => {
     if (username) {
       fetch(
@@ -65,9 +48,10 @@ const App = () => {
     }
   }, [username]);
 
+  // Handle Withdraw
   const handleWithdraw = async () => {
-    if (!publicKey || !username || !tokenBalance) {
-      alert("Please connect your wallet and make sure token balance is loaded.");
+    if (!publicKey || !username || tokenBalance == null) {
+      alert("Please connect your wallet and wait for balances to load.");
       return;
     }
 
@@ -94,10 +78,7 @@ const App = () => {
       }
 
       console.log("✅ Voucher received:", data.voucher);
-      alert("Voucher received! Now send to smart contract.");
-
-      // Optional: trigger transaction signing step here
-
+      alert("Voucher received! Proceed with on-chain claim.");
     } catch (err) {
       console.error("Voucher request failed:", err);
       alert("Error requesting voucher.");
@@ -105,27 +86,52 @@ const App = () => {
   };
 
   return (
+    <div style={{ marginTop: '1rem' }}>
+      <p id="sol-balance">
+        Total SOL: <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
+      </p>
+      <p id="token-balance">
+        Total Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
+      </p>
+      <button
+        style={{
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          background: '#2c2',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer'
+        }}
+        onClick={handleWithdraw}
+      >
+        Withdraw Gameplay Tokens to SOL
+      </button>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// Main App
+const App = () => {
+  const endpoint = clusterApiUrl('mainnet-beta');
+  const wallets = [
+    new PhantomWalletAdapter(),
+    new SolflareWalletAdapter(),
+    // add more if needed
+  ];
+
+  const params = new URLSearchParams(window.location.search);
+  const username = params.get('username');
+
+  return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
           <WalletMultiButton />
-          <BalanceDisplay solBalance={solBalance} tokenBalance={tokenBalance} />
-          <button
-            style={{
-              marginTop: '1rem',
-              padding: '0.5rem 1rem',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              background: '#2c2',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer'
-            }}
-            onClick={handleWithdraw}
-          >
-            Withdraw Gameplay Tokens to SOL
-          </button>
+          <BalanceDisplay username={username} />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
