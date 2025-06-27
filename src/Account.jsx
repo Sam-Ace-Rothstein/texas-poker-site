@@ -24,7 +24,7 @@ function BalanceDisplay({ solBalance, tokenBalance }) {
         Total SOL: <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
       </p>
       <p id="token-balance">
-        Total Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
+        Total Gameplay Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
       </p>
     </div>
   );
