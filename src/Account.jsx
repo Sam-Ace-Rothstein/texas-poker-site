@@ -120,15 +120,18 @@ if (solBalance != null && parseFloat(depositAmountSol) > solBalance) {
     const tx = new Transaction().add(instruction);
   
     try {
-      const { blockhash } = await connection.getLatestBlockhash();
-      tx.recentBlockhash = blockhash;
+      const latestBlockhash = await connection.getLatestBlockhash();
+      tx.recentBlockhash = latestBlockhash.blockhash;
       tx.feePayer = publicKey;
-  
-      const signed = await signTransaction(tx);
-      const sig = await connection.sendRawTransaction(signed.serialize());
-      await connection.confirmTransaction(sig);
-  
-      alert("✅ Deposit confirmed! Signature: " + sig);
+    
+      const signature = await sendTransaction(tx, connection);
+    
+      await connection.confirmTransaction({
+        signature,
+        ...latestBlockhash
+      });
+    
+      alert("✅ Deposit confirmed! Signature: " + signature);
 
 // Notify backend to credit gameplay tokens
 try {
