@@ -101,7 +101,7 @@ function BalanceDisplay({ username }) {
     setIsSubmitting(true);
   
     try {
-      const programId = new PublicKey('AsS9H51TYVn97RY25Sv9kPKpBbgCe5BoAaV5rLbE5K5K');
+      const programId = new PublicKey('2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1');
       const [vaultPDA] = PublicKey.findProgramAddressSync(
         [Buffer.from("game_vault")],
         programId
@@ -131,6 +131,21 @@ function BalanceDisplay({ username }) {
   
       const signature = await sendTransaction(tx, connection);
       await connection.confirmTransaction({ signature, ...latest });
+
+      // 🔍 Inspect program logs to verify DepositEvent fired
+const txDetails = await connection.getTransaction(signature, {
+  commitment: "confirmed",
+  maxSupportedTransactionVersion: 0
+});
+const logs = txDetails?.meta?.logMessages || [];
+console.log("🪵 Confirmed TX logs:", logs);
+
+const triggeredEvent = logs.find(log => log.includes("DepositEvent:"));
+if (triggeredEvent) {
+  console.log("✅ Smart contract emitted:", triggeredEvent);
+} else {
+  console.warn("⚠️ No DepositEvent found. Contract may not have executed as expected.");
+}
   
       // ✅ Show success UI
       setDepositConfirmed(true);
