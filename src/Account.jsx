@@ -17,6 +17,32 @@ import { clusterApiUrl } from '@solana/web3.js';
 
 import '@solana/wallet-adapter-react-ui/styles.css';
 
+import {
+  Transaction,
+  TransactionInstruction,
+  SystemProgram,
+  Connection,
+  PublicKey
+} from '@solana/web3.js';
+import * as borsh from 'borsh';
+
+class VaultInstruction {
+  constructor(fields) {
+    this.variant = 0; // 0 = Deposit
+    this.amount = fields.amount;
+  }
+}
+
+const VaultSchema = new Map([
+  [VaultInstruction, {
+    kind: 'struct',
+    fields: [
+      ['variant', 'u8'],
+      ['amount', 'u64'],
+    ]
+  }]
+]);
+
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
 function BalanceDisplay({ username }) {
@@ -47,6 +73,55 @@ function BalanceDisplay({ username }) {
         .catch(err => console.error('🛠 token-balance error', err));
     }
   }, [username]);
+
+
+  const handleDeposit = async () => {
+    if (!publicKey) {
+      alert('Wallet not connected');
+      return;
+    }
+  
+    const depositAmount = 0.1 * 1e9; // 0.1 SOL in lamports
+    const programId = new PublicKey('AsS9H51TYVn97RY25Sv9kPKpBbgCe5BoAaV5rLbE5K5K'); // replace this
+    const vaultSeed = "game_vault"; // same as GAME_VAULT_SEED in your lib.rs
+  
+    const [vaultPDA] = PublicKey.findProgramAddressSync(
+      [Buffer.from(vaultSeed)],
+      programId
+    );
+  
+    const connection = new Connection(clusterApiUrl('devnet')); // or mainnet if live
+  
+    const instruction = new TransactionInstruction({
+      programId,
+      keys: [
+        { pubkey: publicKey, isSigner: true, isWritable: true },
+        { pubkey: vaultPDA, isSigner: false, isWritable: true },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
+      ],
+      data: Buffer.from(
+        borsh.serialize(VaultSchema, new VaultInstruction({ amount: depositAmount }))
+      )
+    });
+  
+    const tx = new Transaction().add(instruction);
+  
+    try {
+      const { blockhash } = await connection.getLatestBlockhash();
+      tx.recentBlockhash = blockhash;
+      tx.feePayer = publicKey;
+  
+      const signed = await window.solana.signTransaction(tx);
+      const sig = await connection.sendRawTransaction(signed.serialize());
+      await connection.confirmTransaction(sig);
+  
+      alert("✅ Deposit confirmed! Signature: " + sig);
+    } catch (err) {
+      console.error("❌ Deposit failed", err);
+      alert("Deposit failed. See console for details.");
+    }
+  };
+  
 
   // Handle Withdraw
   const handleWithdraw = async () => {
@@ -95,49 +170,22 @@ function BalanceDisplay({ username }) {
       </p>
   
       {/* Deposit Button */}
-      <button
-        style={{
-          marginTop: '1rem',
-          padding: '0.5rem 1rem',
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          background: '#229',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: 'pointer'
-        }}
-        onClick={async () => {
-          if (!publicKey || !username) {
-            alert("Please connect your wallet and reload the page.");
-            return;
-          }
-  
-          try {
-            const res = await fetch("https://texas-poker-production.up.railway.app/api/deposit-event", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                wallet: publicKey.toBase58(),
-                username
-              })
-            });
-  
-            const data = await res.json();
-  
-            if (data.success) {
-              alert("Deposit event recorded! Your gameplay tokens will be credited shortly.");
-            } else {
-              alert("Deposit failed: " + data.error);
-            }
-          } catch (err) {
-            console.error("Deposit request failed:", err);
-            alert("Error sending deposit request.");
-          }
-        }}
-      >
-        Deposit SOL to Gameplay Tokens
-      </button>
+<button
+  style={{
+    marginTop: '1rem',
+    padding: '0.5rem 1rem',
+    fontSize: '1rem',
+    fontWeight: 'bold',
+    background: '#229',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer'
+  }}
+  onClick={handleDeposit}
+>
+  Deposit SOL to Gameplay Tokens
+</button>
   
       {/* Withdraw Button */}
       <button
