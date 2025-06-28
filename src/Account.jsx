@@ -48,7 +48,7 @@ const VaultSchema = new Map([
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
 function BalanceDisplay({ username }) {
-  const { publicKey, connected } = useWallet();
+  const { publicKey, connected, signTransaction } = useWallet();
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
   const [depositAmountSol, setDepositAmountSol] = useState("0.1");
@@ -124,7 +124,7 @@ if (solBalance != null && parseFloat(depositAmountSol) > solBalance) {
       tx.recentBlockhash = blockhash;
       tx.feePayer = publicKey;
   
-      const signed = await window.solana.signTransaction(tx);
+      const signed = await signTransaction(tx);
       const sig = await connection.sendRawTransaction(signed.serialize());
       await connection.confirmTransaction(sig);
   
