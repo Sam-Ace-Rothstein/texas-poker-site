@@ -108,15 +108,15 @@ const handleDeposit = async () => {
 
     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
 
-    // —— Define the exact enum+struct for Rust’s Deposit variant —— 
-    class DepositInstruction {
+    // ─── Build the exact payload: enum tag + u64 amount ────────────────────
+    class DepositPayload {
       constructor(fields) {
-        this.variant = fields.variant;  // 1 = Deposit
-        this.amount  = fields.amount;   // u64
+        this.variant = 1;         // 1 = Deposit
+        this.amount  = fields.amount;
       }
     }
     const DepositSchema = new Map([
-      [DepositInstruction, {
+      [DepositPayload, {
         kind: 'struct',
         fields: [
           ['variant', 'u8'],
@@ -125,25 +125,24 @@ const handleDeposit = async () => {
       }]
     ]);
 
-    // —— Serialize enum tag + amount in one shot —— 
     const depositData = Buffer.from(
       borsh.serialize(
         DepositSchema,
-        new DepositInstruction({ variant: 1, amount: depositAmount })
+        new DepositPayload({ amount: depositAmount })
       )
     );
+    // ────────────────────────────────────────────────────────────────────────
 
     const instruction = new TransactionInstruction({
       programId,
       keys: [
-        { pubkey: publicKey, isSigner: true,  isWritable: true  }, // payer
-        { pubkey: vaultPDA,  isSigner: false, isWritable: true  }, // vault PDA
+        { pubkey: publicKey,               isSigner: true,  isWritable: true  },
+        { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
         { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       ],
       data: depositData
     });
 
-    // Build, simulate, then send…
     const tx = new Transaction().add(instruction);
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
     tx.recentBlockhash = blockhash;
@@ -174,7 +173,6 @@ const handleDeposit = async () => {
     if (sawEvent) {
       console.log("✅ DepositEvent found:", sawEvent);
       setDepositConfirmed(true);
-      // refresh token balance…
       setTimeout(() => {
         fetch(`https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`)
           .then(r => r.json())
@@ -245,7 +243,7 @@ const handleDeposit = async () => {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to deposit (SOL):{" "}
+    Amount to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
