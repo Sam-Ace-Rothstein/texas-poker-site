@@ -30,19 +30,17 @@ if (!window.Buffer) window.Buffer = Buffer;
 
 class VaultInstruction {
   constructor(fields) {
-         this.variant     = 0;        // 0 = Deposit
-         this.amount      = fields.amount;
-         this.telegram_id = fields.telegram_id;
-       }
+    this.variant = fields.variant;
+    this.amount = fields.amount;
+  }
 }
 
 const VaultSchema = new Map([
   [VaultInstruction, {
     kind: 'struct',
     fields: [
-      ['variant', 'u8'],
-      ['amount', 'u64'],
-      ['telegram_id', 'u64'],
+      ['variant', 'u8'],     // enum tag
+      ['amount', 'u64'],     // only used for Deposit
     ]
   }]
 ]);
@@ -127,16 +125,12 @@ const handleDeposit = async () => {
       }]
     ]);
 
-    const DEPOSIT_VARIANT = 1;
-    const depositData = Buffer.concat([
-      Buffer.from([DEPOSIT_VARIANT]), // enum tag
-      Buffer.from(
-        borsh.serialize(
-          DepositSchema,
-          new DepositInstruction({ amount: depositAmount })
-        )
+    const depositData = Buffer.from(
+      borsh.serialize(
+        VaultSchema,
+        new VaultInstruction({ variant: 1, amount: depositAmount })
       )
-    ]);
+    );
 
     const instruction = new TransactionInstruction({
       programId,
