@@ -115,16 +115,14 @@ const handleDeposit = async () => {
     class DepositInstruction {
       constructor(fields) {
         this.amount = fields.amount;
-        this.telegram_id = fields.telegram_id;
       }
     }
-
+    
     const DepositSchema = new Map([
       [DepositInstruction, {
         kind: 'struct',
         fields: [
           ['amount', 'u64'],
-          ['telegram_id', 'u64'],
         ]
       }]
     ]);
@@ -135,7 +133,7 @@ const handleDeposit = async () => {
       Buffer.from(
         borsh.serialize(
           DepositSchema,
-          new DepositInstruction({ amount: depositAmount, telegram_id: telegramId })
+          new DepositInstruction({ amount: depositAmount })
         )
       )
     ]);
