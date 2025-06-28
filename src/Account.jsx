@@ -30,9 +30,10 @@ if (!window.Buffer) window.Buffer = Buffer;
 
 class VaultInstruction {
   constructor(fields) {
-    this.variant = 0; // 0 = Deposit
-    this.amount = fields.amount;
-  }
+         this.variant     = 0;        // 0 = Deposit
+         this.amount      = fields.amount;
+         this.telegram_id = fields.telegram_id;
+       }
 }
 
 const VaultSchema = new Map([
@@ -41,6 +42,7 @@ const VaultSchema = new Map([
     fields: [
       ['variant', 'u8'],
       ['amount', 'u64'],
+      ['telegram_id', 'u64'],
     ]
   }]
 ]);
@@ -52,6 +54,7 @@ function BalanceDisplay({ username }) {
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
   const [depositAmountSol, setDepositAmountSol] = useState("0.1");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch SOL balance
   useEffect(() => {
@@ -78,88 +81,71 @@ function BalanceDisplay({ username }) {
   }, [username]);
 
 
+  // Handle Deposit
+
   const handleDeposit = async () => {
     if (!publicKey || !username) {
       alert('Wallet or username not connected');
       return;
     }
   
-    const depositAmount = parseFloat(depositAmountSol) * 1e9;
-
-if (isNaN(depositAmount) || depositAmount <= 0) {
-  alert("Please enter a valid deposit amount.");
-  return;
-}
-
-if (solBalance != null && parseFloat(depositAmountSol) > solBalance) {
-  alert("You cannot deposit more SOL than your wallet balance.");
-  return;
-}
-    const programId = new PublicKey('AsS9H51TYVn97RY25Sv9kPKpBbgCe5BoAaV5rLbE5K5K'); // replace this
-    const vaultSeed = "game_vault"; // same as GAME_VAULT_SEED in your lib.rs
+    // 1) Parse & validate deposit amount
+    const depositAmount = Math.round(parseFloat(depositAmountSol) * 1e9);
+    if (isNaN(depositAmount) || depositAmount <= 0) {
+      alert("Please enter a valid deposit amount.");
+      return;
+    }
+    if (solBalance != null && parseFloat(depositAmountSol) > solBalance) {
+      alert("You cannot deposit more SOL than your wallet balance.");
+      return;
+    }
   
-    const [vaultPDA] = PublicKey.findProgramAddressSync(
-      [Buffer.from(vaultSeed)],
-      programId
-    );
-  
-    const connection = new Connection(clusterApiUrl('devnet')); // or mainnet if live
-  
-    const instruction = new TransactionInstruction({
-      programId,
-      keys: [
-        { pubkey: publicKey, isSigner: true, isWritable: true },
-        { pubkey: vaultPDA, isSigner: false, isWritable: true },
-        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false }
-      ],
-      data: Buffer.from(
-        borsh.serialize(VaultSchema, new VaultInstruction({ amount: depositAmount }))
-      )
-    });
-  
-    const tx = new Transaction().add(instruction);
+    // prevent double‐submission
+    setIsSubmitting(true);
   
     try {
-      const latestBlockhash = await connection.getLatestBlockhash();
-      tx.recentBlockhash = latestBlockhash.blockhash;
-      tx.feePayer = publicKey;
-    
-      const signature = await sendTransaction(tx, connection);
-    
-      await connection.confirmTransaction({
-        signature,
-        ...latestBlockhash
+      // 2) Compute the vault PDA
+      const programId = new PublicKey('AsS9H51TYVn97RY25Sv9kPKpBbgCe5BoAaV5rLbE5K5K');
+      const [vaultPDA] = PublicKey.findProgramAddressSync(
+        [Buffer.from("game_vault")],
+        programId
+      );
+  
+      // 3) Build instruction (with Telegram ID)
+      const connection = new Connection(clusterApiUrl('devnet'));
+      const telegramId = BigInt(username);
+      const instruction = new TransactionInstruction({
+        programId,
+        keys: [
+          { pubkey: publicKey,               isSigner: true,  isWritable: true  },
+          { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
+          { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+        ],
+        data: Buffer.from(
+          borsh.serialize(
+            VaultSchema,
+            new VaultInstruction({ amount: depositAmount, telegram_id: telegramId })
+          )
+        )
       });
-    
+  
+      // 4) Send & confirm
+      const tx = new Transaction().add(instruction);
+      const latest = await connection.getLatestBlockhash();
+      tx.recentBlockhash = latest.blockhash;
+      tx.feePayer      = publicKey;
+  
+      const signature = await sendTransaction(tx, connection);
+      await connection.confirmTransaction({ signature, ...latest });
       alert("✅ Deposit confirmed! Signature: " + signature);
-
-// Notify backend to credit gameplay tokens
-try {
-  const res = await fetch("https://texas-poker-production.up.railway.app/api/deposit-event", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      wallet: publicKey.toBase58(),
-      username
-    })
-  });
-
-  const data = await res.json();
-
-  if (data.success) {
-    console.log("✅ Gameplay token credit recorded");
-  } else {
-    console.warn("⚠️ Bot did not credit tokens:", data.error);
-  }
-} catch (notifyErr) {
-  console.error("❌ Backend deposit notification failed", notifyErr);
-}
-} catch (err) {
-  console.error("❌ Deposit failed", err);
-  alert("Deposit failed. See console for details.");
-}
-};
-
+  
+    } catch (err) {
+      console.error("❌ Deposit failed", err);
+      alert("Deposit failed. See console for details.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }; // <-- make sure this closing brace is here
 
   // Handle Withdraw
   const handleWithdraw = async () => {
@@ -225,7 +211,7 @@ try {
 
 
       {/* Deposit Button */}
-<button
+      <button
   style={{
     marginTop: '1rem',
     padding: '0.5rem 1rem',
@@ -235,11 +221,12 @@ try {
     color: '#fff',
     border: 'none',
     borderRadius: '6px',
-    cursor: 'pointer'
+    cursor: isSubmitting ? 'not-allowed' : 'pointer'
   }}
   onClick={handleDeposit}
+  disabled={isSubmitting}
 >
-  Deposit SOL to Gameplay Tokens
+  {isSubmitting ? 'Depositing…' : 'Deposit SOL to Gameplay Tokens'}
 </button>
   
       {/* Withdraw Button */}
