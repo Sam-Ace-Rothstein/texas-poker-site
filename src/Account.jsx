@@ -101,26 +101,29 @@ const handleDeposit = async () => {
   try {
     const programId = new PublicKey('2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1');
     const [vaultPDA] = PublicKey.findProgramAddressSync(
-      [Buffer.from("game_vault")],
+      [Buffer.from("vault")],    // matches GAME_VAULT_SEED = b"vault"
       programId
     );
     console.log("🔐 PDA:", vaultPDA.toBase58());
 
     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+    const telegramId = BigInt(username);
 
-    // ─── Build the exact payload: enum tag + u64 amount ────────────────────
+    // — Build payload matching `enum VaultInstruction::Deposit { amount, telegram_id }`
     class DepositPayload {
       constructor(fields) {
-        this.variant = 1;         // 1 = Deposit
-        this.amount  = fields.amount;
+        this.variant     = fields.variant;      // 1 = Deposit
+        this.amount      = fields.amount;       // u64
+        this.telegram_id = fields.telegram_id;  // u64
       }
     }
     const DepositSchema = new Map([
       [DepositPayload, {
         kind: 'struct',
         fields: [
-          ['variant', 'u8'],
-          ['amount',  'u64'],
+          ['variant',     'u8'],
+          ['amount',      'u64'],
+          ['telegram_id', 'u64'],
         ]
       }]
     ]);
@@ -128,27 +131,30 @@ const handleDeposit = async () => {
     const depositData = Buffer.from(
       borsh.serialize(
         DepositSchema,
-        new DepositPayload({ amount: depositAmount })
+        new DepositPayload({
+          variant: 1,
+          amount: depositAmount,
+          telegram_id: telegramId
+        })
       )
     );
-    // ────────────────────────────────────────────────────────────────────────
 
     const instruction = new TransactionInstruction({
       programId,
       keys: [
-        { pubkey: publicKey,               isSigner: true,  isWritable: true  },
-        { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
+        { pubkey: publicKey,               isSigner: true,  isWritable: true  }, // signer
+        { pubkey: vaultPDA,                isSigner: false, isWritable: true  }, // vault PDA
         { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       ],
       data: depositData
     });
 
+    // Build & simulate
     const tx = new Transaction().add(instruction);
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
     tx.recentBlockhash = blockhash;
     tx.feePayer      = publicKey;
 
-    // 1) Simulate
     const sim = await connection.simulateTransaction(tx);
     console.log("📡 Simulation logs:", sim.value.logs);
     if (sim.value.err) {
@@ -157,11 +163,11 @@ const handleDeposit = async () => {
       return;
     }
 
-    // 2) Send & confirm
+    // Send & confirm
     const signature = await sendTransaction(tx, connection);
     await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
 
-    // 3) Verify on-chain event
+    // Check on-chain logs
     const conf = await connection.getTransaction(signature, {
       commitment: 'confirmed',
       maxSupportedTransactionVersion: 0
@@ -173,6 +179,7 @@ const handleDeposit = async () => {
     if (sawEvent) {
       console.log("✅ DepositEvent found:", sawEvent);
       setDepositConfirmed(true);
+      // refresh token balance
       setTimeout(() => {
         fetch(`https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`)
           .then(r => r.json())
@@ -243,7 +250,7 @@ const handleDeposit = async () => {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to deposito (SOL):{" "}
+    Amount to deposit (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
