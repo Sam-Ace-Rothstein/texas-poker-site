@@ -111,7 +111,7 @@ const handleDeposit = async () => {
     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
     const telegramId = BigInt(username);
 
-    // Prepare DepositInstruction for enum variant 1
+    // Define correct enum variant struct for Deposit
     class DepositInstruction {
       constructor(fields) {
         this.amount = fields.amount;
@@ -131,7 +131,7 @@ const handleDeposit = async () => {
 
     const DEPOSIT_VARIANT = 1;
     const depositData = Buffer.concat([
-      Buffer.from([DEPOSIT_VARIANT]),
+      Buffer.from([DEPOSIT_VARIANT]), // enum tag
       Buffer.from(
         borsh.serialize(
           DepositSchema,
@@ -155,7 +155,7 @@ const handleDeposit = async () => {
     tx.recentBlockhash = latest.blockhash;
     tx.feePayer = publicKey;
 
-    // 🔍 Simulate transaction before sending
+    // Simulate transaction before sending
     const simResult = await connection.simulateTransaction(tx);
     console.log("📡 Simulation logs:", simResult?.value?.logs);
     if (simResult?.value?.err) {
@@ -167,7 +167,7 @@ const handleDeposit = async () => {
     const signature = await sendTransaction(tx, connection);
     await connection.confirmTransaction({ signature, ...latest });
 
-    // 🔍 Inspect program logs to verify DepositEvent fired
+    // Inspect program logs for DepositEvent
     const txDetails = await connection.getTransaction(signature, {
       commitment: "confirmed",
       maxSupportedTransactionVersion: 0
@@ -179,7 +179,6 @@ const handleDeposit = async () => {
     if (triggeredEvent) {
       console.log("✅ Smart contract emitted:", triggeredEvent);
 
-      // ✅ Only show success UI if event fired
       setDepositConfirmed(true);
 
       setTimeout(() => {
