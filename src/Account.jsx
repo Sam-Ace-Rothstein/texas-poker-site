@@ -106,8 +106,9 @@ const handleDeposit = async () => {
       [Buffer.from("game_vault")],
       programId
     );
+    console.log("🔐 PDA:", vaultPDA.toBase58());
 
-    const connection = new Connection(clusterApiUrl('devnet'));
+    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
     const telegramId = BigInt(username);
 
     // Prepare DepositInstruction for enum variant 1
@@ -153,6 +154,15 @@ const handleDeposit = async () => {
     const latest = await connection.getLatestBlockhash();
     tx.recentBlockhash = latest.blockhash;
     tx.feePayer = publicKey;
+
+    // 🔍 Simulate transaction before sending
+    const simResult = await connection.simulateTransaction(tx);
+    console.log("📡 Simulation logs:", simResult?.value?.logs);
+    if (simResult?.value?.err) {
+      console.error("❌ Simulation error:", simResult.value.err);
+      alert("Simulation failed before sending: " + JSON.stringify(simResult.value.err));
+      return;
+    }
 
     const signature = await sendTransaction(tx, connection);
     await connection.confirmTransaction({ signature, ...latest });
