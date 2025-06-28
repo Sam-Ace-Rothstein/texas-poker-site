@@ -25,6 +25,8 @@ import {
   PublicKey
 } from '@solana/web3.js';
 import * as borsh from 'borsh';
+import { Buffer } from 'buffer';
+if (!window.Buffer) window.Buffer = Buffer;
 
 class VaultInstruction {
   constructor(fields) {
@@ -77,8 +79,8 @@ function BalanceDisplay({ username }) {
 
 
   const handleDeposit = async () => {
-    if (!publicKey) {
-      alert('Wallet not connected');
+    if (!publicKey || !username) {
+      alert('Wallet or username not connected');
       return;
     }
   
