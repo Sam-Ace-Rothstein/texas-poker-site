@@ -55,6 +55,7 @@ function BalanceDisplay({ username }) {
   const [tokenBalance, setTokenBalance] = useState(null);
   const [depositAmountSol, setDepositAmountSol] = useState("0.1");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [depositConfirmed, setDepositConfirmed] = useState(false);
 
   // Fetch SOL balance
   useEffect(() => {
@@ -81,15 +82,12 @@ function BalanceDisplay({ username }) {
   }, [username]);
 
 
-  // Handle Deposit
-
   const handleDeposit = async () => {
     if (!publicKey || !username) {
       alert('Wallet or username not connected');
       return;
     }
   
-    // 1) Parse & validate deposit amount
     const depositAmount = Math.round(parseFloat(depositAmountSol) * 1e9);
     if (isNaN(depositAmount) || depositAmount <= 0) {
       alert("Please enter a valid deposit amount.");
@@ -100,18 +98,15 @@ function BalanceDisplay({ username }) {
       return;
     }
   
-    // prevent double‐submission
     setIsSubmitting(true);
   
     try {
-      // 2) Compute the vault PDA
       const programId = new PublicKey('AsS9H51TYVn97RY25Sv9kPKpBbgCe5BoAaV5rLbE5K5K');
       const [vaultPDA] = PublicKey.findProgramAddressSync(
         [Buffer.from("game_vault")],
         programId
       );
   
-      // 3) Build instruction (with Telegram ID)
       const connection = new Connection(clusterApiUrl('devnet'));
       const telegramId = BigInt(username);
       const instruction = new TransactionInstruction({
@@ -129,16 +124,26 @@ function BalanceDisplay({ username }) {
         )
       });
   
-      // 4) Send & confirm
       const tx = new Transaction().add(instruction);
       const latest = await connection.getLatestBlockhash();
       tx.recentBlockhash = latest.blockhash;
-      tx.feePayer      = publicKey;
+      tx.feePayer = publicKey;
   
       const signature = await sendTransaction(tx, connection);
       await connection.confirmTransaction({ signature, ...latest });
-      alert("✅ Deposit confirmed! Signature: " + signature);
   
+      // ✅ Show success UI
+      setDepositConfirmed(true);
+  
+      // ⏳ Refresh token balance
+      setTimeout(() => {
+        fetch(`https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`)
+          .then(res => res.json())
+          .then(data => setTokenBalance(data.tokens))
+          .catch(err => console.error('🔁 Token balance refresh error', err));
+      }, 1500);
+  
+      alert("✅ Deposit confirmed! Signature: " + signature);
     } catch (err) {
       console.error("❌ Deposit failed", err);
       alert("Deposit failed. See console for details.");
