@@ -81,91 +81,117 @@ function BalanceDisplay({ username }) {
     }
   }, [username]);
 
+// Deposit
+const handleDeposit = async () => {
+  if (!publicKey || !username) {
+    alert('Wallet or username not connected');
+    return;
+  }
 
-  const handleDeposit = async () => {
-    if (!publicKey || !username) {
-      alert('Wallet or username not connected');
-      return;
+  const depositAmount = Math.round(parseFloat(depositAmountSol) * 1e9);
+  if (isNaN(depositAmount) || depositAmount <= 0) {
+    alert("Please enter a valid deposit amount.");
+    return;
+  }
+  if (solBalance != null && parseFloat(depositAmountSol) > solBalance) {
+    alert("You cannot deposit more SOL than your wallet balance.");
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const programId = new PublicKey('2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1');
+    const [vaultPDA] = PublicKey.findProgramAddressSync(
+      [Buffer.from("game_vault")],
+      programId
+    );
+
+    const connection = new Connection(clusterApiUrl('devnet'));
+    const telegramId = BigInt(username);
+
+    // Prepare DepositInstruction for enum variant 1
+    class DepositInstruction {
+      constructor(fields) {
+        this.amount = fields.amount;
+        this.telegram_id = fields.telegram_id;
+      }
     }
-  
-    const depositAmount = Math.round(parseFloat(depositAmountSol) * 1e9);
-    if (isNaN(depositAmount) || depositAmount <= 0) {
-      alert("Please enter a valid deposit amount.");
-      return;
-    }
-    if (solBalance != null && parseFloat(depositAmountSol) > solBalance) {
-      alert("You cannot deposit more SOL than your wallet balance.");
-      return;
-    }
-  
-    setIsSubmitting(true);
-  
-    try {
-      const programId = new PublicKey('2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1');
-      const [vaultPDA] = PublicKey.findProgramAddressSync(
-        [Buffer.from("game_vault")],
-        programId
-      );
-  
-      const connection = new Connection(clusterApiUrl('devnet'));
-      const telegramId = BigInt(username);
-      const instruction = new TransactionInstruction({
-        programId,
-        keys: [
-          { pubkey: publicKey,               isSigner: true,  isWritable: true  },
-          { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
-          { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-        ],
-        data: Buffer.from(
-          borsh.serialize(
-            VaultSchema,
-            new VaultInstruction({ amount: depositAmount, telegram_id: telegramId })
-          )
+
+    const DepositSchema = new Map([
+      [DepositInstruction, {
+        kind: 'struct',
+        fields: [
+          ['amount', 'u64'],
+          ['telegram_id', 'u64'],
+        ]
+      }]
+    ]);
+
+    const DEPOSIT_VARIANT = 1;
+    const depositData = Buffer.concat([
+      Buffer.from([DEPOSIT_VARIANT]),
+      Buffer.from(
+        borsh.serialize(
+          DepositSchema,
+          new DepositInstruction({ amount: depositAmount, telegram_id: telegramId })
         )
-      });
-  
-      const tx = new Transaction().add(instruction);
-      const latest = await connection.getLatestBlockhash();
-      tx.recentBlockhash = latest.blockhash;
-      tx.feePayer = publicKey;
-  
-      const signature = await sendTransaction(tx, connection);
-      await connection.confirmTransaction({ signature, ...latest });
+      )
+    ]);
 
-      // 🔍 Inspect program logs to verify DepositEvent fired
-const txDetails = await connection.getTransaction(signature, {
-  commitment: "confirmed",
-  maxSupportedTransactionVersion: 0
-});
-const logs = txDetails?.meta?.logMessages || [];
-console.log("🪵 Confirmed TX logs:", logs);
+    const instruction = new TransactionInstruction({
+      programId,
+      keys: [
+        { pubkey: publicKey,               isSigner: true,  isWritable: true  },
+        { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ],
+      data: depositData
+    });
 
-const triggeredEvent = logs.find(log => log.includes("DepositEvent:"));
-if (triggeredEvent) {
-  console.log("✅ Smart contract emitted:", triggeredEvent);
-} else {
-  console.warn("⚠️ No DepositEvent found. Contract may not have executed as expected.");
-}
-  
-      // ✅ Show success UI
+    const tx = new Transaction().add(instruction);
+    const latest = await connection.getLatestBlockhash();
+    tx.recentBlockhash = latest.blockhash;
+    tx.feePayer = publicKey;
+
+    const signature = await sendTransaction(tx, connection);
+    await connection.confirmTransaction({ signature, ...latest });
+
+    // 🔍 Inspect program logs to verify DepositEvent fired
+    const txDetails = await connection.getTransaction(signature, {
+      commitment: "confirmed",
+      maxSupportedTransactionVersion: 0
+    });
+    const logs = txDetails?.meta?.logMessages || [];
+    console.log("🪵 Confirmed TX logs:", logs);
+
+    const triggeredEvent = logs.find(log => log.includes("DepositEvent:"));
+    if (triggeredEvent) {
+      console.log("✅ Smart contract emitted:", triggeredEvent);
+
+      // ✅ Only show success UI if event fired
       setDepositConfirmed(true);
-  
-      // ⏳ Refresh token balance
+
       setTimeout(() => {
         fetch(`https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`)
           .then(res => res.json())
           .then(data => setTokenBalance(data.tokens))
           .catch(err => console.error('🔁 Token balance refresh error', err));
       }, 1500);
-  
+
       alert("✅ Deposit confirmed! Signature: " + signature);
-    } catch (err) {
-      console.error("❌ Deposit failed", err);
-      alert("Deposit failed. See console for details.");
-    } finally {
-      setIsSubmitting(false);
+    } else {
+      console.warn("⚠️ No DepositEvent found. Contract may not have executed as expected.");
+      alert("Deposit failed on-chain: No confirmation event found.");
     }
-  }; // <-- make sure this closing brace is here
+
+  } catch (err) {
+    console.error("❌ Deposit failed", err);
+    alert("Deposit failed. See console for details.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   // Handle Withdraw
   const handleWithdraw = async () => {
