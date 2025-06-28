@@ -49,6 +49,7 @@ function BalanceDisplay({ username }) {
   const { publicKey, connected } = useWallet();
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
+  const [depositAmountSol, setDepositAmountSol] = useState("0.1");
 
   // Fetch SOL balance
   useEffect(() => {
@@ -81,7 +82,17 @@ function BalanceDisplay({ username }) {
       return;
     }
   
-    const depositAmount = 0.1 * 1e9; // 0.1 SOL in lamports
+    const depositAmount = parseFloat(depositAmountSol) * 1e9;
+
+if (isNaN(depositAmount) || depositAmount <= 0) {
+  alert("Please enter a valid deposit amount.");
+  return;
+}
+
+if (solBalance != null && parseFloat(depositAmountSol) > solBalance) {
+  alert("You cannot deposit more SOL than your wallet balance.");
+  return;
+}
     const programId = new PublicKey('AsS9H51TYVn97RY25Sv9kPKpBbgCe5BoAaV5rLbE5K5K'); // replace this
     const vaultSeed = "game_vault"; // same as GAME_VAULT_SEED in your lib.rs
   
@@ -116,12 +127,34 @@ function BalanceDisplay({ username }) {
       await connection.confirmTransaction(sig);
   
       alert("✅ Deposit confirmed! Signature: " + sig);
-    } catch (err) {
-      console.error("❌ Deposit failed", err);
-      alert("Deposit failed. See console for details.");
-    }
-  };
-  
+
+// Notify backend to credit gameplay tokens
+try {
+  const res = await fetch("https://texas-poker-production.up.railway.app/api/deposit-event", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      wallet: publicKey.toBase58(),
+      username
+    })
+  });
+
+  const data = await res.json();
+
+  if (data.success) {
+    console.log("✅ Gameplay token credit recorded");
+  } else {
+    console.warn("⚠️ Bot did not credit tokens:", data.error);
+  }
+} catch (notifyErr) {
+  console.error("❌ Backend deposit notification failed", notifyErr);
+}
+} catch (err) {
+  console.error("❌ Deposit failed", err);
+  alert("Deposit failed. See console for details.");
+}
+};
+
 
   // Handle Withdraw
   const handleWithdraw = async () => {
@@ -169,6 +202,23 @@ function BalanceDisplay({ username }) {
         Total Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
       </p>
   
+
+      <div style={{ marginTop: '1rem' }}>
+  <label>
+    Amount to deposit (SOL):{" "}
+    <input
+  type="number"
+  value={depositAmountSol}
+  min="0"
+  step="0.01"
+  max={solBalance ?? undefined}
+  onChange={(e) => setDepositAmountSol(e.target.value)}
+  style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
+/>
+  </label>
+</div>
+
+
       {/* Deposit Button */}
 <button
   style={{
