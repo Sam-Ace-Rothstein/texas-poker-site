@@ -79,7 +79,7 @@ function BalanceDisplay({ username }) {
     }
   }, [username]);
 
-// Deposit
+// ─── Deposit Handler ─────────────────────────────────
 const handleDeposit = async () => {
   if (!publicKey || !username) {
     alert('Wallet or username not connected');
@@ -107,83 +107,84 @@ const handleDeposit = async () => {
     console.log("🔐 PDA:", vaultPDA.toBase58());
 
     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-    const telegramId = BigInt(username);
 
-    // Define correct enum variant struct for Deposit
+    // —— Define the exact enum+struct for Rust’s Deposit variant —— 
     class DepositInstruction {
       constructor(fields) {
-        this.amount = fields.amount;
+        this.variant = fields.variant;  // 1 = Deposit
+        this.amount  = fields.amount;   // u64
       }
     }
-    
     const DepositSchema = new Map([
       [DepositInstruction, {
         kind: 'struct',
         fields: [
-          ['amount', 'u64'],
+          ['variant', 'u8'],
+          ['amount',  'u64'],
         ]
       }]
     ]);
 
+    // —— Serialize enum tag + amount in one shot —— 
     const depositData = Buffer.from(
       borsh.serialize(
-        VaultSchema,
-        new VaultInstruction({ variant: 1, amount: depositAmount })
+        DepositSchema,
+        new DepositInstruction({ variant: 1, amount: depositAmount })
       )
     );
 
     const instruction = new TransactionInstruction({
       programId,
       keys: [
-        { pubkey: publicKey,               isSigner: true,  isWritable: true  },
-        { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
+        { pubkey: publicKey, isSigner: true,  isWritable: true  }, // payer
+        { pubkey: vaultPDA,  isSigner: false, isWritable: true  }, // vault PDA
         { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       ],
       data: depositData
     });
 
+    // Build, simulate, then send…
     const tx = new Transaction().add(instruction);
-    const latest = await connection.getLatestBlockhash();
-    tx.recentBlockhash = latest.blockhash;
-    tx.feePayer = publicKey;
+    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+    tx.recentBlockhash = blockhash;
+    tx.feePayer      = publicKey;
 
-    // Simulate transaction before sending
-    const simResult = await connection.simulateTransaction(tx);
-    console.log("📡 Simulation logs:", simResult?.value?.logs);
-    if (simResult?.value?.err) {
-      console.error("❌ Simulation error:", simResult.value.err);
-      alert("Simulation failed before sending: " + JSON.stringify(simResult.value.err));
+    // 1) Simulate
+    const sim = await connection.simulateTransaction(tx);
+    console.log("📡 Simulation logs:", sim.value.logs);
+    if (sim.value.err) {
+      console.error("❌ Simulation error:", sim.value.err);
+      alert("Simulation failed: " + JSON.stringify(sim.value.err));
       return;
     }
 
+    // 2) Send & confirm
     const signature = await sendTransaction(tx, connection);
-    await connection.confirmTransaction({ signature, ...latest });
+    await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
 
-    // Inspect program logs for DepositEvent
-    const txDetails = await connection.getTransaction(signature, {
-      commitment: "confirmed",
+    // 3) Verify on-chain event
+    const conf = await connection.getTransaction(signature, {
+      commitment: 'confirmed',
       maxSupportedTransactionVersion: 0
     });
-    const logs = txDetails?.meta?.logMessages || [];
-    console.log("🪵 Confirmed TX logs:", logs);
+    const logs = conf?.meta?.logMessages || [];
+    console.log("🪵 On-chain logs:", logs);
 
-    const triggeredEvent = logs.find(log => log.includes("DepositEvent:"));
-    if (triggeredEvent) {
-      console.log("✅ Smart contract emitted:", triggeredEvent);
-
+    const sawEvent = logs.find(l => l.includes("DepositEvent:"));
+    if (sawEvent) {
+      console.log("✅ DepositEvent found:", sawEvent);
       setDepositConfirmed(true);
-
+      // refresh token balance…
       setTimeout(() => {
         fetch(`https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`)
-          .then(res => res.json())
-          .then(data => setTokenBalance(data.tokens))
-          .catch(err => console.error('🔁 Token balance refresh error', err));
+          .then(r => r.json())
+          .then(d => setTokenBalance(d.tokens))
+          .catch(e => console.error('🔁 Token refresh error', e));
       }, 1500);
-
       alert("✅ Deposit confirmed! Signature: " + signature);
     } else {
-      console.warn("⚠️ No DepositEvent found. Contract may not have executed as expected.");
-      alert("Deposit failed on-chain: No confirmation event found.");
+      console.warn("⚠️ DepositEvent missing in logs");
+      alert("Deposit failed on-chain: no confirmation event");
     }
 
   } catch (err) {
@@ -193,6 +194,7 @@ const handleDeposit = async () => {
     setIsSubmitting(false);
   }
 };
+// ─────────────────────────────────────────────────────
 
   // Handle Withdraw
   const handleWithdraw = async () => {
