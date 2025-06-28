@@ -266,7 +266,7 @@ try {
 // ─────────────────────────────────────────────
 // Main App
 const App = () => {
-  const endpoint = clusterApiUrl('mainnet-beta');
+  const endpoint = clusterApiUrl('devnet');
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
