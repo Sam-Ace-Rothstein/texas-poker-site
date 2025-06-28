@@ -3,30 +3,40 @@ import { createRoot } from 'react-dom/client';
 import {
   ConnectionProvider,
   WalletProvider,
-  useWallet
+  useWallet,
 } from '@solana/wallet-adapter-react';
 import {
   WalletModalProvider,
-  WalletMultiButton
+  WalletMultiButton,
 } from '@solana/wallet-adapter-react-ui';
 import {
   PhantomWalletAdapter,
-  SolflareWalletAdapter
+  SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl } from '@solana/web3.js';
-
-import '@solana/wallet-adapter-react-ui/styles.css';
-
 import {
+  clusterApiUrl,
   Transaction,
   TransactionInstruction,
   SystemProgram,
   Connection,
-  PublicKey
+  PublicKey,
+  Ed25519Program,
 } from '@solana/web3.js';
+
+import '@solana/wallet-adapter-react-ui/styles.css';
 import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
 if (!window.Buffer) window.Buffer = Buffer;
+
+import BN from 'bn.js';
+import bs58 from 'bs58';
+
+// --- On-chain program & bot keys (fill in your real IDs) ---
+const PROGRAM_ID     = new PublicKey("2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1");
+const BOT_PUBLIC_KEY = new PublicKey("BOT_PUBLIC_KEY_HERE");
+
+// ─────────────────────────────────────────────
+// VaultInstruction definition (if needed elsewhere)
 
 class VaultInstruction {
   constructor(fields) {
@@ -207,96 +217,117 @@ const handleDeposit = async () => {
       alert("Please connect your wallet and wait for balances to load.");
       return;
     }
-
-    const walletPubkey = publicKey.toBase58();
     const nonce = Date.now();
-
+    // 1) Get voucher
+    let voucher;
     try {
       const res = await fetch("https://texas-poker-production.up.railway.app/api/request-voucher", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          wallet: walletPubkey,
+          wallet: publicKey.toBase58(),
           username,
           amount: tokenBalance,
           nonce
         })
       });
-
       const data = await res.json();
-
       if (!data.success) {
         alert("Voucher rejected: " + data.error);
         return;
       }
-
-      console.log("✅ Voucher received:", data.voucher);
-      alert("Voucher received! Proceed with on-chain claim.");
+      voucher = data.voucher;
     } catch (err) {
       console.error("Voucher request failed:", err);
       alert("Error requesting voucher.");
+      return;
+    }
+
+    // 2) Reconstruct signed message
+    const msgBuf = Buffer.concat([
+      publicKey.toBytes(),
+      Buffer.from(new BN(tokenBalance).toArray('le', 8)),
+      Buffer.from(new BN(nonce).toArray('le', 8)),
+      Buffer.from(new BN(Number(username)).toArray('le', 8)),
+    ]);
+
+    // 3) Build ed25519 verify ix
+    const verifyIx = Ed25519Program.createInstructionWithPublicKey({
+      publicKey: BOT_PUBLIC_KEY.toBytes(),
+      message:   msgBuf,
+      signature: bs58.decode(voucher.signature),
+    });
+
+    // 4) Build Withdraw ix
+    const withdrawData = Buffer.concat([
+      Uint8Array.of(2), // Withdraw variant
+      Buffer.from(new BN(tokenBalance).toArray('le', 8)),
+      Buffer.from(new BN(nonce).toArray('le', 8)),
+      Buffer.from(new BN(Number(username)).toArray('le', 8)),
+      bs58.decode(voucher.signature),
+    ]);
+    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+    const [vaultPDA] = await PublicKey.findProgramAddress(
+      [Buffer.from("vault")],
+      PROGRAM_ID
+    );
+    const withdrawIx = new TransactionInstruction({
+      programId: PROGRAM_ID,
+      keys: [
+        { pubkey: publicKey, isSigner: true,  isWritable: true  },
+        { pubkey: vaultPDA,  isSigner: false, isWritable: true  },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      ],
+      data: withdrawData,
+    });
+
+    // 5) Send the combined tx
+    try {
+      const tx = new Transaction().add(verifyIx, withdrawIx);
+      const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+      tx.recentBlockhash = blockhash;
+      tx.feePayer = publicKey;
+      const signature = await sendTransaction(tx, connection);
+      await connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight });
+      alert("✅ Withdraw successful! Tx: " + signature);
+    } catch (err) {
+      console.error("Withdraw tx failed:", err);
+      alert("Withdrawal failed: " + err.message);
     }
   };
 
+
   return (
     <div style={{ marginTop: '1rem' }}>
-      <p id="sol-balance">
-        Total SOL: <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
-      </p>
-      <p id="token-balance">
-        Total Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
-      </p>
-  
+      <p>Total SOL: <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong></p>
+      <p>Total Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong></p>
 
       <div style={{ marginTop: '1rem' }}>
-  <label>
-    Amount to deposit (SOL):{" "}
-    <input
-  type="number"
-  value={depositAmountSol}
-  min="0"
-  step="0.01"
-  max={solBalance ?? undefined}
-  onChange={(e) => setDepositAmountSol(e.target.value)}
-  style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
-/>
-  </label>
-</div>
+        <label>
+          Deposit SOL:
+          <input
+            type="number"
+            value={depositAmountSol}
+            min="0"
+            step="0.01"
+            max={solBalance ?? undefined}
+            onChange={(e) => setDepositAmountSol(e.target.value)}
+            style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
+          />
+        </label>
+      </div>
 
+      <button
+        onClick={handleDeposit}
+        disabled={isSubmitting}
+        style={{ marginTop:'1rem', padding:'0.5rem 1rem', background:'#229', color:'#fff', border:'none', borderRadius:'6px' }}
+      >
+        {isSubmitting ? 'Depositing…' : 'Deposit SOL to Gameplay Tokens'}
+      </button>
 
-      {/* Deposit Button */}
       <button
-  style={{
-    marginTop: '1rem',
-    padding: '0.5rem 1rem',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    background: '#229',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: isSubmitting ? 'not-allowed' : 'pointer'
-  }}
-  onClick={handleDeposit}
-  disabled={isSubmitting}
->
-  {isSubmitting ? 'Depositing…' : 'Deposit SOL to Gameplay Tokens'}
-</button>
-  
-      {/* Withdraw Button */}
-      <button
-        style={{
-          marginTop: '1rem',
-          padding: '0.5rem 1rem',
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          background: '#2c2',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: 'pointer'
-        }}
         onClick={handleWithdraw}
+        style={{ marginTop:'1rem', padding:'0.5rem 1rem', background:'#2c2', color:'#fff', border:'none', borderRadius:'6px' }}
       >
         Withdraw Gameplay Tokens to SOL
       </button>
