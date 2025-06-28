@@ -93,6 +93,53 @@ function BalanceDisplay({ username }) {
       <p id="token-balance">
         Total Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
       </p>
+  
+      {/* Deposit Button */}
+      <button
+        style={{
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          background: '#229',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer'
+        }}
+        onClick={async () => {
+          if (!publicKey || !username) {
+            alert("Please connect your wallet and reload the page.");
+            return;
+          }
+  
+          try {
+            const res = await fetch("https://texas-poker-production.up.railway.app/api/deposit-event", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                wallet: publicKey.toBase58(),
+                username
+              })
+            });
+  
+            const data = await res.json();
+  
+            if (data.success) {
+              alert("Deposit event recorded! Your gameplay tokens will be credited shortly.");
+            } else {
+              alert("Deposit failed: " + data.error);
+            }
+          } catch (err) {
+            console.error("Deposit request failed:", err);
+            alert("Error sending deposit request.");
+          }
+        }}
+      >
+        Deposit SOL to Gameplay Tokens
+      </button>
+  
+      {/* Withdraw Button */}
       <button
         style={{
           marginTop: '1rem',
