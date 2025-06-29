@@ -334,28 +334,36 @@ const handleWithdraw = async () => {
       data: withdrawData
     });
 
-    // 7) Assemble, simulate, and send transaction
+    // 7) Assemble, simulate & send transaction
 const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
 const tx = new Transaction()
   .add(verifyIx)
   .add(withdrawIx);
 
-// 1) Set fee payer & recent blockhash
+// 7a) Set fee payer & recent blockhash before simulation
 const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 tx.recentBlockhash = blockhash;
-tx.feePayer       = publicKey;
+tx.feePayer        = publicKey;
 
-// 2) Simulate with the new config overload (avoids deprecation)
-const sim = await connection.simulateTransaction(tx, {
-  commitment: 'confirmed',
-  sigVerify: true,            // verify the ed25519 signature on-chain
-});
+// 7b) Simulate the transaction
+const sim = await connection.simulateTransaction(tx);
 console.log("💡 Withdraw simulation logs:", sim.value.logs);
 if (sim.value.err) {
   console.error("❌ Preflight error:", sim.value.err);
   alert("Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
   setIsSubmitting(false);
   return;
+}
+
+// 7c) Send & confirm the transaction
+const sig = await sendTransaction(tx, connection);
+await connection.confirmTransaction(
+  { signature: sig, blockhash, lastValidBlockHeight },
+  'confirmed'
+);
+
+alert("✅ Withdraw confirmed! Signature: " + sig);
+return;
 }
 
 // 3) Now send & confirm for real
@@ -388,7 +396,7 @@ return;
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to deposito (SOL):{" "}
+    Amount to depositi (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
