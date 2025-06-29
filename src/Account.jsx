@@ -101,7 +101,7 @@ const handleDeposit = async () => {
   setIsSubmitting(true);
 
   try {
-    const programId = new PublicKey('2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1');
+    const programId = new PublicKey('7QeGMAbT8ckFh4hM5E9Q2WjKkDkvMyZbV6iuAVvsLKrT');
     const [vaultPDA] = PublicKey.findProgramAddressSync(
       [Buffer.from("vault")],    // matches GAME_VAULT_SEED = b"vault"
       programId
@@ -250,7 +250,7 @@ const handleDeposit = async () => {
       console.log("✅ Voucher received:", data.voucher);
 // ── Step 2: Build & send on‐chain Withdraw transaction ──
 const voucher = data.voucher;
-const programId = new PublicKey('2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1');
+const programId = new PublicKey('7QeGMAbT8ckFh4hM5E9Q2WjKkDkvMyZbV6iuAVvsLKrT');
 const [vaultPDA] = PublicKey.findProgramAddressSync(
   [Buffer.from("vault")],
   programId
