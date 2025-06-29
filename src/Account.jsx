@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import bs58 from 'bs58';
 import { createRoot } from 'react-dom/client';
 import {
   ConnectionProvider,
@@ -220,6 +221,7 @@ const handleDeposit = async () => {
       return;
     }
   
+    setIsSubmitting(true);
     const walletPubkey = publicKey.toBase58();
     const nonce = Date.now();
   
@@ -245,11 +247,70 @@ const handleDeposit = async () => {
       }
   
       console.log("✅ Voucher received:", data.voucher);
-      alert("Voucher received! Proceed with on-chain claim.");
-    } catch (err) {
-      console.error("Voucher request failed:", err);
-      alert("Error requesting voucher.");
-    }
+// ── Step 2: Build & send on‐chain Withdraw transaction ──
+const voucher = data.voucher;
+const programId = new PublicKey('2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1');
+const [vaultPDA] = PublicKey.findProgramAddressSync(
+  [Buffer.from("vault")],
+  programId
+);
+// Withdraw payload struct
+class WithdrawPayload {
+  constructor(f) {
+    this.variant   = f.variant;    // 2 = Withdraw
+    this.amount    = f.amount;     // u64
+    this.nonce     = f.nonce;      // u64
+    this.signature = f.signature;  // [u8;64]
+  }
+}
+const WithdrawSchema = new Map([[WithdrawPayload, {
+  kind: "struct",
+  fields: [
+    ["variant",   "u8"],
+    ["amount",    "u64"],
+    ["nonce",     "u64"],
+    ["signature", [64]],
+  ]
+}]]);
+const sigBytes = bs58.decode(voucher.signature);
+const withdrawData = Buffer.from(
+  borsh.serialize(
+    WithdrawSchema,
+    new WithdrawPayload({
+      variant:   2,
+      amount:    BigInt(voucher.amount),
+      nonce:     BigInt(voucher.nonce),
+      signature: sigBytes
+    })
+  )
+);
+const withdrawIx = new TransactionInstruction({
+  programId,
+  keys: [
+    { pubkey: publicKey,               isSigner: true,  isWritable: true  },
+    { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
+    { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+  ],
+  data: withdrawData
+});
+// send & confirm
+const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+const tx = new Transaction().add(withdrawIx);
+const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+tx.recentBlockhash = blockhash;
+tx.feePayer      = publicKey;
+const sig = await sendTransaction(tx, connection);
+await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight });
+alert("✅ Withdraw confirmed! Signature: " + sig);
+return;
+
+
+} catch (err) {
+         console.error("Withdraw failed:", err);
+         alert("Withdraw failed: " + (err.message || err));
+       } finally {
+         setIsSubmitting(false);
+       }
   };
 
   return (
@@ -314,21 +375,22 @@ const handleDeposit = async () => {
   
       {/* Withdraw Button */}
       <button
-        style={{
-          marginTop: '1rem',
-          padding: '0.5rem 1rem',
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          background: '#2c2',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: 'pointer'
-        }}
-        onClick={handleWithdraw}
-      >
-        Withdraw Gameplay Tokens to SOL
-      </button>
+         disabled={isSubmitting}
+         style={{
+           marginTop: '1rem',
+           padding: '0.5rem 1rem',
+           fontSize: '1rem',
+           fontWeight: 'bold',
+           background: '#2c2',
+           color: '#fff',
+           border: 'none',
+           borderRadius: '6px',
+           cursor: isSubmitting ? 'not-allowed' : 'pointer'
+         }}
+         onClick={handleWithdraw}
+       >
+         {isSubmitting ? 'Withdrawing…' : 'Withdraw Gameplay Tokens to SOL'}
+       </button>
     </div>
   );
 }
