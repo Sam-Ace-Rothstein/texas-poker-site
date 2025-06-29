@@ -345,17 +345,25 @@ const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash(
 tx.recentBlockhash = blockhash;
 tx.feePayer       = publicKey;
 
-// 2) Simulate with the new config overload (avoids deprecation)
-const sim = await connection.simulateTransaction(tx, {
-  commitment: 'confirmed',
-  sigVerify: true,            // verify the ed25519 signature on-chain
-});
+// 2) Simulate without any extra config (this signature is the only valid overload)
+const sim = await connection.simulateTransaction(tx);
 console.log("💡 Withdraw simulation logs:", sim.value.logs);
 if (sim.value.err) {
   console.error("❌ Preflight error:", sim.value.err);
   alert("Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
   setIsSubmitting(false);
   return;
+}
+
+// 3) Now that sim passed, send & confirm
+const sig = await sendTransaction(tx, connection);
+await connection.confirmTransaction(
+  { signature: sig, blockhash, lastValidBlockHeight },
+  'confirmed'
+);
+
+alert("✅ Withdraw confirmed! Signature: " + sig);
+return;
 }
 
 // 3) Now send & confirm for real
@@ -388,7 +396,7 @@ return;
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to depositoiey (SOL):{" "}
+    Amount to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
