@@ -222,8 +222,9 @@ const handleDeposit = async () => {
     }
   
     setIsSubmitting(true);
-    const walletPubkey = publicKey.toBase58();
-    const nonce = Date.now();
+     const walletPubkey = publicKey.toBase58();
+     // Use UNIX‐seconds timestamp for on‐chain expiry check
+     const nonce = Math.floor(Date.now() / 1000);
   
     try {
       const res = await fetch(
