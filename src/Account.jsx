@@ -250,7 +250,7 @@ const handleDeposit = async () => {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to deposit (SOL):{" "}
+    Amount to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
