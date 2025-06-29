@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import bs58 from 'bs58';
 import { createRoot } from 'react-dom/client';
 import {
   ConnectionProvider,
@@ -54,7 +53,6 @@ function BalanceDisplay({ username }) {
   const [tokenBalance, setTokenBalance] = useState(null);
   const [depositAmountSol, setDepositAmountSol] = useState("0.1");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [withdrawAmount, setWithdrawAmount] = useState("0");
   const [depositConfirmed, setDepositConfirmed] = useState(false);
 
   // Fetch SOL balance
@@ -209,109 +207,35 @@ const handleDeposit = async () => {
       alert("Please connect your wallet and wait for balances to load.");
       return;
     }
-  
-    // Parse and validate user‐entered withdraw amount
-    const amount = parseInt(withdrawAmount, 10);
-    if (isNaN(amount) || amount <= 0) {
-      alert("Enter a valid token amount to withdraw.");
-      return;
-    }
-    if (amount > tokenBalance) {
-      alert("Cannot withdraw more than your total tokens.");
-      return;
-    }
-  
-    setIsSubmitting(true);
-     const walletPubkey = publicKey.toBase58();
-     // Use UNIX‐seconds timestamp for on‐chain expiry check
-     const nonce = Math.floor(Date.now() / 1000);
-  
+
+    const walletPubkey = publicKey.toBase58();
+    const nonce = Date.now();
+
     try {
-      const res = await fetch(
-        "https://texas-poker-production.up.railway.app/api/request-voucher",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            wallet: walletPubkey,
-            username,
-            amount,      // <-- now uses the user’s entered amount
-            nonce
-          })
-        }
-      );
-  
+      const res = await fetch("https://texas-poker-production.up.railway.app/api/request-voucher", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          wallet: walletPubkey,
+          username,
+          amount: tokenBalance,
+          nonce
+        })
+      });
+
       const data = await res.json();
+
       if (!data.success) {
         alert("Voucher rejected: " + data.error);
         return;
       }
-  
+
       console.log("✅ Voucher received:", data.voucher);
-// ── Step 2: Build & send on‐chain Withdraw transaction ──
-const voucher = data.voucher;
-const programId = new PublicKey('2mD9kYSmLfJVnroDQEjb71AM69PECUCTzkYgZRM4vin1');
-const [vaultPDA] = PublicKey.findProgramAddressSync(
-  [Buffer.from("vault")],
-  programId
-);
-// Withdraw payload struct
-class WithdrawPayload {
-  constructor(f) {
-    this.variant   = f.variant;    // 2 = Withdraw
-    this.amount    = f.amount;     // u64
-    this.nonce     = f.nonce;      // u64
-    this.signature = f.signature;  // [u8;64]
-  }
-}
-const WithdrawSchema = new Map([[WithdrawPayload, {
-  kind: "struct",
-  fields: [
-    ["variant",   "u8"],
-    ["amount",    "u64"],
-    ["nonce",     "u64"],
-    ["signature", [64]],
-  ]
-}]]);
-const sigBytes = bs58.decode(voucher.signature);
-const withdrawData = Buffer.from(
-  borsh.serialize(
-    WithdrawSchema,
-    new WithdrawPayload({
-      variant:   2,
-      amount:    BigInt(voucher.amount),
-      nonce:     BigInt(voucher.nonce),
-      signature: sigBytes
-    })
-  )
-);
-const withdrawIx = new TransactionInstruction({
-  programId,
-  keys: [
-    { pubkey: publicKey,               isSigner: true,  isWritable: true  },
-    { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
-    { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-  ],
-  data: withdrawData
-});
-// send & confirm
-const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-const tx = new Transaction().add(withdrawIx);
-const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-tx.recentBlockhash = blockhash;
-tx.feePayer      = publicKey;
-const sig = await sendTransaction(tx, connection);
-await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight });
-alert("✅ Withdraw confirmed! Signature: " + sig);
-return;
-
-
-} catch (err) {
-         console.error("Withdraw failed:", err);
-         alert("Withdraw failed: " + (err.message || err));
-       } finally {
-         setIsSubmitting(false);
-       }
+      alert("Voucher received! Proceed with on-chain claim.");
+    } catch (err) {
+      console.error("Voucher request failed:", err);
+      alert("Error requesting voucher.");
+    }
   };
 
   return (
@@ -358,40 +282,24 @@ return;
 >
   {isSubmitting ? 'Depositing…' : 'Deposit SOL to Gameplay Tokens'}
 </button>
-
-<div style={{ marginTop: '1rem' }}>
-        <label>
-          Amount to burn (tokens):{" "}
-          <input
-            type="number"
-            value={withdrawAmount}
-            min="1"
-            step="1"
-            max={tokenBalance ?? undefined}
-            onChange={e => setWithdrawAmount(e.target.value)}
-            style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
-          />
-        </label>
-      </div>
   
       {/* Withdraw Button */}
       <button
-         disabled={isSubmitting}
-         style={{
-           marginTop: '1rem',
-           padding: '0.5rem 1rem',
-           fontSize: '1rem',
-           fontWeight: 'bold',
-           background: '#2c2',
-           color: '#fff',
-           border: 'none',
-           borderRadius: '6px',
-           cursor: isSubmitting ? 'not-allowed' : 'pointer'
-         }}
-         onClick={handleWithdraw}
-       >
-         {isSubmitting ? 'Withdrawing…' : 'Withdraw Gameplay Tokens to SOL'}
-       </button>
+        style={{
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          background: '#2c2',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer'
+        }}
+        onClick={handleWithdraw}
+      >
+        Withdraw Gameplay Tokens to SOL
+      </button>
     </div>
   );
 }
