@@ -107,7 +107,7 @@ const handleDeposit = async () => {
   setIsSubmitting(true);
 
   try {
-    const programId = new PublicKey('7QeGMAbT8ckFh4hM5E9Q2WjKkDkvMyZbV6iuAVvsLKrT');
+    const programId = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
     const [vaultPDA] = PublicKey.findProgramAddressSync(
       [Buffer.from("vault")],    // matches GAME_VAULT_SEED = b"vault"
       programId
@@ -256,12 +256,12 @@ const handleWithdraw = async () => {
     console.log("✅ Voucher received:", voucher);
 
     // 2) Prepare on-chain program and PDAs
-    const programId = new PublicKey('7QeGMAbT8ckFh4hM5E9Q2WjKkDkvMyZbV6iuAVvsLKrT');
+    const programId = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
     const [vaultPDA] = PublicKey.findProgramAddressSync(
       [Buffer.from("vault")],
       programId
     );
-    const treasuryPubkey = new PublicKey(process.env.TREASURY_PUBKEY);
+    const treasuryPubkey = new PublicKey(import.meta.env.VITE_TREASURY_PUBKEY);
     const [userVaultAccount] = PublicKey.findProgramAddressSync(
       [Buffer.from("user"), publicKey.toBuffer()],
       programId
@@ -278,7 +278,7 @@ const handleWithdraw = async () => {
 
     // 4) Create ed25519 verification instruction (index 0)
     const verifyIx = Ed25519Program.createInstructionWithPublicKey({
-      publicKey: bs58.decode(process.env.BOT_PUBKEY),
+      publicKey: bs58.decode(import.meta.env.VITE_BOT_PUBKEY),
       message,
       signature: sigBytes
     });
