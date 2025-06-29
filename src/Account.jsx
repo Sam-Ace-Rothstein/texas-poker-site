@@ -53,6 +53,7 @@ function BalanceDisplay({ username }) {
   const [tokenBalance, setTokenBalance] = useState(null);
   const [depositAmountSol, setDepositAmountSol] = useState("0.1");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("0");
   const [depositConfirmed, setDepositConfirmed] = useState(false);
 
   // Fetch SOL balance
@@ -207,29 +208,42 @@ const handleDeposit = async () => {
       alert("Please connect your wallet and wait for balances to load.");
       return;
     }
-
+  
+    // Parse and validate user‐entered withdraw amount
+    const amount = parseInt(withdrawAmount, 10);
+    if (isNaN(amount) || amount <= 0) {
+      alert("Enter a valid token amount to withdraw.");
+      return;
+    }
+    if (amount > tokenBalance) {
+      alert("Cannot withdraw more than your total tokens.");
+      return;
+    }
+  
     const walletPubkey = publicKey.toBase58();
     const nonce = Date.now();
-
+  
     try {
-      const res = await fetch("https://texas-poker-production.up.railway.app/api/request-voucher", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          wallet: walletPubkey,
-          username,
-          amount: tokenBalance,
-          nonce
-        })
-      });
-
+      const res = await fetch(
+        "https://texas-poker-production.up.railway.app/api/request-voucher",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            wallet: walletPubkey,
+            username,
+            amount,      // <-- now uses the user’s entered amount
+            nonce
+          })
+        }
+      );
+  
       const data = await res.json();
-
       if (!data.success) {
         alert("Voucher rejected: " + data.error);
         return;
       }
-
+  
       console.log("✅ Voucher received:", data.voucher);
       alert("Voucher received! Proceed with on-chain claim.");
     } catch (err) {
@@ -282,6 +296,21 @@ const handleDeposit = async () => {
 >
   {isSubmitting ? 'Depositing…' : 'Deposit SOL to Gameplay Tokens'}
 </button>
+
+<div style={{ marginTop: '1rem' }}>
+        <label>
+          Amount to burn (tokens):{" "}
+          <input
+            type="number"
+            value={withdrawAmount}
+            min="1"
+            step="1"
+            max={tokenBalance ?? undefined}
+            onChange={e => setWithdrawAmount(e.target.value)}
+            style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
+          />
+        </label>
+      </div>
   
       {/* Withdraw Button */}
       <button
