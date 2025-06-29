@@ -337,10 +337,22 @@ const handleWithdraw = async () => {
     // 7) Assemble and send transaction
     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
     const tx = new Transaction().add(verifyIx).add(withdrawIx);
+
+    // — simulate it first and print out exactly what’s wrong —
+    const sim = await connection.simulateTransaction(tx);
+    console.log("💡 Withdraw simulation logs:", sim.value.logs);
+    if (sim.value.err) {
+      console.error("❌ Preflight error:", sim.value.err);
+      alert("Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
+      setIsSubmitting(false);
+      return;
+    }
+
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
     tx.recentBlockhash = blockhash;
     tx.feePayer      = publicKey;
 
+    // Now that sim passed, actually send
     const sig = await sendTransaction(tx, connection);
     await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight });
 
