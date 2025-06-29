@@ -340,22 +340,21 @@ const tx = new Transaction()
   .add(verifyIx)
   .add(withdrawIx);
 
-// 7a) Set fee payer & recent blockhash before simulation
+// Assign fee payer & recent blockhash before simulation
 const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 tx.recentBlockhash = blockhash;
 tx.feePayer        = publicKey;
 
-// 7b) Simulate the transaction
+// Simulate now that tx is valid
 const sim = await connection.simulateTransaction(tx);
 console.log("💡 Withdraw simulation logs:", sim.value.logs);
 if (sim.value.err) {
   console.error("❌ Preflight error:", sim.value.err);
   alert("Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
-  setIsSubmitting(false);
   return;
 }
 
-// 7c) Send & confirm the transaction
+// Send & confirm transaction
 const sig = await sendTransaction(tx, connection);
 await connection.confirmTransaction(
   { signature: sig, blockhash, lastValidBlockHeight },
@@ -363,25 +362,13 @@ await connection.confirmTransaction(
 );
 
 alert("✅ Withdraw confirmed! Signature: " + sig);
-return;
+
+} catch (err) {
+  console.error("Withdraw failed:", err);
+  alert("Withdraw failed: " + (err.message || err));
+} finally {
+  setIsSubmitting(false);
 }
-
-// 3) Now send & confirm for real
-const sig = await sendTransaction(tx, connection);
-await connection.confirmTransaction(
-  { signature: sig, blockhash, lastValidBlockHeight },
-  'confirmed'
-);
-
-alert("✅ Withdraw confirmed! Signature: " + sig);
-return;
-
-  } catch (err) {
-    console.error("Withdraw failed:", err);
-    alert("Withdraw failed: " + (err.message || err));
-  } finally {
-    setIsSubmitting(false);
-  }
 };
 
   return (
@@ -396,7 +383,7 @@ return;
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to depositi (SOL):{" "}
+    Amount to depositoie (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
