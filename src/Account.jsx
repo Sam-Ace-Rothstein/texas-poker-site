@@ -55,6 +55,9 @@ const VaultSchema = new Map([
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
 function BalanceDisplay({ username }) {
+  console.log("🌱 VITE_VAULT_PROGRAM_ID:", import.meta.env.VITE_VAULT_PROGRAM_ID)
+console.log("🌱 VITE_BOT_PUBKEY:      ", import.meta.env.VITE_BOT_PUBKEY)
+console.log("🌱 VITE_TREASURY_PUBKEY: ", import.meta.env.VITE_TREASURY_PUBKEY)
   const { publicKey, connected, sendTransaction } = useWallet();
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
@@ -364,7 +367,7 @@ const handleWithdraw = async () => {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to deposito (SOL):{" "}
+    Amount to depositoi (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
