@@ -355,13 +355,19 @@ console.log("🧾 Message buffer (hex):", message.toString("hex"));
 console.log("✍️ Signature (base58):", voucher.signature);
 console.log("✍️ sigBytes length:", sigBytes.length);
 
-const sim = await connection.simulateTransaction(simTx);
+const sim = await connection.simulateTransaction(simTx, {
+  sigVerify: false,
+  commitment: 'confirmed',
+});
+
 console.log("💡 Withdraw simulation logs:", sim.value.logs);
 if (sim.value.err) {
   console.error("❌ Preflight error:", sim.value.err);
   alert("Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
   return;
 }
+
+console.log("🚧 About to build and send transaction...");
 
 // 2️⃣ Build new tx for sending (wallets need a fresh copy)
 const sendTx = new Transaction()
@@ -370,6 +376,9 @@ const sendTx = new Transaction()
 
 sendTx.recentBlockhash = blockhash;
 sendTx.feePayer = publicKey;
+
+console.log("📤 Prepared transaction:", sendTx);
+console.log("📤 Instructions:", sendTx.instructions.map(ix => ix.programId.toBase58()));
 
 let sig;
 try {
