@@ -219,7 +219,7 @@ const handleWithdraw = async () => {
     return;
   }
 
-  // Parse and validate user‐entered withdraw amount
+  // 1️⃣ Validate input
   const amount = parseInt(withdrawAmount, 10);
   if (isNaN(amount) || amount <= 0) {
     alert("Enter a valid token amount to withdraw.");
@@ -231,62 +231,53 @@ const handleWithdraw = async () => {
   }
 
   setIsSubmitting(true);
-  const walletPubkey = publicKey.toBase58();
-  // Use UNIX‐seconds timestamp for on‐chain expiry check
-  const nonce = Math.floor(Date.now() / 1000);
 
   try {
-    // 1) Request server‐signed voucher
+    // 2️⃣ Get voucher from backend
+    const nonce = Math.floor(Date.now() / 1000);
     const res = await fetch(
       "https://texas-poker-production.up.railway.app/api/request-voucher",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          wallet: walletPubkey,
+          wallet: publicKey.toBase58(),
           username,
           amount,
           nonce
         })
       }
     );
-    const data = await res.json();
-    if (!data.success) {
-      alert("Voucher rejected: " + data.error);
+    const { success, voucher, error } = await res.json();
+    if (!success) {
+      alert("Voucher rejected: " + error);
       return;
     }
-    const voucher = data.voucher;
     console.log("✅ Voucher received:", voucher);
 
-    // 2) Prepare on-chain program and PDAs
-    const programId = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
-    const [vaultPDA] = PublicKey.findProgramAddressSync(
-      [Buffer.from("vault_v2")],
-      programId
-    );
+    // 3️⃣ Build the two on-chain instructions
+    const programId      = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
+    const [vaultPDA]     = PublicKey.findProgramAddressSync([Buffer.from("vault_v2")], programId);
     const treasuryPubkey = new PublicKey(import.meta.env.VITE_TREASURY_PUBKEY);
     const [userVaultAccount] = PublicKey.findProgramAddressSync(
       [Buffer.from("user"), publicKey.toBuffer()],
       programId
     );
 
-    // 3) Decode signature and build message
+    // — decode and pack
     const sigBytes = bs58.decode(voucher.signature);
-    const message = Buffer.concat([
+    const msgBuf   = Buffer.concat([
       publicKey.toBuffer(),
-      Buffer.from(new BN(voucher.amount).toArray('le', 8)),
-      Buffer.from(new BN(voucher.nonce).toArray('le', 8)),
-      Buffer.from(new BN(parseInt(username, 10)).toArray('le', 8))
+      Buffer.from(new BN(voucher.amount).toArray("le", 8)),
+      Buffer.from(new BN(voucher.nonce).toArray("le", 8)),
+      Buffer.from(new BN(parseInt(username, 10)).toArray("le", 8)),
     ]);
-
-    // 4) Create ed25519 verification instruction (index 0)
     const verifyIx = Ed25519Program.createInstructionWithPublicKey({
-      publicKey: bs58.decode(import.meta.env.VITE_BOT_PUBKEY),
-      message,
-      signature: sigBytes
+      publicKey:  bs58.decode(import.meta.env.VITE_BOT_PUBKEY),
+      message:    msgBuf,
+      signature:  sigBytes,
     });
 
-    // 5) Build withdraw data struct
     class WithdrawPayload {
       constructor(f) {
         this.variant     = f.variant;     // 2 = Withdraw
@@ -297,16 +288,19 @@ const handleWithdraw = async () => {
       }
     }
     const WithdrawSchema = new Map([
-      [WithdrawPayload, {
-        kind: "struct",
-        fields: [
-          ['variant',     'u8'],
-          ['amount',      'u64'],
-          ['nonce',       'u64'],
-          ['telegram_id', 'u64'],
-          ['signature',   [64]],
-        ]
-      }]
+      [
+        WithdrawPayload,
+        {
+          kind: "struct",
+          fields: [
+            ["variant",     "u8"],
+            ["amount",      "u64"],
+            ["nonce",       "u64"],
+            ["telegram_id", "u64"],
+            ["signature",   [64]],
+          ],
+        },
+      ],
     ]);
     const withdrawData = Buffer.from(
       borsh.serialize(
@@ -316,102 +310,78 @@ const handleWithdraw = async () => {
           amount:      BigInt(voucher.amount),
           nonce:       BigInt(voucher.nonce),
           telegram_id: BigInt(parseInt(username, 10)),
-          signature:   sigBytes
+          signature:   sigBytes,
         })
       )
     );
-
-    // 6) Create withdraw instruction (index 1)
     const withdrawIx = new TransactionInstruction({
       programId,
       keys: [
         { pubkey: publicKey,               isSigner: true,  isWritable: true  },
         { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
         { pubkey: treasuryPubkey,          isSigner: false, isWritable: true  },
-        { pubkey: SystemProgram.programId,     isSigner: false, isWritable: false },
+        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
         { pubkey: SYSVAR_INSTRUCTIONS_PUBKEY, isSigner: false, isWritable: false },
         { pubkey: userVaultAccount,        isSigner: false, isWritable: true  },
       ],
-      data: withdrawData
+      data: withdrawData,
     });
 
-    // 7) Build & send a VersionedTransaction (v0)
-     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-     const latest = await connection.getLatestBlockhash();
- 
-     // compile a v0 message with exactly your two instructions in order:
-     const msgV0 = new TransactionMessage({
-       payerKey: publicKey,
-       recentBlockhash: latest.blockhash,
-       instructions: [verifyIx, withdrawIx],
-     }).compileToV0Message();
- 
-     // wrap it
-     const txV0 = new VersionedTransaction(msgV0);
- 
-     // have the wallet sign it
-     await wallet.signTransaction(txV0);
- 
-     // send & confirm
-     const sig = await connection.sendRawTransaction(txV0.serialize());
-     await connection.confirmTransaction(sig, 'confirmed');
- 
-     console.log("📨 Withdraw transaction signature:", sig);
-     console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
- 
-     // no need to redeclare `sig`—just reuse it
-     try {
-       sig = await sendTransaction(sendTx, connection);
-  console.log("📨 Withdraw transaction signature:", sig);
-} catch (err) {
-  console.error("❌ sendTransaction failed:", err);
-  alert("❌ Transaction was not signed or failed to send.");
-  return;
-}
+    // 4️⃣ Assemble & simulate (optional)
+    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+    const tx = new Transaction()
+      .add(verifyIx)
+      .add(withdrawIx);
+    tx.recentBlockhash = blockhash;
+    tx.feePayer = publicKey;
 
-try {
-  // Await full confirmation
-  const confirmation = await connection.confirmTransaction(
-    { signature: sig, blockhash, lastValidBlockHeight },
-    'confirmed'
-  );
+    console.log("🚧 Running preflight simulation…");
+    const sim = await connection.simulateTransaction(tx);
+    console.log("💡 Simulation logs:", sim.value.logs);
+    if (sim.value.err) {
+      console.error("❌ Preflight error:", sim.value.err);
+      alert("Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
+      return;
+    }
 
-  if (confirmation.value.err) {
-    console.error("❌ Transaction confirmed with error:", confirmation.value.err);
-    alert("❌ Withdraw transaction failed on-chain. Check Explorer for details.");
-    return;
-  }
+    // 5️⃣ Send & confirm
+    console.log("🚧 Sending transaction to wallet…");
+    const signature = await sendTransaction(tx, connection);
+    console.log("📨 Withdraw tx signature:", signature);
+    await connection.confirmTransaction(
+      { signature, blockhash, lastValidBlockHeight },
+      "confirmed"
+    );
 
-  // Fetch transaction logs
-  const confirmedTx = await connection.getTransaction(sig, {
-    commitment: 'confirmed',
-    maxSupportedTransactionVersion: 0,
-  });
+    // 6️⃣ Fetch on-chain logs for WithdrawEvent:
+    const confirmed = await connection.getTransaction(signature, {
+      commitment: "confirmed",
+      maxSupportedTransactionVersion: 0,
+    });
+    const logs = confirmed?.meta?.logMessages || [];
+    console.log("🪵 On-chain logs:", logs);
 
-  if (!confirmedTx) {
-    console.warn("⚠️ Transaction not found on-chain after confirmation.");
-    alert("⚠️ Transaction not found. Check Explorer or try again later.");
-    return;
-  }
+    // 7️⃣ Find and alert
+    const evt = logs.find((l) => l.includes("WithdrawEvent:"));
+    if (evt) {
+      console.log("✅ WithdrawEvent found:", evt);
+      alert("✅ Withdraw confirmed! Signature: " + signature);
+    } else {
+      console.warn("⚠️ WithdrawEvent missing in logs");
+      alert(
+        "Withdraw likely succeeded but no on-chain event found—" +
+        "check Explorer:\n" +
+        `https://explorer.solana.com/tx/${signature}?cluster=devnet`
+      );
+    }
 
-  console.log("🪵 On-chain withdraw logs:", confirmedTx.meta?.logMessages || []);
-  console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
-  alert(`✅ Withdraw confirmed!\nExplorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
-} catch (err) {
-  console.error("❌ Error during confirmation or log parsing:", err);
-  alert("⚠️ Withdraw sent but confirmation or Explorer check failed.");
-}
-} catch (err) {
-  console.error("Withdraw failed:", err);
-
-  if (err.message?.includes("Simulation failed")) {
-    alert("✅ Withdraw likely succeeded on-chain, but simulation failed. Check logs or Explorer to confirm.");
-  } else {
+  } catch (err) {
+    console.error("Withdraw failed:", err);
     alert("Withdraw failed: " + (err.message || err));
+  } finally {
+    setIsSubmitting(false);
   }
-} finally {
-  setIsSubmitting(false);
-}
 };
 
   return (
