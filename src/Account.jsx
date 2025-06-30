@@ -371,25 +371,48 @@ const sendTx = new Transaction()
 sendTx.recentBlockhash = blockhash;
 sendTx.feePayer = publicKey;
 
-const sig = await sendTransaction(sendTx, connection);
-await connection.confirmTransaction(
-  { signature: sig, blockhash, lastValidBlockHeight },
-  'confirmed'
-);
+let sig;
+try {
+  sig = await sendTransaction(sendTx, connection);
+  console.log("📨 Withdraw transaction signature:", sig);
+} catch (err) {
+  console.error("❌ sendTransaction failed:", err);
+  alert("❌ Transaction was not signed or failed to send.");
+  return;
+}
 
-// Log and alert user
-console.log("📨 Withdraw transaction signature:", sig);
-console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
-alert(`✅ Withdraw confirmed!\nExplorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+try {
+  // Await full confirmation
+  const confirmation = await connection.confirmTransaction(
+    { signature: sig, blockhash, lastValidBlockHeight },
+    'confirmed'
+  );
 
-const confirmedTx = await connection.getTransaction(sig, {
-  commitment: 'confirmed',
-  maxSupportedTransactionVersion: 0,
-});
+  if (confirmation.value.err) {
+    console.error("❌ Transaction confirmed with error:", confirmation.value.err);
+    alert("❌ Withdraw transaction failed on-chain. Check Explorer for details.");
+    return;
+  }
 
-const onChainLogs = confirmedTx?.meta?.logMessages || [];
-console.log("🪵 On-chain withdraw logs:", onChainLogs);
+  // Fetch transaction logs
+  const confirmedTx = await connection.getTransaction(sig, {
+    commitment: 'confirmed',
+    maxSupportedTransactionVersion: 0,
+  });
 
+  if (!confirmedTx) {
+    console.warn("⚠️ Transaction not found on-chain after confirmation.");
+    alert("⚠️ Transaction not found. Check Explorer or try again later.");
+    return;
+  }
+
+  console.log("🪵 On-chain withdraw logs:", confirmedTx.meta?.logMessages || []);
+  console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+  alert(`✅ Withdraw confirmed!\nExplorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+} catch (err) {
+  console.error("❌ Error during confirmation or log parsing:", err);
+  alert("⚠️ Withdraw sent but confirmation or Explorer check failed.");
+}
 } catch (err) {
   console.error("Withdraw failed:", err);
 
