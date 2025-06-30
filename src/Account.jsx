@@ -112,7 +112,7 @@ const handleDeposit = async () => {
   try {
     const programId = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
     const [vaultPDA] = PublicKey.findProgramAddressSync(
-      [Buffer.from("vault")],    // matches GAME_VAULT_SEED = b"vault"
+      [Buffer.from("vault_v2")],    // matches GAME_VAULT_SEED = b"vault"
       programId
     );
     console.log("🔐 PDA:", vaultPDA.toBase58());
@@ -261,7 +261,7 @@ const handleWithdraw = async () => {
     // 2) Prepare on-chain program and PDAs
     const programId = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
     const [vaultPDA] = PublicKey.findProgramAddressSync(
-      [Buffer.from("vault")],
+      [Buffer.from("vault_v2")],
       programId
     );
     const treasuryPubkey = new PublicKey(import.meta.env.VITE_TREASURY_PUBKEY);
@@ -328,6 +328,7 @@ const handleWithdraw = async () => {
         { pubkey: publicKey,               isSigner: true,  isWritable: true  },
         { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
         { pubkey: treasuryPubkey,          isSigner: false, isWritable: true  },
+        { pubkey: SystemProgram.programId,     isSigner: false, isWritable: false },
         { pubkey: SYSVAR_INSTRUCTIONS_PUBKEY, isSigner: false, isWritable: false },
         { pubkey: userVaultAccount,        isSigner: false, isWritable: true  },
       ],
