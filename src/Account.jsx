@@ -355,7 +355,9 @@ console.log("📤 Instructions:", sendTx.instructions.map(ix => ix.programId.toB
 
 let sig;
 try {
-  sig = await sendTransaction(sendTx, connection);
+  sendTx.sign(yourKeypair); // If you have the keypair loaded
+  const rawSig = await connection.sendRawTransaction(sendTx.serialize(), { skipPreflight: true });
+  console.log("📨 Raw transaction signature:", rawSig);
   console.log("📨 Withdraw transaction signature:", sig);
 } catch (err) {
   console.error("❌ sendTransaction failed:", err);
@@ -420,7 +422,7 @@ try {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amounti to deposito (SOL):{" "}
+    Amountio to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
