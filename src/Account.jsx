@@ -337,14 +337,15 @@ const handleWithdraw = async () => {
 
     // 7) Assemble, simulate & send transaction
 const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-const tx = new Transaction()
+const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+
+// 1️⃣ Simulate with a fresh transaction
+const simTx = new Transaction()
   .add(verifyIx)
   .add(withdrawIx);
 
-// Assign fee payer & recent blockhash before simulation
-const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-tx.recentBlockhash = blockhash;
-tx.feePayer        = publicKey;
+simTx.recentBlockhash = blockhash;
+simTx.feePayer = publicKey;
 
 console.log("📦 Public key (wallet):", publicKey.toBase58());
 console.log("📦 Voucher.amount:", voucher.amount);
@@ -354,8 +355,7 @@ console.log("🧾 Message buffer (hex):", message.toString("hex"));
 console.log("✍️ Signature (base58):", voucher.signature);
 console.log("✍️ sigBytes length:", sigBytes.length);
 
-// Simulate now that tx is valid
-const sim = await connection.simulateTransaction(tx);
+const sim = await connection.simulateTransaction(simTx);
 console.log("💡 Withdraw simulation logs:", sim.value.logs);
 if (sim.value.err) {
   console.error("❌ Preflight error:", sim.value.err);
@@ -363,21 +363,32 @@ if (sim.value.err) {
   return;
 }
 
-console.log("🧾 Message buffer:", message.toString("hex"));
-console.log("✍️ Signature (base58):", voucher.signature);
-console.log("✍️ sigBytes length:", sigBytes.length);
+// 2️⃣ Build new tx for sending (wallets need a fresh copy)
+const sendTx = new Transaction()
+  .add(verifyIx)
+  .add(withdrawIx);
 
-// Send & confirm transaction
-const sig = await sendTransaction(tx, connection);
+sendTx.recentBlockhash = blockhash;
+sendTx.feePayer = publicKey;
+
+const sig = await sendTransaction(sendTx, connection);
 await connection.confirmTransaction(
   { signature: sig, blockhash, lastValidBlockHeight },
   'confirmed'
 );
 
-alert(`✅ Withdraw confirmed!\nExplorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
-alert("✅ Withdraw confirmed! Signature: " + sig);
-
+// Log and alert user
 console.log("📨 Withdraw transaction signature:", sig);
+console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+alert(`✅ Withdraw confirmed!\nExplorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+
+// Optional: check on-chain logs again after confirmed
+const confirmedTx = await connection.getTransaction(sig, {
+  commitment: 'confirmed',
+  maxSupportedTransactionVersion: 0,
+});
+const onChainLogs = confirmedTx?.meta?.logMessages || [];
+console.log("🪵 On-chain withdraw logs:", onChainLogs);
 
 const confirmedTx = await connection.getTransaction(sig, {
   commitment: 'confirmed',
@@ -389,14 +400,11 @@ console.log("🪵 On-chain withdraw logs:", onChainLogs);
 
 } catch (err) {
   console.error("Withdraw failed:", err);
+
   if (err.message?.includes("Simulation failed")) {
-    alert("Withdraw likely succeeded on-chain but couldn't be simulated. Check logs to confirm.");
+    alert("✅ Withdraw likely succeeded on-chain, but simulation failed. Check logs or Explorer to confirm.");
   } else {
-    if (err.message?.includes("Simulation failed")) {
-      alert("✅ Withdraw likely succeeded on-chain! Simulation failed, but transaction executed. Check Explorer for logs.");
-    } else {
-      alert("Withdraw failed: " + (err.message || err));
-    }
+    alert("Withdraw failed: " + (err.message || err));
   }
 } finally {
   setIsSubmitting(false);
