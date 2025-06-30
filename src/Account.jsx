@@ -335,44 +335,37 @@ const handleWithdraw = async () => {
       data: withdrawData
     });
 
-    // 7) Assemble, simulate & send transaction
-const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+    // 7) Build & send a VersionedTransaction (v0)
+     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+     const latest = await connection.getLatestBlockhash();
+ 
+     // compile a v0 message with exactly your two instructions in order:
+     const msgV0 = new TransactionMessage({
+       payerKey: publicKey,
+       recentBlockhash: latest.blockhash,
+       instructions: [verifyIx, withdrawIx],
+     }).compileToV0Message();
+ 
+     // wrap it
+     const txV0 = new VersionedTransaction(msgV0);
+ 
+     // have the wallet sign it
+     await wallet.signTransaction(txV0);
+ 
+     // send & confirm
+     const sig = await connection.sendRawTransaction(txV0.serialize());
+     await connection.confirmTransaction(sig, 'confirmed');
+ 
+     console.log("📨 Withdraw transaction signature:", sig);
+     console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
 
-// 1️⃣ Simulate with a fresh transaction
-console.log("🚧 Skipping simulation — sending tx directly");
-
-// 2️⃣ Build new tx for sending (wallets need a fresh copy)
-const sendTx = new Transaction()
-  .add(verifyIx)
-  .add(withdrawIx);
-
-sendTx.recentBlockhash = blockhash;
-sendTx.feePayer = publicKey;
-
-console.log("📤 Prepared transaction:", sendTx);
-console.log("📤 Instructions:", sendTx.instructions.map(ix => ix.programId.toBase58()));
-
+let sig;
 try {
-  const latestBlockhash = await connection.getLatestBlockhash();
-  sendTx.recentBlockhash = latestBlockhash.blockhash;
-  sendTx.feePayer = publicKey;
-
-  // Enforce correct instruction order with manual signing
-  const signedTx = await window.solana.signTransaction(sendTx);
-  const rawSig = await connection.sendRawTransaction(signedTx.serialize(), {
-    skipPreflight: false
-  });
-
-  console.log("📨 Raw transaction signature:", rawSig);
-  alert(`✅ Withdraw transaction submitted!\nExplorer: https://explorer.solana.com/tx/${rawSig}?cluster=devnet`);
-
-  // Optional: confirm it
-  await connection.confirmTransaction(rawSig, 'confirmed');
-  console.log("✅ Transaction confirmed");
+  sig = await sendTransaction(sendTx, connection);
+  console.log("📨 Withdraw transaction signature:", sig);
 } catch (err) {
-  console.error("❌ sendRawTransaction failed:", err);
-  alert("❌ Transaction failed to send or confirm. Check console.");
+  console.error("❌ sendTransaction failed:", err);
+  alert("❌ Transaction was not signed or failed to send.");
   return;
 }
 
@@ -433,7 +426,7 @@ try {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amountioo to depositoo (SOL):{" "}
+    Amountio to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
