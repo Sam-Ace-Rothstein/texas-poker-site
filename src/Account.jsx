@@ -358,10 +358,10 @@ const handleWithdraw = async () => {
  
      console.log("📨 Withdraw transaction signature:", sig);
      console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
-
-let sig;
-try {
-  sig = await sendTransaction(sendTx, connection);
+ 
+     // no need to redeclare `sig`—just reuse it
+     try {
+       sig = await sendTransaction(sendTx, connection);
   console.log("📨 Withdraw transaction signature:", sig);
 } catch (err) {
   console.error("❌ sendTransaction failed:", err);
