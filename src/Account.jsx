@@ -382,14 +382,6 @@ console.log("📨 Withdraw transaction signature:", sig);
 console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
 alert(`✅ Withdraw confirmed!\nExplorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
 
-// Optional: check on-chain logs again after confirmed
-const confirmedTx = await connection.getTransaction(sig, {
-  commitment: 'confirmed',
-  maxSupportedTransactionVersion: 0,
-});
-const onChainLogs = confirmedTx?.meta?.logMessages || [];
-console.log("🪵 On-chain withdraw logs:", onChainLogs);
-
 const confirmedTx = await connection.getTransaction(sig, {
   commitment: 'confirmed',
   maxSupportedTransactionVersion: 0,
