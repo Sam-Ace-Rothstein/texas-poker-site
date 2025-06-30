@@ -353,13 +353,26 @@ sendTx.feePayer = publicKey;
 console.log("📤 Prepared transaction:", sendTx);
 console.log("📤 Instructions:", sendTx.instructions.map(ix => ix.programId.toBase58()));
 
-let sig;
 try {
-  sig = await sendTransaction(sendTx, connection);
-  console.log("📨 Withdraw transaction signature:", sig);
+  const latestBlockhash = await connection.getLatestBlockhash();
+  sendTx.recentBlockhash = latestBlockhash.blockhash;
+  sendTx.feePayer = publicKey;
+
+  // Enforce correct instruction order with manual signing
+  const signedTx = await window.solana.signTransaction(sendTx);
+  const rawSig = await connection.sendRawTransaction(signedTx.serialize(), {
+    skipPreflight: false
+  });
+
+  console.log("📨 Raw transaction signature:", rawSig);
+  alert(`✅ Withdraw transaction submitted!\nExplorer: https://explorer.solana.com/tx/${rawSig}?cluster=devnet`);
+
+  // Optional: confirm it
+  await connection.confirmTransaction(rawSig, 'confirmed');
+  console.log("✅ Transaction confirmed");
 } catch (err) {
-  console.error("❌ sendTransaction failed:", err);
-  alert("❌ Transaction was not signed or failed to send.");
+  console.error("❌ sendRawTransaction failed:", err);
+  alert("❌ Transaction failed to send or confirm. Check console.");
   return;
 }
 
@@ -420,7 +433,7 @@ try {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amountioo to deposito (SOL):{" "}
+    Amountioo to depositoo (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
