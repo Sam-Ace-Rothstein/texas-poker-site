@@ -396,7 +396,7 @@ alert("✅ Withdraw confirmed! Signature: " + sig);
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to deposito (SOL):{" "}
+    Amount to depositoi (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
