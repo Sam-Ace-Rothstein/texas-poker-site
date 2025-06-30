@@ -376,6 +376,16 @@ await connection.confirmTransaction(
 
 alert("✅ Withdraw confirmed! Signature: " + sig);
 
+console.log("📨 Withdraw transaction signature:", sig);
+
+const confirmedTx = await connection.getTransaction(sig, {
+  commitment: 'confirmed',
+  maxSupportedTransactionVersion: 0,
+});
+
+const onChainLogs = confirmedTx?.meta?.logMessages || [];
+console.log("🪵 On-chain withdraw logs:", onChainLogs);
+
 } catch (err) {
   console.error("Withdraw failed:", err);
   alert("Withdraw failed: " + (err.message || err));
@@ -396,7 +406,7 @@ alert("✅ Withdraw confirmed! Signature: " + sig);
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to depositoi (SOL):{" "}
+    Amounto to depositoi (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
