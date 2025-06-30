@@ -276,7 +276,7 @@ const handleWithdraw = async () => {
       publicKey.toBuffer(),
       Buffer.from(new BN(voucher.amount).toArray('le', 8)),
       Buffer.from(new BN(voucher.nonce).toArray('le', 8)),
-      Buffer.from(new BN(username).toArray('le', 8)),
+      Buffer.from(new BN(parseInt(username, 10)).toArray('le', 8))
     ]);
 
     // 4) Create ed25519 verification instruction (index 0)
@@ -315,7 +315,7 @@ const handleWithdraw = async () => {
           variant:     2,
           amount:      BigInt(voucher.amount),
           nonce:       BigInt(voucher.nonce),
-          telegram_id: BigInt(username),
+          telegram_id: BigInt(parseInt(username, 10)),
           signature:   sigBytes
         })
       )
@@ -345,6 +345,14 @@ const tx = new Transaction()
 const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 tx.recentBlockhash = blockhash;
 tx.feePayer        = publicKey;
+
+console.log("📦 Public key (wallet):", publicKey.toBase58());
+console.log("📦 Voucher.amount:", voucher.amount);
+console.log("📦 Voucher.nonce:", voucher.nonce);
+console.log("📦 Username (raw):", username);
+console.log("🧾 Message buffer (hex):", message.toString("hex"));
+console.log("✍️ Signature (base58):", voucher.signature);
+console.log("✍️ sigBytes length:", sigBytes.length);
 
 // Simulate now that tx is valid
 const sim = await connection.simulateTransaction(tx);
@@ -388,7 +396,7 @@ alert("✅ Withdraw confirmed! Signature: " + sig);
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amount to depositoie (SOL):{" "}
+    Amount to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
