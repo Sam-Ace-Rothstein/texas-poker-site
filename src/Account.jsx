@@ -340,34 +340,7 @@ const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
 const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
 
 // 1️⃣ Simulate with a fresh transaction
-const simTx = new Transaction()
-  .add(verifyIx)
-  .add(withdrawIx);
-
-simTx.recentBlockhash = blockhash;
-simTx.feePayer = publicKey;
-
-console.log("📦 Public key (wallet):", publicKey.toBase58());
-console.log("📦 Voucher.amount:", voucher.amount);
-console.log("📦 Voucher.nonce:", voucher.nonce);
-console.log("📦 Username (raw):", username);
-console.log("🧾 Message buffer (hex):", message.toString("hex"));
-console.log("✍️ Signature (base58):", voucher.signature);
-console.log("✍️ sigBytes length:", sigBytes.length);
-
-const sim = await connection.simulateTransaction(simTx, {
-  sigVerify: false,
-  commitment: 'confirmed',
-});
-
-console.log("💡 Withdraw simulation logs:", sim.value.logs);
-if (sim.value.err) {
-  console.error("❌ Preflight error:", sim.value.err);
-  alert("Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
-  return;
-}
-
-console.log("🚧 About to build and send transaction...");
+console.log("🚧 Skipping simulation — sending tx directly");
 
 // 2️⃣ Build new tx for sending (wallets need a fresh copy)
 const sendTx = new Transaction()
