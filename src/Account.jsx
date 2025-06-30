@@ -374,7 +374,7 @@ await connection.confirmTransaction(
   'confirmed'
 );
 
-console.log(`📨 View on Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+alert(`✅ Withdraw confirmed!\nExplorer: https://explorer.solana.com/tx/${sig}?cluster=devnet`);
 alert("✅ Withdraw confirmed! Signature: " + sig);
 
 console.log("📨 Withdraw transaction signature:", sig);
@@ -392,7 +392,11 @@ console.log("🪵 On-chain withdraw logs:", onChainLogs);
   if (err.message?.includes("Simulation failed")) {
     alert("Withdraw likely succeeded on-chain but couldn't be simulated. Check logs to confirm.");
   } else {
-    alert("Withdraw failed: " + (err.message || err));
+    if (err.message?.includes("Simulation failed")) {
+      alert("✅ Withdraw likely succeeded on-chain! Simulation failed, but transaction executed. Check Explorer for logs.");
+    } else {
+      alert("Withdraw failed: " + (err.message || err));
+    }
   }
 } finally {
   setIsSubmitting(false);
@@ -411,7 +415,7 @@ console.log("🪵 On-chain withdraw logs:", onChainLogs);
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amounto to deposito (SOL):{" "}
+    Amounti to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
