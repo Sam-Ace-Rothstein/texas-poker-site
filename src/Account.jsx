@@ -115,7 +115,7 @@ const handleDeposit = async () => {
       [Buffer.from("vault_v2")],    // matches GAME_VAULT_SEED = b"vault"
       programId
     );
-    console.log("🔐 PDA:", vaultPDA.toBase58());
+    console.log("🔐 Vault PDA computed:", vaultPDA.toBase58());
 
     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
     const telegramId = BigInt(username);
