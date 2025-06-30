@@ -355,6 +355,10 @@ if (sim.value.err) {
   return;
 }
 
+console.log("🧾 Message buffer:", message.toString("hex"));
+console.log("✍️ Signature (base58):", voucher.signature);
+console.log("✍️ sigBytes length:", sigBytes.length);
+
 // Send & confirm transaction
 const sig = await sendTransaction(tx, connection);
 await connection.confirmTransaction(
