@@ -415,7 +415,7 @@ return (
 
       <div style={{ marginTop: '1rem' }}>
         <label>
-          Amount to deposit (SOL):{' '}
+          Amount SOL to deposit:{' '}
           <input
             type="number"
             value={depositAmountSol}
@@ -459,7 +459,7 @@ return (
 
       <div style={{ marginTop: '1rem' }}>
         <label>
-          Amount to burn (tokens):{' '}
+          Amount of tokens to withdraw:{' '}
           <input
             type="number"
             value={withdrawAmount}
