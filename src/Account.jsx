@@ -21,12 +21,13 @@ import '@solana/wallet-adapter-react-ui/styles.css';
 import BN from 'bn.js'; 
 
 import {
-  Transaction,
-  TransactionInstruction,
-  SystemProgram,
-  Connection,
-  PublicKey
-} from '@solana/web3.js';
+     Transaction,
+     TransactionInstruction,
+     SystemProgram,
+     Connection,
+     PublicKey,
+     SYSVAR_INSTRUCTIONS_PUBKEY
+   } from '@solana/web3.js';
 import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
 if (!window.Buffer) window.Buffer = Buffer;
@@ -306,16 +307,17 @@ const handleWithdraw = async () => {
       )
     );
     const withdrawIx = new TransactionInstruction({
-      programId,
-      keys: [
-        { pubkey: publicKey,               isSigner: true,  isWritable: true  },
-        { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
-        { pubkey: treasuryPubkey,          isSigner: false, isWritable: true  },
-        { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-        { pubkey: userVaultAccount,        isSigner: false, isWritable: true  },
-      ],
-      data: withdrawData,
-    });
+             programId,
+             keys: [
+               { pubkey: publicKey,               isSigner: true,  isWritable: true  },
+               { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
+               { pubkey: treasuryPubkey,          isSigner: false, isWritable: true  },
+               { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+                { pubkey: SYSVAR_INSTRUCTIONS_PUBKEY, isSigner: false, isWritable: false },
+              { pubkey: userVaultAccount,        isSigner: false, isWritable: true  },
+             ],
+             data: withdrawData,
+           });
 
     // 4️⃣ Assemble & simulate (optional)
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
