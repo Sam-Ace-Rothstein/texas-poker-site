@@ -395,86 +395,106 @@ const handleWithdraw = async () => {
   }
 };
 
-  return (
-    <div style={{ marginTop: '1rem' }}>
+return (
+  <div
+    style={{
+      marginTop: '1rem',
+      display: 'flex',
+      justifyContent: 'space-between',
+      flexWrap: 'wrap'
+    }}
+  >
+    {/* Left: Deposit Section */}
+    <div style={{ flex: 1, marginRight: '1rem' }}>
       <p id="sol-balance">
-        Total SOL: <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
+        Total SOL:{' '}
+        <strong>
+          {solBalance != null ? solBalance.toFixed(4) : '…'}
+        </strong>
       </p>
-      <p id="token-balance">
-        Total Tokens: <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
-      </p>
-  
 
       <div style={{ marginTop: '1rem' }}>
-  <label>
-    Amountioi to deposito (SOL):{" "}
-    <input
-  type="number"
-  value={depositAmountSol}
-  min="0"
-  step="0.01"
-  max={solBalance ?? undefined}
-  onChange={(e) => setDepositAmountSol(e.target.value)}
-  style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
-/>
-  </label>
-</div>
-
+        <label>
+          Amount to deposit (SOL):{' '}
+          <input
+            type="number"
+            value={depositAmountSol}
+            min="0"
+            step="0.01"
+            max={solBalance ?? undefined}
+            onChange={(e) => setDepositAmountSol(e.target.value)}
+            style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
+          />
+        </label>
+      </div>
 
       {/* Deposit Button */}
       <button
-  style={{
-    marginTop: '1rem',
-    padding: '0.5rem 1rem',
-    fontSize: '1rem',
-    fontWeight: 'bold',
-    background: '#229',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '6px',
-    cursor: isSubmitting ? 'not-allowed' : 'pointer'
-  }}
-  onClick={handleDeposit}
-  disabled={isSubmitting}
->
-  {isSubmitting ? 'Depositing…' : 'Deposit SOL to Gameplay Tokens'}
-</button>
+        style={{
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          background: '#229',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: isSubmitting ? 'not-allowed' : 'pointer'
+        }}
+        onClick={handleDeposit}
+        disabled={isSubmitting}
+      >
+        {isSubmitting
+          ? 'Depositing…'
+          : 'Deposit SOL to Gameplay Tokens'}
+      </button>
+    </div>
 
-<div style={{ marginTop: '1rem' }}>
+    {/* Right: Withdraw Section */}
+    <div style={{ flex: 1, marginLeft: '1rem' }}>
+      <p id="token-balance">
+        Total Tokens:{' '}
+        <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
+      </p>
+
+      <div style={{ marginTop: '1rem' }}>
         <label>
-          Amount to burn (tokens):{" "}
+          Amount to burn (tokens):{' '}
           <input
             type="number"
             value={withdrawAmount}
             min="1"
             step="1"
             max={tokenBalance ?? undefined}
-            onChange={e => setWithdrawAmount(e.target.value)}
+            onChange={(e) => setWithdrawAmount(e.target.value)}
             style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
           />
         </label>
       </div>
-  
+
       {/* Withdraw Button */}
       <button
-         disabled={isSubmitting}
-         style={{
-           marginTop: '1rem',
-           padding: '0.5rem 1rem',
-           fontSize: '1rem',
-           fontWeight: 'bold',
-           background: '#2c2',
-           color: '#fff',
-           border: 'none',
-           borderRadius: '6px',
-           cursor: isSubmitting ? 'not-allowed' : 'pointer'
-         }}
-         onClick={handleWithdraw}
-       >
-         {isSubmitting ? 'Withdrawing…' : 'Withdraw Gameplay Tokens to SOL'}
-       </button>
+        style={{
+          marginTop: '1rem',
+          padding: '0.5rem 1rem',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          background: '#2c2',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: isSubmitting ? 'not-allowed' : 'pointer'
+        }}
+        onClick={handleWithdraw}
+        disabled={isSubmitting}
+      >
+        {isSubmitting
+          ? 'Withdrawing…'
+          : 'Withdraw Gameplay Tokens to SOL'}
+      </button>
     </div>
-  );
+  </div>
+);
 }
 
 
