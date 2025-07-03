@@ -14,7 +14,7 @@
       <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
     <!-- only one wallet-adapter stylesheet -->
-    <script type="module" crossorigin src="/texas-poker-site/assets/main-PEbUjsIk.js"></script>
+    <script type="module" crossorigin src="/texas-poker-site/assets/main-By1F7nHv.js"></script>
     <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
   </head>
 	<body class="no-sidebar is-preload">
@@ -83,7 +83,7 @@
       <ul style="list-style: none; padding: 0; display: flex; justify-content: center; gap: 2em;">
         <li>Total Tables: <strong><span id="total-tables">–</span></strong></li>
         <li>Total Players: <strong><span id="total-players">–</span></strong></li>
-        <li>Total SOL Deposited into Vault: <strong><span id="vault-sol">–</span></strong></li>
+        <li>Total SOL Deposited: <strong><span id="total-transfers-in">–</span></strong></li>
       </ul>
 
     </div>
@@ -453,41 +453,7 @@
     loadStats();
     setInterval(loadStats, 30_000);
   </script>
-        <!-- Point Vite to your Account.jsx entry -->
-
-<!-- 1) load the UMD bundle so you get a global `solanaWeb3` -->
-<script src="https://unpkg.com/@solana/web3.js@1.78.0/lib/index.iife.min.js"></script>
-
-<!-- 2) fetch & display the vault’s SOL -->
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    // ─── CONFIGURE ─────────────────────────────────────────────
-    const RPC_ENDPOINT      = 'https://api.devnet.solana.com';
-    const PROGRAM_ID        = '8yLj1vjS1JXYyekcBiRqM7rmrtf4a9dFuB6UZemYAH8L';  // your staking_vault_v2 program
-    const VAULT_SEED        = 'vault_v2';                                 // seed used on-chain
-
-    // ─── DERIVE PDA ─────────────────────────────────────────────
-    const { Connection, PublicKey } = solanaWeb3;
-    const programId  = new PublicKey(PROGRAM_ID);
-    const seedBuf    = new TextEncoder().encode(VAULT_SEED);
-    const [vaultPDA] = await PublicKey.findProgramAddress([seedBuf], programId);
-
-    // ─── FETCH & FORMAT BALANCE ─────────────────────────────────
-    const conn      = new Connection(RPC_ENDPOINT, 'confirmed');
-    const lamports  = await conn.getBalance(vaultPDA);
-    const sol       = (lamports / 1e9).toFixed(4);
-
-    // ─── WRITE OUT ───────────────────────────────────────────────
-    document
-      .querySelectorAll('#vault-sol')
-      .forEach(el => { el.textContent = sol; });
-
-  } catch (err) {
-    console.error('Failed to fetch vault balance:', err);
-  }
-});
-</script>
+      <!-- Point Vite to your Account.jsx entry -->
 
 	</body>
 </html>
