@@ -455,30 +455,35 @@
     loadStats();
     setInterval(loadStats, 30_000);
   </script>
-      <!-- Point Vite to your Account.jsx entry -->
+        <!-- Point Vite to your Account.jsx entry -->
   <script type="module" src="/src/Account.jsx"></script>
 
   <!-- fetch & display on‐chain vault SOL, replacing “Total SOL Deposited” -->
-   <script type="module">
-       import { Connection, PublicKey } from 'https://unpkg.com/@solana/web3.js?module';
-   
-       (async () => {
-         const API_CLUSTER = 'https://api.devnet.solana.com';               // or your cluster
-         const programId   = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
-         // derive PDA exactly as in your program
-         const [vaultPDA]  = await PublicKey.findProgramAddress(
-           [Buffer.from('vault_v2')], 
-           programId
-         );
-         const conn = new Connection(API_CLUSTER, 'confirmed');
-         const lamports = await conn.getBalance(vaultPDA);
-         const sol = (lamports / 1e9).toFixed(4);
-         // overwrite every “Total SOL Deposited” span
-         document
-           .querySelectorAll('#total-transfers-in')
-           .forEach(el => { el.textContent = sol; });
-       })();
-     </script>
+  <script type="module">
+    // use a browser-compatible bundle of @solana/web3.js
+    import { Connection, PublicKey } from 'https://cdn.skypack.dev/@solana/web3.js';
+    // Buffer is needed for PDA derivation
+    import { Buffer } from 'https://cdn.skypack.dev/buffer/';
+    if (!window.Buffer) window.Buffer = Buffer;
+
+    (async () => {
+      // adjust cluster as needed
+      const API_CLUSTER = 'https://api.devnet.solana.com';
+      const programId   = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
+      const [vaultPDA]  = await PublicKey.findProgramAddress(
+        [Buffer.from('vault_v2')],
+        programId
+      );
+      const conn      = new Connection(API_CLUSTER, 'confirmed');
+      const lamports  = await conn.getBalance(vaultPDA);
+      const sol       = (lamports / 1e9).toFixed(4);
+
+      // overwrite every “Total SOL Deposited” element
+      document
+        .querySelectorAll('#total-transfers-in')
+        .forEach(el => { el.textContent = sol; });
+    })();
+  </script>
 
 	</body>
 </html>
