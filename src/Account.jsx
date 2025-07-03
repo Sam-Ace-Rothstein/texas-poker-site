@@ -18,10 +18,6 @@ import { clusterApiUrl } from '@solana/web3.js';
 
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-import { SYSVAR_INSTRUCTIONS_PUBKEY } from '@solana/web3.js';
-
-import { Ed25519Program } from '@solana/web3.js';
-
 import BN from 'bn.js'; 
 
 import {
@@ -272,11 +268,6 @@ const handleWithdraw = async () => {
       Buffer.from(new BN(voucher.nonce).toArray("le", 8)),
       Buffer.from(new BN(parseInt(username, 10)).toArray("le", 8)),
     ]);
-    const verifyIx = Ed25519Program.createInstructionWithPublicKey({
-      publicKey:  bs58.decode(import.meta.env.VITE_BOT_PUBKEY),
-      message:    msgBuf,
-      signature:  sigBytes,
-    });
 
     class WithdrawPayload {
       constructor(f) {
@@ -321,7 +312,6 @@ const handleWithdraw = async () => {
         { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
         { pubkey: treasuryPubkey,          isSigner: false, isWritable: true  },
         { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-        { pubkey: SYSVAR_INSTRUCTIONS_PUBKEY, isSigner: false, isWritable: false },
         { pubkey: userVaultAccount,        isSigner: false, isWritable: true  },
       ],
       data: withdrawData,
@@ -330,9 +320,7 @@ const handleWithdraw = async () => {
     // 4️⃣ Assemble & simulate (optional)
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-    const tx = new Transaction()
-      .add(verifyIx)
-      .add(withdrawIx);
+    const tx = new Transaction().add(withdrawIx);
     tx.recentBlockhash = blockhash;
     tx.feePayer = publicKey;
 
@@ -396,7 +384,7 @@ const handleWithdraw = async () => {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amountio to deposito (SOL):{" "}
+    Amountioi to depositoi (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
