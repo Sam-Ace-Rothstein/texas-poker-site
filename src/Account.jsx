@@ -446,7 +446,7 @@ return (
       >
         {isSubmitting
           ? 'Depositing…'
-          : 'Deposit SOL to Gameplay Tokens'}
+          : 'Deposit SOL > Tokens'}
       </button>
     </div>
 
@@ -490,7 +490,7 @@ return (
       >
         {isSubmitting
           ? 'Withdrawing…'
-          : 'Withdraw Gameplay Tokens to SOL'}
+          : 'Withdraw Tokens > SOL'}
       </button>
     </div>
   </div>
