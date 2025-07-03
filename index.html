@@ -56,27 +56,32 @@
                
                								<!-- Wallet UI: full-width row -->
                								<div id="wallet-ui" style="width:100%;">
-                    <table style="width:100%; border-collapse: collapse;">
-                      <tr>
-                        <td>
-                          <!-- 1) Telegram info -->
-                          <p id="greeting">
-                            Hello, <strong><span id="tgHandle">Loading…</span></strong>
-                            (TG ID: <strong><span id="tgId">Loading…</span></strong>)
-                          </p>
-                        </td>
-                        <td style="text-align: right; vertical-align: middle;">
-                          <!-- React mounts:
-                               1) <WalletMultiButton />
-                               2) <BalanceDisplay /> (SOL & token balances)
-                               3) future swap UI -->
-                          <div
-                            id="root"
-                            style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;"
-                          ></div>
-                        </td>
-                      </tr>
-                    </table>
+                                <table style="width:100%; border-collapse: collapse;">
+                                                       <!-- Row 1: full-width greeting -->
+                                                       <tr>
+                                                         <td colspan="2">
+                                                           <!-- 1) Telegram info -->
+                                                           <p id="greeting">
+                                                             Hello, <strong><span id="tgHandle">Loading…</span></strong>
+                                                             (TG ID: <strong><span id="tgId">Loading…</span></strong>)
+                                                           </p>
+                                                         </td>
+                                                       </tr>
+                                   
+                                                       <!-- Row 2: full-width wallet UI -->
+                                  +                    <tr>
+                                  +                      <td colspan="2" style="text-align: right; vertical-align: middle;">
+                                  +                        <!-- React mounts:
+                                  +                             1) <WalletMultiButton />
+                                                                2) <BalanceDisplay /> (SOL & token balances)
+                                                                3) future swap UI -->
+                                                           <div
+                                                             id="root"
+                                                             style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;"
+                                                           ></div>
+                                                         </td>
+                                                       </tr>
+                                                    </table>
                   </div>
 
 
