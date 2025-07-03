@@ -231,8 +231,8 @@ const handleWithdraw = async () => {
   setIsSubmitting(true);
 
   try {
-    // 2️⃣ Get voucher from backend
-    const nonce = Math.floor(Date.now() / 1000);
+    // 2️⃣ Get voucher from backend (use ms-granularity so you never collide)
+    const nonce = Date.now();
     const res = await fetch(
       "https://texas-poker-production.up.railway.app/api/request-voucher",
       {
@@ -381,7 +381,15 @@ const handleWithdraw = async () => {
 
   } catch (err) {
     console.error("Withdraw failed:", err);
-    alert("Withdraw failed: " + (err.message || err));
+     // if we replayed the exact same transaction signature, the cluster will reject it as “already processed”
+     if (err.message?.includes("already been processed")) {
+       alert(
+         "Looks like that withdrawal already went through—" +
+         " please check your wallet or try a different amount."
+       );
+     } else {
+       alert("Withdraw failed: " + (err.message || err));
+     }
   } finally {
     setIsSubmitting(false);
   }
