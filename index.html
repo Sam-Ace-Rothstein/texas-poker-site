@@ -14,7 +14,7 @@
       <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
     <!-- only one wallet-adapter stylesheet -->
-    <script type="module" crossorigin src="/texas-poker-site/assets/main-CnsD4SJJ.js"></script>
+    <script type="module" crossorigin src="/texas-poker-site/assets/main-CwAxLmsM.js"></script>
     <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
   </head>
 	<body class="no-sidebar is-preload">
@@ -455,7 +455,33 @@
   </script>
         <!-- Point Vite to your Account.jsx entry -->
 
-  <!-- fetch & display on‐chain vault SOL, replacing “Total SOL Deposited” -->
+  <!-- 1) load the UMD bundle so you get a global `solanaWeb3` -->
+  <script src="https://unpkg.com/@solana/web3.js@1.78.0/lib/index.iife.min.js"></script>
+  <!-- 2) now run your balance script against that global -->
+  <script>
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    // 1) cluster endpoint & program ID – hardcode your vault program here
+    const API_CLUSTER       = 'https://api.devnet.solana.com';
+    const VAULT_PROGRAM_ID  = '5EoLY2YwV1BCpnGMGVL4dZWqikcBhHgi6tHwUzK9foFn';
+
+    // 2) derive the same PDA you use on-chain
+    const { Connection, PublicKey } = solanaWeb3;
+    const programId = new PublicKey(VAULT_PROGRAM_ID);
+    const seed       = new TextEncoder().encode('vault_v2');
+    const [vaultPDA] = await PublicKey.findProgramAddress([seed], programId);
+
+    // 3) fetch its balance and convert to SOL
+    const conn      = new Connection(API_CLUSTER, 'confirmed');
+    const lamports  = await conn.getBalance(vaultPDA);
+    const sol       = (lamports / 1e9).toFixed(4);
+
+    // 4) overwrite every “Total SOL Deposited” element
+    document
+      .querySelectorAll('#total-transfers-in')
+      .forEach(el => { el.textContent = sol; });
+  });
+</script>
 
 	</body>
 </html>
