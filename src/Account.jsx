@@ -415,7 +415,7 @@ return (
 
       <div style={{ marginTop: '1rem' }}>
         <label>
-          Amount of Solana to deposit:{' '}
+          How many Solana do you want to deposit?{' '}
           <input
             type="number"
             value={depositAmountSol}
@@ -459,7 +459,7 @@ return (
 
       <div style={{ marginTop: '1rem' }}>
         <label>
-          Amount of tokens to withdraw:{' '}
+          How many Tokens do you want to withdraw?{' '}
           <input
             type="number"
             value={withdrawAmount}
