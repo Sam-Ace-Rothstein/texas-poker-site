@@ -458,9 +458,10 @@
         <!-- Point Vite to your Account.jsx entry -->
   <script type="module" src="/src/Account.jsx"></script>
 
-  <!-- fetch & display on‐chain vault SOL, replacing “Total SOL Deposited” -->
-<script type="module">
-  import { Connection, PublicKey } from 'https://cdn.skypack.dev/@solana/web3.js';
+  <!-- 1) load the UMD bundle so you get a global `solanaWeb3` -->
+  <script src="https://unpkg.com/@solana/web3.js@1.78.0/lib/index.iife.min.js"></script>
+  <!-- 2) now run your balance script against that global -->
+  <script>
 
   document.addEventListener('DOMContentLoaded', async () => {
     // 1) cluster endpoint & program ID – hardcode your vault program here
@@ -468,7 +469,8 @@
     const VAULT_PROGRAM_ID  = '5EoLY2YwV1BCpnGMGVL4dZWqikcBhHgi6tHwUzK9foFn';
 
     // 2) derive the same PDA you use on-chain
-    const programId  = new PublicKey(VAULT_PROGRAM_ID);
+    const { Connection, PublicKey } = solanaWeb3;
+    const programId = new PublicKey(VAULT_PROGRAM_ID);
     const seed       = new TextEncoder().encode('vault_v2');
     const [vaultPDA] = await PublicKey.findProgramAddress([seed], programId);
 
