@@ -455,32 +455,38 @@
   </script>
         <!-- Point Vite to your Account.jsx entry -->
 
-  <!-- 1) load the UMD bundle so you get a global `solanaWeb3` -->
-  <script src="https://unpkg.com/@solana/web3.js@1.78.0/lib/index.iife.min.js"></script>
-  <!-- 2) now run your balance script against that global -->
-  <script>
+<!-- 1) load the UMD bundle so you get a global `solanaWeb3` -->
+<script src="https://unpkg.com/@solana/web3.js@1.78.0/lib/index.iife.min.js"></script>
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    // 1) cluster endpoint & program ID – hardcode your vault program here
-    const API_CLUSTER       = 'https://api.devnet.solana.com';
-    const VAULT_PROGRAM_ID  = 'Dy2rWGYqSFhWub8R3TLn2LLs25seGB2c8De1P2wtyqXQ';
+<!-- 2) fetch & display the vault’s SOL -->
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // ─── CONFIGURE ─────────────────────────────────────────────
+    const RPC_ENDPOINT      = 'https://api.devnet.solana.com';
+    const PROGRAM_ID        = '8yLj1vjS1JXYyekcBiRqM7rmrtf4a9dFuB6UZemYAH8L';    // your staking_vault_v2 program
+    const VAULT_SEED        = 'vault_v2';                                   // seed used on-chain
 
-    // 2) derive the same PDA you use on-chain
+    // ─── DERIVE PDA ─────────────────────────────────────────────
     const { Connection, PublicKey } = solanaWeb3;
-    const programId = new PublicKey(VAULT_PROGRAM_ID);
-    const seed       = new TextEncoder().encode('vault_v2');
-    const [vaultPDA] = await PublicKey.findProgramAddress([seed], programId);
+    const programId  = new PublicKey(PROGRAM_ID);
+    const seedBuf    = new TextEncoder().encode(VAULT_SEED);
+    const [vaultPDA] = await PublicKey.findProgramAddress([seedBuf], programId);
 
-    // 3) fetch its balance and convert to SOL
-    const conn      = new Connection(API_CLUSTER, 'confirmed');
+    // ─── FETCH & FORMAT BALANCE ─────────────────────────────────
+    const conn      = new Connection(RPC_ENDPOINT, 'confirmed');
     const lamports  = await conn.getBalance(vaultPDA);
     const sol       = (lamports / 1e9).toFixed(4);
 
-    // 4) overwrite every “Total SOL Deposited” element
+    // ─── WRITE OUT ───────────────────────────────────────────────
     document
       .querySelectorAll('#total-transfers-in')
       .forEach(el => { el.textContent = sol; });
-  });
+
+  } catch (err) {
+    console.error('Failed to fetch vault balance:', err);
+  }
+});
 </script>
 
 	</body>
