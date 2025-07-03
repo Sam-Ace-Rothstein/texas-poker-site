@@ -407,7 +407,7 @@ return (
     {/* Left: Deposit Section */}
     <div style={{ flex: 1, marginRight: '1rem' }}>
       <p id="sol-balance">
-        Total SOL:{' '}
+        Your available SOL balance:{' '}
         <strong>
           {solBalance != null ? solBalance.toFixed(4) : '…'}
         </strong>
@@ -453,7 +453,7 @@ return (
     {/* Right: Withdraw Section */}
     <div style={{ flex: 1, marginLeft: '1rem' }}>
       <p id="token-balance">
-        Total Tokens:{' '}
+        Your available token balance:{' '}
         <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
       </p>
 
