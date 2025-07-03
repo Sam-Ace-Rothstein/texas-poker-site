@@ -26,6 +26,7 @@ import {
      SystemProgram,
      Connection,
      PublicKey,
+     SendTransactionError,
      SYSVAR_INSTRUCTIONS_PUBKEY
    } from '@solana/web3.js';
    import { Ed25519Program } from '@solana/web3.js';
@@ -380,16 +381,15 @@ const handleWithdraw = async () => {
     }
 
   } catch (err) {
-    console.error("Withdraw failed:", err);
-     // if we replayed the exact same transaction signature, the cluster will reject it as “already processed”
-     if (err.message?.includes("already been processed")) {
-       alert(
-         "Looks like that withdrawal already went through—" +
-         " please check your wallet or try a different amount."
-       );
-     } else {
-       alert("Withdraw failed: " + (err.message || err));
-     }
+         console.error("Withdraw failed:", err);
+         if (
+           err instanceof SendTransactionError ||
+           err.message?.includes("already been processed")
+         ) {
+           alert("Looks like that withdrawal already went through—please check your wallet or try a different amount.");
+         } else {
+           alert("Withdraw failed: " + (err.message || err));
+         }
   } finally {
     setIsSubmitting(false);
   }
