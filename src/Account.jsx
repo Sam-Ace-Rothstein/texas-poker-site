@@ -415,7 +415,7 @@ return (
 
       <div style={{ marginTop: '1rem' }}>
         <label>
-          Amount SOL to deposit:{' '}
+          Amount of Solana to deposit:{' '}
           <input
             type="number"
             value={depositAmountSol}
