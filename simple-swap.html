@@ -14,8 +14,10 @@
       <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
     <!-- only one wallet-adapter stylesheet -->
-    <script type="module" crossorigin src="/texas-poker-site/assets/main-PEbUjsIk.js"></script>
-    <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
+    <link
+      rel="stylesheet"
+      href="/node_modules/@solana/wallet-adapter-react-ui/styles.css"
+    />
   </head>
 	<body class="no-sidebar is-preload">
 		<div id="page-wrapper">
@@ -35,7 +37,7 @@
 							<ul>
 								<li><a href="left-sidebar.html">$TEXAS</a></li>
 								<li><a href="index.html">Home</a></li>
-                <li><a href="simple-swap.html">Simple Swap</a></li>
+                <li><a href="account.html">Simple Swap</a></li>
 							</ul>
 						</nav>
 
@@ -454,6 +456,7 @@
     setInterval(loadStats, 30_000);
   </script>
         <!-- Point Vite to your Account.jsx entry -->
+<script type="module" src="/src/Account.jsx"></script>
 
 <!-- 1) load the UMD bundle so you get a global `solanaWeb3` -->
 <script src="https://unpkg.com/@solana/web3.js@1.78.0/lib/index.iife.min.js"></script>
