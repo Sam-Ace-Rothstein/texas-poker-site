@@ -14,7 +14,7 @@
       <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
     <!-- only one wallet-adapter stylesheet -->
-    <script type="module" crossorigin src="/texas-poker-site/assets/main-Y5YQj5g4.js"></script>
+    <script type="module" crossorigin src="/texas-poker-site/assets/main-PEbUjsIk.js"></script>
     <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
   </head>
 	<body class="no-sidebar is-preload">
@@ -35,7 +35,7 @@
 							<ul>
 								<li><a href="left-sidebar.html">$TEXAS</a></li>
 								<li><a href="index.html">Home</a></li>
-                <li><a href="simple-swap.html">Simple Swap</a></li>
+                <li><a href="account.html">Simple Swap</a></li>
 							</ul>
 						</nav>
 
@@ -46,42 +46,35 @@
 
 					<div class="container">
 						<article id="main" class="special">
-               							<header>
-               								<h2>♤ Shuffle Up Your Solana and Deal High Roller! ♤</h2>
-               								<p>
-               									Simple Swap Solana for gameplay tokens, and take a seat at any Telegram public table. 
-                                 Easily create and manage your own tables (public or private).
-                                 Full casino rules Texas Holdem gameplay. Trustless smart contract. Powered by $TEXAS.
-               								</p>
-               
-               								<!-- Wallet UI: full-width row -->
-               								<div id="wallet-ui" style="width:100%;">
-                                <table style="width:100%; border-collapse: collapse;">
-                                                       <!-- Row 1: full-width greeting -->
-                                                       <tr>
-                                                         <td colspan="2">
-                                                           <!-- 1) Telegram info -->
-                                                           <p id="greeting">
-                                                             Hello <strong><span id="tgHandle">Loading…</span></strong>
-                                                             (TG ID: <strong><span id="tgId">Loading…</span></strong>)
-                                                           </p>
-                                                         </td>
-                                                       </tr>
-                                   
-                                                       <!-- Row 2: full-width wallet UI -->
-                                                       <tr>
-                                                         <td colspan="2" style="text-align: right; vertical-align: middle;">
-                                                           <!-- React mounts:
-                                                                1) <WalletMultiButton />
-                                                                2) <BalanceDisplay /> (SOL & token balances)
-                                                                3) future swap UI -->
-                                                           <div
-                                                             id="root"
-                                                             style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;"
-                                                           ></div>
-                                                         </td>
-                                                       </tr>
-                                                    </table>
+							<header>
+								<h2><a href="#">♤ Shuffle Up Your Solana and Deal, High Roller! ♤</a></h2>
+								<p>
+									Simple Swap Solana for gameplay tokens, and take a seat at any Telegram public table. 
+                  Easily create and manage your own tables (public or private).
+                  Full casino rules Texas Holdem gameplay. Trustless smart contract. Powered by $TEXAS.  
+
+                  <div id="wallet-ui">
+                    <table style="width:100%; border-collapse: collapse;">
+                      <tr>
+                        <td>
+                          <!-- 1) Telegram info -->
+                          <p id="greeting">
+                            Hello, <strong><span id="tgHandle">Loading…</span></strong>
+                            (TG ID: <strong><span id="tgId">Loading…</span></strong>)
+                          </p>
+                        </td>
+                        <td style="text-align: right; vertical-align: middle;">
+                          <!-- React mounts:
+                               1) <WalletMultiButton />
+                               2) <BalanceDisplay /> (SOL & token balances)
+                               3) future swap UI -->
+                          <div
+                            id="root"
+                            style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;"
+                          ></div>
+                        </td>
+                      </tr>
+                    </table>
                   </div>
 
 
