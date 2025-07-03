@@ -56,7 +56,7 @@ function BalanceDisplay({ username }) {
   console.log("🌱 VITE_VAULT_PROGRAM_ID:", import.meta.env.VITE_VAULT_PROGRAM_ID)
 console.log("🌱 VITE_BOT_PUBKEY:      ", import.meta.env.VITE_BOT_PUBKEY)
 console.log("🌱 VITE_TREASURY_PUBKEY: ", import.meta.env.VITE_TREASURY_PUBKEY)
-  const { publicKey, connected, sendTransaction } = useWallet();
+  const { publicKey, connected, sendTransaction, signAllTransactions } = useWallet();
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
   const [depositAmountSol, setDepositAmountSol] = useState("0.1");
@@ -346,14 +346,16 @@ const handleWithdraw = async () => {
       return;
     }
 
-    // 5️⃣ Send & confirm
-    console.log("🚧 Sending transaction to wallet…");
-    const signature = await sendTransaction(tx, connection);
-    console.log("📨 Withdraw tx signature:", signature);
-    await connection.confirmTransaction(
-      { signature, blockhash, lastValidBlockHeight },
-      "confirmed"
-    );
+    // 5️⃣ Sign & submit
+     console.log("🚧 Signing & sending transaction…");
+     const [signedTx] = await signAllTransactions([tx]);
+     const raw = signedTx.serialize();
+     const signature = await connection.sendRawTransaction(raw);
+     console.log("📨 Withdraw tx signature:", signature);
+     await connection.confirmTransaction(
+       { signature, blockhash, lastValidBlockHeight },
+       "confirmed"
+     );
 
     // 6️⃣ Fetch on-chain logs for WithdrawEvent:
     const confirmed = await connection.getTransaction(signature, {
