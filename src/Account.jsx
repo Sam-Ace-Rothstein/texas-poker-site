@@ -407,7 +407,7 @@ const handleWithdraw = async () => {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amountio to deposito (SOL):{" "}
+    Amountioi to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
