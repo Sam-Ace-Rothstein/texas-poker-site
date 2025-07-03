@@ -28,6 +28,7 @@ import {
      PublicKey,
      SYSVAR_INSTRUCTIONS_PUBKEY
    } from '@solana/web3.js';
+   import { Ed25519Program } from '@solana/web3.js';
 import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
 if (!window.Buffer) window.Buffer = Buffer;
@@ -306,6 +307,14 @@ const handleWithdraw = async () => {
         })
       )
     );
+
+    // 3️⃣a) ed25519 verify ix must come first
+     const verifyIx = Ed25519Program.createInstructionWithPublicKey({
+         publicKey:   bs58.decode(import.meta.env.VITE_BOT_PUBKEY),
+         message:     msgBuf,
+         signature:   sigBytes,
+       });
+   
     const withdrawIx = new TransactionInstruction({
              programId,
              keys: [
@@ -322,7 +331,9 @@ const handleWithdraw = async () => {
     // 4️⃣ Assemble & simulate (optional)
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
-    const tx = new Transaction().add(withdrawIx);
+    const tx = new Transaction()
+          .add(verifyIx)      // <– must come first
+          .add(withdrawIx);   // <– then your PDA CPI
     tx.recentBlockhash = blockhash;
     tx.feePayer = publicKey;
 
@@ -386,7 +397,7 @@ const handleWithdraw = async () => {
 
       <div style={{ marginTop: '1rem' }}>
   <label>
-    Amountioi to depositoi (SOL):{" "}
+    Amountioi to deposito (SOL):{" "}
     <input
   type="number"
   value={depositAmountSol}
