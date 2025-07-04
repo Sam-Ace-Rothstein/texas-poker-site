@@ -404,7 +404,7 @@ return (
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexWrap: 'wrap',
-      gap: '0.5rem',
+      gap: window.innerWidth >= 768 ? '2rem' : '0.5rem',
     }}
   >
     {/* Left: Deposit Section */}
