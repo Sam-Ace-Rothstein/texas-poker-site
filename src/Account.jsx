@@ -410,7 +410,10 @@ return (
     <div
       style={{
         flex: '0 0 400px',
-        textAlign: 'left'
+        textAlign: 'left',
+        border: '1px solid #000',
+        borderRadius: '8px',
+        padding: '1rem',
       }}
     >
       <h3 style={{ marginBottom: '0.5rem' }}>Deposit</h3>
@@ -467,7 +470,10 @@ return (
     <div
       style={{
         flex: '0 0 400px',
-        textAlign: 'left'
+        textAlign: 'left',
+        border: '1px solid #000',
+        borderRadius: '8px',
+        padding: '1rem',
       }}
     >
       <h3 style={{ marginBottom: '0.5rem' }}>Withdraw</h3>
@@ -521,7 +527,6 @@ return (
     </div>
   </div>
 );
-}
 
 
 // ─────────────────────────────────────────────
