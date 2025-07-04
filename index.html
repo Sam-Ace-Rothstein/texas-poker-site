@@ -54,34 +54,22 @@
                                  Full casino rules Texas Holdem gameplay. Trustless smart contract. Powered by $TEXAS.
                								</p>
                
-               								<!-- Wallet UI: full-width row (hidden by default) -->
-<div id="wallet-ui" style="width:100%; display: none;">
-  <table style="width:100%; border-collapse: collapse;">
-    <!-- Row 1: greeting -->
-    <tr>
-      <td colspan="2">
-        <p id="greeting">
-          Hello, <strong><span id="tgHandle">Loading…</span></strong>
-          (TG ID: <strong><span id="tgId">Loading…</span></strong>)
-        </p>
-      </td>
-    </tr>
-    <!-- Row 2: React mounts here -->
-    <tr>
-      <td colspan="2" style="text-align: right; vertical-align: middle;">
-        <div
-          id="root"
-          style="
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.5rem;
-          "
-        ></div>
-      </td>
-    </tr>
-  </table>
-</div>
+               								<!-- Greeting (always in DOM, but we’ll show/hide via JS) -->
+   <p id="greeting">Loading…</p>
+ 
+   <!-- Wallet UI: React mount only, hidden by default -->
+   <div id="wallet-ui" style="width:100%; display: none;">
+     <table style="width:100%; border-collapse: collapse;">
+       <tr>
+         <td colspan="2" style="text-align: right; vertical-align: middle;">
+           <div
+             id="root"
+             style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;"
+           ></div>
+         </td>
+       </tr>
+     </table>
+   </div>
 
 
                 <!-- Live Poker Stats -->
