@@ -19,15 +19,25 @@
       href="/node_modules/@solana/wallet-adapter-react-ui/styles.css"
     />
     <style>
-             /* full-width on desktop, but gutter on mobile */
+             /* always give a little gutter and center the inner flex UI */
       #wallet-ui {
-        position: relative;
-        left: calc(-50vw + 50%); /* pull to full-viewport edge on desktop */
-        width: 100vw !important;
-        max-width: none !important;
-        margin: 1rem 0;            /* vertical spacing */
-        padding: 0 1rem;          /* gutter on mobile / small screens */
-        box-sizing: border-box;   /* include padding without overflow */
+        margin: 1rem 0;
+        padding: 0 1rem;
+        box-sizing: border-box;
+      }
+      /* override the React root’s align-items so columns sit centered */
+      #wallet-ui #root {
+        align-items: center !important;
+      }
+ 
+      /* only on DESKTOP: span the full viewport */
+      @media (min-width: 768px) {
+        #wallet-ui {
+          position: relative;
+          left: calc(-50vw + 50%);
+          width: 100vw !important;
+          max-width: none !important;
+        }
       }
            </style>
   </head>
