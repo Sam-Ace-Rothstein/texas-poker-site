@@ -466,11 +466,11 @@ return (
           border: 'none',
           borderRadius: '6px',
           boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-          cursor: isSubmitting ? 'not-allowed' : 'pointer',
+          cursor: isDepositing ? 'not-allowed' : 'pointer',
           transition: 'background 0.2s ease',
         }}
       >
-        {isSubmitting ? 'Depositing…' : 'Deposit SOL → Tokens'}
+        {isDepositing ? 'Depositing…' : 'Deposit SOL → Tokens'}
       </button>
     </div>
 
@@ -530,11 +530,11 @@ return (
           border: 'none',
           borderRadius: '6px',
           boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-          cursor: isSubmitting ? 'not-allowed' : 'pointer',
+          cursor: isWithdrawing ? 'not-allowed' : 'pointer',
           transition: 'background 0.2s ease',
         }}
       >
-        {isSubmitting ? 'Withdrawing…' : 'Withdraw Tokens → SOL'}
+        {isWithdrawing ? 'Withdrawing…' : 'Withdraw Tokens → SOL'}
       </button>
     </div>
   </div>
