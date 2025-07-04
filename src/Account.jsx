@@ -404,6 +404,8 @@ return (
       alignItems: 'flex-start',
       flexWrap: 'wrap',
       gap: '2rem',                 // space between columns
+      padding: '0 1rem',           // ← add horizontal padding on small screens
+      boxSizing: 'border-box',     // ensure padding doesn’t overflow
     }}
   >
     {/* Left: Deposit Section */}
@@ -414,6 +416,7 @@ return (
         border: '1px solid #000',
         borderRadius: '8px',
         padding: '1rem',
+        boxSizing: 'border-box',
       }}
     >
       <h3 style={{ marginBottom: '0.5rem' }}>Deposit</h3>
@@ -474,6 +477,7 @@ return (
         border: '1px solid #000',
         borderRadius: '8px',
         padding: '1rem',
+        boxSizing: 'border-box',
       }}
     >
       <h3 style={{ marginBottom: '0.5rem' }}>Withdraw</h3>
