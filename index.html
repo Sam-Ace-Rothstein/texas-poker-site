@@ -73,11 +73,6 @@
 						<article id="main" class="special">
                							<header>
                								<h2>♤ Shuffle Up Your Solana and Deal High Roller! ♤</h2>
-               								<p>
-               									Simple Swap Solana for gameplay tokens, and take a seat at any Telegram public table. 
-                                 Easily create and manage your own tables (public or private).
-                                 Full casino rules Texas Holdem gameplay. Trustless smart contract. Powered by $TEXAS.
-               								</p>
                
                								<!-- Greeting (always in DOM, but we’ll show/hide via JS) -->
    <p id="greeting">Loading…</p>
@@ -395,7 +390,7 @@
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 
-  <!-- Telegram info loader -->
+ <!-- Telegram info loader -->
 <script>
   const params     = new URLSearchParams(window.location.search);
   const greetingEl = document.getElementById("greeting");
@@ -405,22 +400,28 @@
 
   if (userId) {
     // logged-in view
-    greetingEl.innerHTML =
-      `Hello, <strong>${handle || 'Anonymous'}</strong> (TG ID: <strong>${userId}</strong>)`;
+    greetingEl.innerHTML = `
+      Hello, <strong>${handle || 'Anonymous'}</strong> (TG ID: <strong>${userId}</strong>)<br/>
+      <div style="margin-top:0.5rem; color:#555; font-size:0.95rem;">
+        Simple Swap Solana for gameplay tokens, and take a seat at any Telegram public table. 
+        Easily create and manage your own tables (public or private). Full casino rules Texas Holdem gameplay. 
+        Trustless smart contract. Powered by <strong>$TEXAS</strong>.
+      </div>
+    `;
     walletUi.style.display = "";        // un-hide
   } else {
     // public visitor view
-     greetingEl.innerHTML = `
-       Welcome! To connect your account, DM the Bot
-       <a
-         href="https://t.me/texas_holdem_dealer_bot"
-         target="_blank"
-         rel="noopener"
-         style="text-decoration: underline; font-weight: bold;"
-       >@texas_holdem_dealer_bot</a>,
-       type “menu” to open the main menu, and select “🧬 Top-Up”. Define your withdraw wallet
-       and swap Solana for Gameplay tokens via the trustless Smart Contract.
-     `;
+    greetingEl.innerHTML = `
+      Welcome! To connect your account, DM the Bot
+      <a
+        href="https://t.me/texas_holdem_dealer_bot"
+        target="_blank"
+        rel="noopener"
+        style="text-decoration: underline; font-weight: bold;"
+      >@texas_holdem_dealer_bot</a>,
+      type “menu” to open the main menu, and select “🧬 Top-Up”. Define your withdraw wallet
+      and swap Solana for Gameplay tokens via the trustless Smart Contract.
+    `;
     walletUi.style.display = "none";    // ensure hidden
   }
 </script>
