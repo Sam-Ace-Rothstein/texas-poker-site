@@ -82,7 +82,9 @@ console.log("🌱 VITE_TREASURY_PUBKEY: ", import.meta.env.VITE_TREASURY_PUBKEY)
       };
 
       useEffect(() => {
-            refreshBalances();
+        setTimeout(() => {
+          refreshBalances();
+        }, 1500);
           }, [connected, publicKey, username]);
 
 // ─── Deposit Handler ─────────────────────────────────
@@ -186,7 +188,9 @@ const handleDeposit = async () => {
       console.log("✅ DepositEvent found:", sawEvent);
       setDepositConfirmed(true);
       // refresh token balance
-      refreshBalances();
+      setTimeout(() => {
+        refreshBalances();
+      }, 1500);
       alert("✅ Deposit confirmed! Signature: " + signature);
     } else {
       console.warn("⚠️ DepositEvent missing in logs");
@@ -361,7 +365,9 @@ const handleWithdraw = async () => {
     const evt = logs.find((l) => l.includes("WithdrawEvent:"));
     if (evt) {
           console.log("✅ WithdrawEvent found:", evt);
-          refreshBalances();
+          setTimeout(() => {
+            refreshBalances();
+          }, 1500);
           alert("✅ Withdraw confirmed! Signature: " + signature);
         } else {
       console.warn("⚠️ WithdrawEvent missing in logs");
@@ -413,7 +419,7 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Deposito Solana ♣️</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Depositi Solana ♣️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
         Swap your SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot account.
       </p>
