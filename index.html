@@ -390,7 +390,7 @@
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
 
- <!-- Telegram info loader -->
+<!-- Telegram info loader -->
 <script>
   const params     = new URLSearchParams(window.location.search);
   const greetingEl = document.getElementById("greeting");
@@ -403,8 +403,8 @@
     greetingEl.innerHTML = `
       Hello, <strong>${handle || 'Anonymous'}</strong> (TG ID: <strong>${userId}</strong>)<br/>
       <div style="margin-top:0.5rem; color:#555; font-size:0.95rem;">
-        Simple Swap Solana for gameplay tokens, and take a seat at any Telegram public table. 
-        Easily create and manage your own tables (public or private). Full casino rules Texas Holdem gameplay. 
+        Simple Swap Solana for gameplay tokens, and take a seat at any Telegram public table.<br/>
+        Easily create and manage your own tables (public or private). Full casino rules Texas Holdem gameplay.<br/>
         Trustless smart contract. Powered by <strong>$TEXAS</strong>.
       </div>
     `;
@@ -412,15 +412,21 @@
   } else {
     // public visitor view
     greetingEl.innerHTML = `
-      Welcome! To connect your account, DM the Bot
-      <a
-        href="https://t.me/texas_holdem_dealer_bot"
-        target="_blank"
-        rel="noopener"
-        style="text-decoration: underline; font-weight: bold;"
-      >@texas_holdem_dealer_bot</a>,
-      type “menu” to open the main menu, and select “🧬 Top-Up”. Define your withdraw wallet
-      and swap Solana for Gameplay tokens via the trustless Smart Contract.
+      <div style="margin-bottom:0.75rem; font-size:1.25rem; font-weight:bold;">Welcome!</div>
+      <div style="color:#555; font-size:0.95rem; line-height:1.4;">
+        Buy-in and play poker with <strong>$SOL</strong>.<br/>
+        Launch the bot, type “menu” and select “🧬 Top-Up”.<br/>
+        Link your withdraw wallet to your TG account and swap Solana for Gameplay tokens via the trustless Smart Contract.
+      </div>
+      <div style="margin-top:0.75rem; font-size:1rem;">
+        Launch the Bot → 
+        <a
+          href="https://t.me/texas_holdem_dealer_bot"
+          target="_blank"
+          rel="noopener"
+          style="text-decoration: underline; font-weight:600;"
+        >@texas_holdem_dealer_bot</a>
+      </div>
     `;
     walletUi.style.display = "none";    // ensure hidden
   }
