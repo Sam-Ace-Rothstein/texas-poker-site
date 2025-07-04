@@ -404,8 +404,8 @@ return (
       alignItems: 'flex-start',
       flexWrap: 'wrap',
       gap: '2rem',                 // space between columns
-      padding: '0 1rem',           // ← add horizontal padding on small screens
-      boxSizing: 'border-box',     // ensure padding doesn’t overflow
+      padding: '0 1rem',           // ← horizontal gutter on mobile
+      boxSizing: 'border-box',     // include padding inside width
     }}
   >
     {/* Left: Deposit Section */}
@@ -419,7 +419,7 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>Deposito</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>Depositi</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
         Swap your SOL for gameplay tokens at 1 SOL = 1000 tokens
       </p>
@@ -531,7 +531,6 @@ return (
     </div>
   </div>
 );
-}
 
 
 // ─────────────────────────────────────────────
