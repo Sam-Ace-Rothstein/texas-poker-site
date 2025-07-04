@@ -503,7 +503,7 @@ return (
         <input
           type="number"
           value={withdrawAmount}
-          min="1"
+          min="100"
           step="1"
           max={tokenBalance ?? undefined}
           onChange={e => setWithdrawAmount(e.target.value)}
