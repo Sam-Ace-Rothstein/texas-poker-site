@@ -400,13 +400,13 @@ return (
     style={{
       width: '100%',             // full width
       boxSizing: 'border-box',   // include padding
-      padding: '0 0.5rem',       // ← gutter halved from 1rem → 0.5rem
-      marginTop: '0.5rem',       // ← halved from 1rem → 0.5rem
+      padding: '0 0.25rem',      // ← halved from 0.5rem → 0.25rem
+      marginTop: '0.25rem',      // ← halved from 0.5rem → 0.25rem
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexWrap: 'wrap',
-      gap: '1rem',               // ← halved from 2rem → 1rem
+      gap: '0.5rem',             // ← halved from 1rem → 0.5rem
     }}
   >
     {/* Left: Deposit Section */}
