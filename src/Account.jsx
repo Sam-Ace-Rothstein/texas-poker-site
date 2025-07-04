@@ -400,23 +400,21 @@ return (
     style={{
       marginTop: '1rem',
       display: 'flex',
-      justifyContent: 'space-between',
+      justifyContent: 'center',    // center on desktop
       alignItems: 'flex-start',
-      flexWrap: 'wrap'
+      flexWrap: 'wrap',            // allow wrapping
+      gap: '2rem'                  // space between columns
     }}
   >
     {/* Left: Deposit Section */}
     <div
       style={{
-        flex: '1 1 300px',
-        maxWidth: '45%',
-        marginRight: '1rem',
+        flex: '0 0 400px',          // fixed 400px width, no grow/shrink
         textAlign: 'left'
       }}
     >
-      {/* Header + info */}
       <h3 style={{ marginBottom: '0.5rem' }}>Deposit</h3>
-      <p style={{ marginTop: 0, marginBottom: '1rem', color: '#555' }}>
+      <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
         Swap your SOL for gameplay tokens at 1 SOL = 1000 tokens
       </p>
 
@@ -425,7 +423,6 @@ return (
         <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
       </p>
 
-      {/* Entry box on its own row */}
       <div style={{ marginTop: '1rem' }}>
         <label style={{ display: 'block', marginBottom: '0.25rem' }}>
           How many SOL to deposit?
@@ -469,15 +466,12 @@ return (
     {/* Right: Withdraw Section */}
     <div
       style={{
-        flex: '1 1 300px',
-        maxWidth: '45%',
-        marginLeft: '1rem',
+        flex: '0 0 400px',          // fixed 400px width, no grow/shrink
         textAlign: 'left'
       }}
     >
-      {/* Header + info */}
       <h3 style={{ marginBottom: '0.5rem' }}>Withdraw</h3>
-      <p style={{ marginTop: 0, marginBottom: '1rem', color: '#555' }}>
+      <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
         Convert your gameplay tokens back into SOL anytime
       </p>
 
@@ -486,7 +480,6 @@ return (
         <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
       </p>
 
-      {/* Entry box on its own row */}
       <div style={{ marginTop: '1rem' }}>
         <label style={{ display: 'block', marginBottom: '0.25rem' }}>
           How many tokens to withdraw?
