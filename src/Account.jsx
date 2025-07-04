@@ -422,7 +422,7 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>Deposit Solana</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Deposit Solana ♣️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
         Swap your SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot account.
       </p>
@@ -461,8 +461,8 @@ return (
           padding: '0.75rem 1.5rem',
           fontSize: '1rem',
           fontWeight: '600',
-          background: '#2563EB',
-          color: '#FFF',
+          background: '#0A6430',                // poker‐table green
+          color: '#FFFFFF',
           border: 'none',
           borderRadius: '6px',
           boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
@@ -470,28 +470,8 @@ return (
           transition: 'background 0.2s ease',
         }}
       >
-        {isDepositing ? 'Depositing…' : 'Deposit SOL → Tokens'}
+        {isDepositing ? '♣️ Depositing…' : '♣️ Deposit SOL → Tokens'}
       </button>
-
-      {/* subtle poker links */}
-      <div style={{ marginTop: '1rem', fontSize: '0.85rem', color: '#666' }}>
-        <a
-          href="https://www.pokerlistings.com/poker-odds"
-          target="_blank"
-          rel="noopener"
-          style={{ marginRight: '1rem', color: '#666', textDecoration: 'none' }}
-        >
-          🎲 Poker Odds
-        </a>
-        <a
-          href="https://www.thepokerbank.com/strategy/"
-          target="_blank"
-          rel="noopener"
-          style={{ color: '#666', textDecoration: 'none' }}
-        >
-          ♠️ Strategy Guide
-        </a>
-      </div>
     </div>
 
     {/* Right: Withdraw Section */}
@@ -506,9 +486,9 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>Withdraw Solana</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>♦️ Withdraw Solana ♦️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
-        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee=1%). Please wait 45 s between txns.
+        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Please wait 45 s between transactions.
       </p>
 
       <p id="token-balance">
@@ -545,8 +525,8 @@ return (
           padding: '0.75rem 1.5rem',
           fontSize: '1rem',
           fontWeight: '600',
-          background: '#D97706',
-          color: '#FFF',
+          background: '#8B0000',                // deep red
+          color: '#FFFFFF',
           border: 'none',
           borderRadius: '6px',
           boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
@@ -554,32 +534,11 @@ return (
           transition: 'background 0.2s ease',
         }}
       >
-        {isWithdrawing ? 'Withdrawing…' : 'Withdraw Tokens → SOL'}
+        {isWithdrawing ? '♦️ Withdrawing…' : '♦️ Withdraw SOL → Tokens'}
       </button>
-
-      {/* subtle poker links */}
-      <div style={{ marginTop: '1rem', fontSize: '0.85rem', color: '#666' }}>
-        <a
-          href="https://www.pokernews.com/strategy/bankroll-management.htm"
-          target="_blank"
-          rel="noopener"
-          style={{ marginRight: '1rem', color: '#666', textDecoration: 'none' }}
-        >
-          💰 Bankroll Tips
-        </a>
-        <a
-          href="https://www.pokerlistings.com/poker-rules"
-          target="_blank"
-          rel="noopener"
-          style={{ color: '#666', textDecoration: 'none' }}
-        >
-          🃏 Rules & Etiquette
-        </a>
-      </div>
     </div>
   </div>
 );
-}
 
 
 // ─────────────────────────────────────────────
