@@ -110,40 +110,120 @@
                   }
                 
                   .stat-card {
-                    background: #111;
-                    color: #fff;
+                    background: #fdfdfd;
+                    color: #000;
                     padding: 1rem;
-                    border-radius: 12px;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                    border: 1px solid #333;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                    font-family: 'Georgia', serif;
+                    position: relative;
+                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                    aspect-ratio: 2/3;
+                  }
+                
+                  .stat-card::before {
+                    content: attr(data-suit);
+                    position: absolute;
+                    top: 0.5rem;
+                    left: 0.5rem;
+                    font-size: 1.1rem;
+                    font-weight: bold;
+                    color: var(--suit-color, #000);
+                  }
+                
+                  .stat-card::after {
+                    content: attr(data-rank);
+                    position: absolute;
+                    bottom: 0.5rem;
+                    right: 0.5rem;
+                    font-size: 1.1rem;
+                    font-weight: bold;
+                    color: var(--suit-color, #000);
                   }
                 
                   .stat-card h4 {
-                    font-size: 0.95rem;
-                    margin-bottom: 0.25rem;
-                    color: #bbb;
+                    margin-top: 2rem;
+                    font-size: 0.9rem;
+                    color: #333;
                   }
                 
                   .stat-card span {
-                    font-size: 1.5rem;
+                    display: block;
+                    font-size: 1.75rem;
                     font-weight: bold;
-                    color: #00ff88;
+                    margin-top: 0.5rem;
+                    color: #000;
+                  }
+                
+                  .stat-card.red {
+                    --suit-color: #c00;
+                  }
+                
+                  .stat-card.black {
+                    --suit-color: #000;
                   }
                 </style>
                 
                 <div class="stats-grid">
-                  <div class="stat-card"><h4>Total Tables</h4><span id="total-tables">–</span></div>
-                  <div class="stat-card"><h4>Public Tables</h4><span id="total-public-tables">–</span></div>
-                  <div class="stat-card"><h4>Private Tables</h4><span id="total-private-tables">–</span></div>
-                  <div class="stat-card"><h4>Total Players</h4><span id="total-players">–</span></div>
-                  <div class="stat-card"><h4>Off-Table Tokens</h4><span id="sum-wallets">–</span></div>
-                  <div class="stat-card"><h4>House Balance</h4><span id="house-balance">–</span></div>
-                  <div class="stat-card"><h4>Total Managed</h4><span id="grand-total">–</span></div>
-                  <div class="stat-card"><h4>Avg Stack</h4><span id="avg-stack">–</span></div>
-                  <div class="stat-card"><h4>Hands Dealt</h4><span id="total-hands-dealt">–</span></div>
-                  <div class="stat-card"><h4>All-In Moves</h4><span id="total-all-in">–</span></div>
-                  <div class="stat-card"><h4>Total Bets</h4><span id="total-bets">–</span></div>
-                  <div class="stat-card"><h4>Wins Paid</h4><span id="total-wins">–</span></div>
+                  <div class="stat-card black" data-suit="♠" data-rank="A">
+                    <h4>Total Tables</h4>
+                    <span id="total-tables">–</span>
+                  </div>
+                
+                  <div class="stat-card red" data-suit="♥" data-rank="2">
+                    <h4>Public Tables</h4>
+                    <span id="total-public-tables">–</span>
+                  </div>
+                
+                  <div class="stat-card black" data-suit="♣" data-rank="3">
+                    <h4>Private Tables</h4>
+                    <span id="total-private-tables">–</span>
+                  </div>
+                
+                  <div class="stat-card red" data-suit="♦" data-rank="4">
+                    <h4>Total Players</h4>
+                    <span id="total-players">–</span>
+                  </div>
+                
+                  <div class="stat-card black" data-suit="♠" data-rank="5">
+                    <h4>Off-Table Tokens</h4>
+                    <span id="sum-wallets">–</span>
+                  </div>
+                
+                  <div class="stat-card red" data-suit="♥" data-rank="6">
+                    <h4>House Balance</h4>
+                    <span id="house-balance">–</span>
+                  </div>
+                
+                  <div class="stat-card black" data-suit="♣" data-rank="7">
+                    <h4>Total Managed</h4>
+                    <span id="grand-total">–</span>
+                  </div>
+                
+                  <div class="stat-card red" data-suit="♦" data-rank="8">
+                    <h4>Avg Stack</h4>
+                    <span id="avg-stack">–</span>
+                  </div>
+                
+                  <div class="stat-card black" data-suit="♠" data-rank="9">
+                    <h4>Hands Dealt</h4>
+                    <span id="total-hands-dealt">–</span>
+                  </div>
+                
+                  <div class="stat-card red" data-suit="♥" data-rank="10">
+                    <h4>All-In Moves</h4>
+                    <span id="total-all-in">–</span>
+                  </div>
+                
+                  <div class="stat-card black" data-suit="♣" data-rank="J">
+                    <h4>Total Bets</h4>
+                    <span id="total-bets">–</span>
+                  </div>
+                
+                  <div class="stat-card red" data-suit="♦" data-rank="Q">
+                    <h4>Wins Paid</h4>
+                    <span id="total-wins">–</span>
+                  </div>
                 </div>
                 <header>
                   <p></p><h3>♤ ♡ Welcome to the Felt ♧ ♢</h3> 
