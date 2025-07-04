@@ -414,6 +414,12 @@ return (
         textAlign: 'left'
       }}
     >
+      {/* Header + info for Deposit */}
+      <h3 style={{ marginBottom: '0.5rem' }}>Deposit</h3>
+      <p style={{ marginTop: 0, marginBottom: '1rem', color: '#555' }}>
+        Swap your SOL for gameplay tokens at the rate of 1 SOL = 1000 Tokens
+      </p>
+
       <p id="sol-balance">
         Your available SOL balance:{' '}
         <strong>
@@ -465,6 +471,12 @@ return (
         textAlign: 'left'
       }}
     >
+      {/* Header + info for Withdraw */}
+      <h3 style={{ marginBottom: '0.5rem' }}>Withdraw</h3>
+      <p style={{ marginTop: 0, marginBottom: '1rem', color: '#555' }}>
+        Convert your gameplay tokens back into SOL whenever you’re ready to cash out
+      </p>
+
       <p id="token-balance">
         Your available token balance:{' '}
         <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
