@@ -402,14 +402,15 @@ return (
       display: 'flex',
       justifyContent: 'center',    // center on desktop
       alignItems: 'flex-start',
-      flexWrap: 'wrap',            // allow wrapping
-      gap: '2rem'                  // space between columns
+      flexWrap: 'wrap',
+      gap: '2rem',                 // space between columns
+      padding: '0 1rem'            // horizontal buffer for mobile
     }}
   >
     {/* Left: Deposit Section */}
     <div
       style={{
-        flex: '0 0 400px',          // fixed 400px width, no grow/shrink
+        flex: '0 0 400px',
         textAlign: 'left'
       }}
     >
@@ -466,7 +467,7 @@ return (
     {/* Right: Withdraw Section */}
     <div
       style={{
-        flex: '0 0 400px',          // fixed 400px width, no grow/shrink
+        flex: '0 0 400px',
         textAlign: 'left'
       }}
     >
