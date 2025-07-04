@@ -404,7 +404,6 @@ return (
       alignItems: 'flex-start',
       flexWrap: 'wrap',
       gap: '2rem',                 // space between columns
-      padding: '0 1rem'            // horizontal buffer for mobile
     }}
   >
     {/* Left: Deposit Section */}

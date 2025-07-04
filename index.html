@@ -19,14 +19,11 @@
       href="/node_modules/@solana/wallet-adapter-react-ui/styles.css"
     />
     <style>
-      #wallet-ui {
-        position: relative;
-        left: calc(-50vw + 50%); /* pull it to the left edge */
-        width: 100vw !important;
-        max-width: none !important;
-        margin: 1rem 0; /* vertical spacing */
-      }
-    </style>
+             /* only vertical spacing; horizontal margins come from .container */
+             #wallet-ui {
+               margin: 1rem 0;
+             }
+           </style>
   </head>
 	<body class="no-sidebar is-preload">
 		<div id="page-wrapper">
@@ -69,7 +66,7 @@
    <p id="greeting">Loading…</p>
  
    <!-- Wallet UI: React mount only, hidden by default -->
-   <div id="wallet-ui" style="width:100%; display: none;">
+   <div id="wallet-ui" style="display: none;">
      <table style="width:100%; border-collapse: collapse;">
        <tr>
          <td colspan="2" style="text-align: right; vertical-align: middle;">
