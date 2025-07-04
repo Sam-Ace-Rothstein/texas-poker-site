@@ -398,22 +398,22 @@ const handleWithdraw = async () => {
 return (
   <div
     style={{
-      width: '100%',             // span the full viewport
-      boxSizing: 'border-box',   // include padding in that width
-      padding: '0 1rem',         // horizontal gutter on mobile
-      marginTop: '1rem',
+      width: '100%',             // full width
+      boxSizing: 'border-box',   // include padding
+      padding: '0 0.5rem',       // ← gutter halved from 1rem → 0.5rem
+      marginTop: '0.5rem',       // ← halved from 1rem → 0.5rem
       display: 'flex',
-      justifyContent: 'center',  // center on desktop
+      justifyContent: 'center',
       alignItems: 'flex-start',
       flexWrap: 'wrap',
-      gap: '2rem',               // space between columns
+      gap: '1rem',               // ← halved from 2rem → 1rem
     }}
   >
     {/* Left: Deposit Section */}
     <div
       style={{
-        flex: '1 1 400px',       // allow shrink on mobile
-        maxWidth: '400px',       // but never grow beyond 400px
+        flex: '1 1 400px',
+        maxWidth: '400px',
         textAlign: 'left',
         border: '1px solid #000',
         borderRadius: '8px',
@@ -474,7 +474,7 @@ return (
     {/* Right: Withdraw Section */}
     <div
       style={{
-        flex: '1 1 400px',       // same responsive behaviour
+        flex: '1 1 400px',
         maxWidth: '400px',
         textAlign: 'left',
         border: '1px solid #000',
