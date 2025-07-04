@@ -398,14 +398,15 @@ const handleWithdraw = async () => {
 return (
   <div
     style={{
+      width: '100%',             // span the full width of the viewport
+      boxSizing: 'border-box',   // include padding in that width
+      padding: '0 1rem',         // horizontal gutter on mobile
       marginTop: '1rem',
       display: 'flex',
-      justifyContent: 'center',    // center on desktop
+      justifyContent: 'center',  // center on desktop
       alignItems: 'flex-start',
       flexWrap: 'wrap',
-      gap: '2rem',                 // space between columns
-      padding: '0 1rem',           // ← horizontal gutter on mobile
-      boxSizing: 'border-box',     // include padding inside width
+      gap: '2rem',               // space between columns
     }}
   >
     {/* Left: Deposit Section */}
@@ -419,7 +420,7 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>Depositi</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>Deposit</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
         Swap your SOL for gameplay tokens at 1 SOL = 1000 tokens
       </p>
