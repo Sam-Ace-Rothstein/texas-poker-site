@@ -398,15 +398,15 @@ const handleWithdraw = async () => {
 return (
   <div
     style={{
-      width: '100%',             // full width
-      boxSizing: 'border-box',   // include padding
-      padding: '0 0.25rem',      // ← halved from 0.5rem → 0.25rem
-      marginTop: '0.25rem',      // ← halved from 0.5rem → 0.25rem
+      width: '100%',
+      boxSizing: 'border-box',
+      padding: '0 0.25rem',      // horizontal gutter on mobile
+      marginTop: '0.25rem',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexWrap: 'wrap',
-      gap: '0.5rem',             // ← halved from 1rem → 0.5rem
+      gap: '0.5rem',
     }}
   >
     {/* Left: Deposit Section */}
@@ -454,18 +454,20 @@ return (
 
       <button
         type="button"
-        style={{
-          padding: '0.5rem 1rem',
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          background: '#229',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: isSubmitting ? 'not-allowed' : 'pointer'
-        }}
         onClick={handleDeposit}
         disabled={isSubmitting}
+        style={{
+          padding: '0.75rem 1.5rem',
+          fontSize: '1rem',
+          fontWeight: '600',
+          background: '#2563EB',                  // professional blue
+          color: '#FFFFFF',
+          border: 'none',
+          borderRadius: '6px',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+          cursor: isSubmitting ? 'not-allowed' : 'pointer',
+          transition: 'background 0.2s ease',
+        }}
       >
         {isSubmitting ? 'Depositing…' : 'Deposit SOL → Tokens'}
       </button>
@@ -516,18 +518,20 @@ return (
 
       <button
         type="button"
-        style={{
-          padding: '0.5rem 1rem',
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          background: '#2c2',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '6px',
-          cursor: isSubmitting ? 'not-allowed' : 'pointer'
-        }}
         onClick={handleWithdraw}
         disabled={isSubmitting}
+        style={{
+          padding: '0.75rem 1.5rem',
+          fontSize: '1rem',
+          fontWeight: '600',
+          background: '#D97706',                  // confident amber
+          color: '#FFFFFF',
+          border: 'none',
+          borderRadius: '6px',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+          cursor: isSubmitting ? 'not-allowed' : 'pointer',
+          transition: 'background 0.2s ease',
+        }}
       >
         {isSubmitting ? 'Withdrawing…' : 'Withdraw Tokens → SOL'}
       </button>
@@ -535,6 +539,8 @@ return (
   </div>
 );
 }
+
+
 
 // ─────────────────────────────────────────────
 // Main App
