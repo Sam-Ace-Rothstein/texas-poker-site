@@ -419,7 +419,7 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Depositi Solana ♣️</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Deposit Solana ♣️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
         Swap your SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot account.
       </p>
