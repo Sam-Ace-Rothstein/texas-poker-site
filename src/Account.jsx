@@ -401,17 +401,17 @@ return (
       marginTop: '1rem',
       display: 'flex',
       justifyContent: 'space-between',
-      alignItems: 'flex-start',    // ← ensure top alignment
+      alignItems: 'flex-start',  // ensure top alignment
       flexWrap: 'wrap'
     }}
   >
     {/* Left: Deposit Section */}
     <div
       style={{
-        flex: '1 1 300px',         // allow shrinking/growing, but no less than 300px
-        maxWidth: '45%',           // cap width so it doesn’t center itself
+        flex: '1 1 300px',
+        maxWidth: '45%',
         marginRight: '1rem',
-        textAlign: 'left'          // force left-alignment of content
+        textAlign: 'left'
       }}
     >
       <p id="sol-balance">
@@ -447,12 +447,12 @@ return (
           color: '#fff',
           border: 'none',
           borderRadius: '6px',
-          cursor: isDepositing ? 'not-allowed' : 'pointer'
+          cursor: isSubmitting ? 'not-allowed' : 'pointer'
         }}
         onClick={handleDeposit}
-        disabled={isDepositing}
+        disabled={isSubmitting}
       >
-        {isDepositing ? 'Depositing…' : 'Deposit SOL → Tokens'}
+        {isSubmitting ? 'Depositing…' : 'Deposit SOL → Tokens'}
       </button>
     </div>
 
@@ -496,21 +496,14 @@ return (
           color: '#fff',
           border: 'none',
           borderRadius: '6px',
-          cursor: isWithdrawing ? 'not-allowed' : 'pointer'
+          cursor: isSubmitting ? 'not-allowed' : 'pointer'
         }}
         onClick={handleWithdraw}
-        disabled={isWithdrawing}
+        disabled={isSubmitting}
       >
-        {isWithdrawing ? 'Withdrawing…' : 'Withdraw Tokens → SOL'}
+        {isSubmitting ? 'Withdrawing…' : 'Withdraw Tokens → SOL'}
       </button>
     </div>
-
-    {/* Error Message */}
-    {error && (
-      <p style={{ color: 'red', marginTop: '1rem', width: '100%' }}>
-        {error}
-      </p>
-    )}
   </div>
 );
 }
