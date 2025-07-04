@@ -401,11 +401,19 @@ return (
       marginTop: '1rem',
       display: 'flex',
       justifyContent: 'space-between',
+      alignItems: 'flex-start',    // ← ensure top alignment
       flexWrap: 'wrap'
     }}
   >
     {/* Left: Deposit Section */}
-    <div style={{ flex: 1, marginRight: '1rem' }}>
+    <div
+      style={{
+        flex: '1 1 300px',         // allow shrinking/growing, but no less than 300px
+        maxWidth: '45%',           // cap width so it doesn’t center itself
+        marginRight: '1rem',
+        textAlign: 'left'          // force left-alignment of content
+      }}
+    >
       <p id="sol-balance">
         Your available SOL balance:{' '}
         <strong>
@@ -415,7 +423,7 @@ return (
 
       <div style={{ marginTop: '1rem' }}>
         <label>
-          How many Solana do you want to deposit?{' '}
+          How many SOL to deposit?{' '}
           <input
             type="number"
             value={depositAmountSol}
@@ -428,8 +436,8 @@ return (
         </label>
       </div>
 
-      {/* Deposit Button */}
       <button
+        type="button"
         style={{
           marginTop: '1rem',
           padding: '0.5rem 1rem',
@@ -439,19 +447,24 @@ return (
           color: '#fff',
           border: 'none',
           borderRadius: '6px',
-          cursor: isSubmitting ? 'not-allowed' : 'pointer'
+          cursor: isDepositing ? 'not-allowed' : 'pointer'
         }}
         onClick={handleDeposit}
-        disabled={isSubmitting}
+        disabled={isDepositing}
       >
-        {isSubmitting
-          ? 'Depositing…'
-          : 'Deposit SOL > Tokens'}
+        {isDepositing ? 'Depositing…' : 'Deposit SOL → Tokens'}
       </button>
     </div>
 
     {/* Right: Withdraw Section */}
-    <div style={{ flex: 1, marginLeft: '1rem' }}>
+    <div
+      style={{
+        flex: '1 1 300px',
+        maxWidth: '45%',
+        marginLeft: '1rem',
+        textAlign: 'left'
+      }}
+    >
       <p id="token-balance">
         Your available token balance:{' '}
         <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
@@ -459,7 +472,7 @@ return (
 
       <div style={{ marginTop: '1rem' }}>
         <label>
-          How many Tokens do you want to withdraw?{' '}
+          How many tokens to withdraw?{' '}
           <input
             type="number"
             value={withdrawAmount}
@@ -472,8 +485,8 @@ return (
         </label>
       </div>
 
-      {/* Withdraw Button */}
       <button
+        type="button"
         style={{
           marginTop: '1rem',
           padding: '0.5rem 1rem',
@@ -483,19 +496,23 @@ return (
           color: '#fff',
           border: 'none',
           borderRadius: '6px',
-          cursor: isSubmitting ? 'not-allowed' : 'pointer'
+          cursor: isWithdrawing ? 'not-allowed' : 'pointer'
         }}
         onClick={handleWithdraw}
-        disabled={isSubmitting}
+        disabled={isWithdrawing}
       >
-        {isSubmitting
-          ? 'Withdrawing…'
-          : 'Withdraw Tokens > SOL'}
+        {isWithdrawing ? 'Withdrawing…' : 'Withdraw Tokens → SOL'}
       </button>
     </div>
+
+    {/* Error Message */}
+    {error && (
+      <p style={{ color: 'red', marginTop: '1rem', width: '100%' }}>
+        {error}
+      </p>
+    )}
   </div>
 );
-}
 
 
 
