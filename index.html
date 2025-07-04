@@ -19,17 +19,18 @@
       href="/node_modules/@solana/wallet-adapter-react-ui/styles.css"
     />
     <style>
-             /* always give a little gutter and center the inner flex UI */
+      /* always give a little gutter and center the inner flex UI */
       #wallet-ui {
         margin: 1rem 0;
         padding: 0 1rem;
         box-sizing: border-box;
       }
+    
       /* override the React root’s align-items so columns sit centered */
       #wallet-ui #root {
         align-items: center !important;
       }
- 
+    
       /* only on DESKTOP: span the full viewport */
       @media (min-width: 768px) {
         #wallet-ui {
@@ -39,7 +40,7 @@
           max-width: none !important;
         }
       }
-           </style>
+    </style>
   </head>
 	<body class="no-sidebar is-preload">
 		<div id="page-wrapper">
@@ -85,11 +86,11 @@
    <div id="wallet-ui" style="display: none;">
      <table style="width:100%; border-collapse: collapse;">
        <tr>
-         <td colspan="2" style="text-align: right; vertical-align: middle;">
-           <div
-             id="root"
-             style="display:flex; flex-direction:column; align-items:flex-end; gap:0.5rem;"
-           ></div>
+        <td colspan="2" style="text-align: center; vertical-align: middle;">
+          <div
+                       id="root"
+                       style="display:flex; flex-direction:column; align-items:center; gap:0.5rem;"
+                     ></div>
          </td>
        </tr>
      </table>
