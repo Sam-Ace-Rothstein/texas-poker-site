@@ -221,7 +221,7 @@ const handleWithdraw = async () => {
 
   // 1️⃣ Validate input
   const amount = parseInt(withdrawAmount, 10);
-  if (isNaN(amount) || amount <= 100) {
+  if (isNaN(amount) || amount < 100) {
     alert("Minumum withdraw = 100 tokens. Please enter a valid token amount to withdraw.");
     return;
   }
