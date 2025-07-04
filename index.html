@@ -15,15 +15,12 @@
     </noscript>
     <!-- only one wallet-adapter stylesheet -->
     <style>
-      #wallet-ui {
-        position: relative;
-        left: calc(-50vw + 50%); /* pull it to the left edge */
-        width: 100vw !important;
-        max-width: none !important;
-        margin: 1rem 0; /* vertical spacing */
-      }
-    </style>
-    <script type="module" crossorigin src="/texas-poker-site/assets/main-BfTkj9yr.js"></script>
+             /* only vertical spacing; horizontal margins come from .container */
+             #wallet-ui {
+               margin: 1rem 0;
+             }
+           </style>
+    <script type="module" crossorigin src="/texas-poker-site/assets/main-DUQa6DAJ.js"></script>
     <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
   </head>
 	<body class="no-sidebar is-preload">
@@ -67,7 +64,7 @@
    <p id="greeting">Loading…</p>
  
    <!-- Wallet UI: React mount only, hidden by default -->
-   <div id="wallet-ui" style="width:100%; display: none;">
+   <div id="wallet-ui" style="display: none;">
      <table style="width:100%; border-collapse: collapse;">
        <tr>
          <td colspan="2" style="text-align: right; vertical-align: middle;">
