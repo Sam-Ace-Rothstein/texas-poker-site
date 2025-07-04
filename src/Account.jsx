@@ -66,29 +66,24 @@ console.log("🌱 VITE_TREASURY_PUBKEY: ", import.meta.env.VITE_TREASURY_PUBKEY)
   const [withdrawAmount, setWithdrawAmount] = useState("100");
   const [depositConfirmed, setDepositConfirmed] = useState(false);
 
-  // Fetch SOL balance
-  useEffect(() => {
-    if (connected && publicKey) {
-      fetch(
-        `https://texas-poker-production.up.railway.app/api/sol-balance?pubkey=${publicKey.toBase58()}`
-      )
-        .then(res => res.json())
-        .then(data => setSolBalance(data.sol))
-        .catch(err => console.error('🛠 sol-balance error', err));
-    }
-  }, [connected, publicKey]);
+  const refreshBalances = () => {
+        if (connected && publicKey) {
+          fetch(`https://texas-poker-production.up.railway.app/api/sol-balance?pubkey=${publicKey.toBase58()}`)
+            .then(res => res.json())
+            .then(data => setSolBalance(data.sol))
+            .catch(err => console.error('🛠 sol-balance error', err));
+        }
+        if (username) {
+          fetch(`https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`)
+            .then(res => res.json())
+            .then(data => setTokenBalance(data.tokens))
+            .catch(err => console.error('🛠 token-balance error', err));
+        }
+      };
 
-  // Fetch gameplay token balance
-  useEffect(() => {
-    if (username) {
-      fetch(
-        `https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`
-      )
-        .then(res => res.json())
-        .then(data => setTokenBalance(data.tokens))
-        .catch(err => console.error('🛠 token-balance error', err));
-    }
-  }, [username]);
+      useEffect(() => {
+            refreshBalances();
+          }, [connected, publicKey, username]);
 
 // ─── Deposit Handler ─────────────────────────────────
 const handleDeposit = async () => {
@@ -191,12 +186,7 @@ const handleDeposit = async () => {
       console.log("✅ DepositEvent found:", sawEvent);
       setDepositConfirmed(true);
       // refresh token balance
-      setTimeout(() => {
-        fetch(`https://texas-poker-production.up.railway.app/api/telegram-balance?username=${username}`)
-          .then(r => r.json())
-          .then(d => setTokenBalance(d.tokens))
-          .catch(e => console.error('🔁 Token refresh error', e));
-      }, 1500);
+      refreshBalances();
       alert("✅ Deposit confirmed! Signature: " + signature);
     } else {
       console.warn("⚠️ DepositEvent missing in logs");
@@ -370,9 +360,10 @@ const handleWithdraw = async () => {
     // 7️⃣ Find and alert
     const evt = logs.find((l) => l.includes("WithdrawEvent:"));
     if (evt) {
-      console.log("✅ WithdrawEvent found:", evt);
-      alert("✅ Withdraw confirmed! Signature: " + signature);
-    } else {
+          console.log("✅ WithdrawEvent found:", evt);
+          refreshBalances();
+          alert("✅ Withdraw confirmed! Signature: " + signature);
+        } else {
       console.warn("⚠️ WithdrawEvent missing in logs");
       alert(
         "Withdraw likely succeeded but no on-chain event found—" +
@@ -422,7 +413,7 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Deposit Solana ♣️</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Deposito Solana ♣️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
         Swap your SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot account.
       </p>
