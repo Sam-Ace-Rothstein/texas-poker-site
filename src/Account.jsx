@@ -488,7 +488,7 @@ return (
     >
       <h3 style={{ marginBottom: '0.5rem' }}>Withdraw Solana</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
-        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee = 1%)
+        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee = 1%). Allow 45 seconds between transactions. 
       </p>
 
       <p id="token-balance">
