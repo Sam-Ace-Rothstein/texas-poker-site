@@ -15,10 +15,16 @@
     </noscript>
     <!-- only one wallet-adapter stylesheet -->
     <style>
-             /* only vertical spacing; horizontal margins come from .container */
-             #wallet-ui {
-               margin: 1rem 0;
-             }
+             /* full-width on desktop, but gutter on mobile */
+      #wallet-ui {
+        position: relative;
+        left: calc(-50vw + 50%); /* pull to full-viewport edge on desktop */
+        width: 100vw !important;
+        max-width: none !important;
+        margin: 1rem 0;            /* vertical spacing */
+        padding: 0 1rem;          /* gutter on mobile / small screens */
+        box-sizing: border-box;   /* include padding without overflow */
+      }
            </style>
     <script type="module" crossorigin src="/texas-poker-site/assets/main-DUQa6DAJ.js"></script>
     <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
