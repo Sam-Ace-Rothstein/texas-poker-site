@@ -63,7 +63,7 @@ console.log("🌱 VITE_TREASURY_PUBKEY: ", import.meta.env.VITE_TREASURY_PUBKEY)
   const [depositAmountSol, setDepositAmountSol] = useState("0.1");
   const [isDepositing,   setIsDepositing]   = useState(false);
   const [isWithdrawing,  setIsWithdrawing]  = useState(false);
-  const [withdrawAmount, setWithdrawAmount] = useState("0");
+  const [withdrawAmount, setWithdrawAmount] = useState("100");
   const [depositConfirmed, setDepositConfirmed] = useState(false);
 
   // Fetch SOL balance
@@ -222,7 +222,7 @@ const handleWithdraw = async () => {
   // 1️⃣ Validate input
   const amount = parseInt(withdrawAmount, 10);
   if (isNaN(amount) || amount <= 100) {
-    alert("Enter a valid token amount to withdraw.");
+    alert("Minumum withdraw = 100 tokens. Please enter a valid token amount to withdraw.");
     return;
   }
   if (amount > tokenBalance) {
