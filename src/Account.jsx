@@ -61,7 +61,8 @@ console.log("🌱 VITE_TREASURY_PUBKEY: ", import.meta.env.VITE_TREASURY_PUBKEY)
   const [solBalance, setSolBalance] = useState(null);
   const [tokenBalance, setTokenBalance] = useState(null);
   const [depositAmountSol, setDepositAmountSol] = useState("0.1");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDepositing,   setIsDepositing]   = useState(false);
+  const [isWithdrawing,  setIsWithdrawing]  = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("0");
   const [depositConfirmed, setDepositConfirmed] = useState(false);
 
@@ -106,7 +107,7 @@ const handleDeposit = async () => {
     return;
   }
 
-  setIsSubmitting(true);
+  setIsDepositing(true);
 
   try {
     const programId = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
@@ -206,7 +207,7 @@ const handleDeposit = async () => {
     console.error("❌ Deposit failed", err);
     alert("Deposit failed. See console for details.");
   } finally {
-    setIsSubmitting(false);
+    setIsDepositing(false);
   }
 };
 // ─────────────────────────────────────────────────────
@@ -229,7 +230,7 @@ const handleWithdraw = async () => {
     return;
   }
 
-  setIsSubmitting(true);
+  setIsWithdrawing(true);
 
   try {
     // 2️⃣ Get voucher from backend (use ms-granularity so you never collide)
@@ -391,7 +392,7 @@ const handleWithdraw = async () => {
            alert("Withdraw failed: " + (err.message || err));
          }
   } finally {
-    setIsSubmitting(false);
+    setIsWithdrawing(false);
   }
 };
 
@@ -455,7 +456,7 @@ return (
       <button
         type="button"
         onClick={handleDeposit}
-        disabled={isSubmitting}
+        disabled={isDepositing}
         style={{
           padding: '0.75rem 1.5rem',
           fontSize: '1rem',
@@ -519,7 +520,7 @@ return (
       <button
         type="button"
         onClick={handleWithdraw}
-        disabled={isSubmitting}
+        disabled={isWithdrawing}
         style={{
           padding: '0.75rem 1.5rem',
           fontSize: '1rem',
