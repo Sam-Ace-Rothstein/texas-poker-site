@@ -14,6 +14,15 @@
       <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
     <!-- only one wallet-adapter stylesheet -->
+    <style>
+      #wallet-ui {
+        position: relative;
+        left: calc(-50vw + 50%); /* pull it to the left edge */
+        width: 100vw !important;
+        max-width: none !important;
+        margin: 1rem 0; /* vertical spacing */
+      }
+    </style>
     <script type="module" crossorigin src="/texas-poker-site/assets/main-B2F-6rXt.js"></script>
     <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-CuhqgDVu.css">
   </head>
@@ -44,12 +53,7 @@
 			<!-- Main -->
 				<div class="wrapper style1">
 
-					<!-- FULL-WIDTH WALLET UI: moves out of the .container -->
-   <div id="wallet-ui" style="width:100%; max-width:none; margin:0;">
-       <p id="greeting">Loading…</p>
-       <div id="root" style="display:flex; justify-content:flex-start; gap:0.5rem;"></div>
-     </div>
-     <div class="container">
+					<div class="container">
 						<article id="main" class="special">
                							<header>
                								<h2>♤ Shuffle Up Your Solana and Deal High Roller! ♤</h2>
