@@ -470,7 +470,7 @@ return (
           transition: 'background 0.2s ease',
         }}
       >
-        {isDepositing ? '♣️ Depositing…' : '♣️ Deposit SOL → Tokens'}
+        {isDepositing ? '♣️ Depositing…' : '♣️ Swap SOL → Tokens'}
       </button>
     </div>
 
@@ -534,7 +534,7 @@ return (
           transition: 'background 0.2s ease',
         }}
       >
-        {isWithdrawing ? '♦️ Withdrawing…' : '♦️ Withdraw SOL → Tokens'}
+        {isWithdrawing ? '♦️ Withdrawing…' : '♦️ Swap Tokens → SOL'}
       </button>
     </div>
   </div>
