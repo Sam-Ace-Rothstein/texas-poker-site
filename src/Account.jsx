@@ -401,7 +401,7 @@ return (
       marginTop: '1rem',
       display: 'flex',
       justifyContent: 'space-between',
-      alignItems: 'flex-start',  // ensure top alignment
+      alignItems: 'flex-start',
       flexWrap: 'wrap'
     }}
   >
@@ -414,38 +414,42 @@ return (
         textAlign: 'left'
       }}
     >
-      {/* Header + info for Deposit */}
+      {/* Header + info */}
       <h3 style={{ marginBottom: '0.5rem' }}>Deposit</h3>
       <p style={{ marginTop: 0, marginBottom: '1rem', color: '#555' }}>
-        Swap your SOL for gameplay tokens at the rate of 1 SOL = 1000 Tokens
+        Swap your SOL for gameplay tokens at 1 SOL = 1000 tokens
       </p>
 
       <p id="sol-balance">
         Your available SOL balance:{' '}
-        <strong>
-          {solBalance != null ? solBalance.toFixed(4) : '…'}
-        </strong>
+        <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
       </p>
 
+      {/* Entry box on its own row */}
       <div style={{ marginTop: '1rem' }}>
-        <label>
-          How many SOL to deposit?{' '}
-          <input
-            type="number"
-            value={depositAmountSol}
-            min="0"
-            step="0.01"
-            max={solBalance ?? undefined}
-            onChange={(e) => setDepositAmountSol(e.target.value)}
-            style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
-          />
+        <label style={{ display: 'block', marginBottom: '0.25rem' }}>
+          How many SOL to deposit?
         </label>
+        <input
+          type="number"
+          value={depositAmountSol}
+          min="0"
+          step="0.01"
+          max={solBalance ?? undefined}
+          onChange={(e) => setDepositAmountSol(e.target.value)}
+          style={{
+            display: 'block',
+            width: '6rem',
+            padding: '0.25rem',
+            fontSize: '1rem',
+            marginBottom: '0.5rem'
+          }}
+        />
       </div>
 
       <button
         type="button"
         style={{
-          marginTop: '1rem',
           padding: '0.5rem 1rem',
           fontSize: '1rem',
           fontWeight: 'bold',
@@ -471,10 +475,10 @@ return (
         textAlign: 'left'
       }}
     >
-      {/* Header + info for Withdraw */}
+      {/* Header + info */}
       <h3 style={{ marginBottom: '0.5rem' }}>Withdraw</h3>
       <p style={{ marginTop: 0, marginBottom: '1rem', color: '#555' }}>
-        Convert your gameplay tokens back into SOL whenever you’re ready to cash out
+        Convert your gameplay tokens back into SOL anytime
       </p>
 
       <p id="token-balance">
@@ -482,25 +486,31 @@ return (
         <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
       </p>
 
+      {/* Entry box on its own row */}
       <div style={{ marginTop: '1rem' }}>
-        <label>
-          How many tokens to withdraw?{' '}
-          <input
-            type="number"
-            value={withdrawAmount}
-            min="1"
-            step="1"
-            max={tokenBalance ?? undefined}
-            onChange={(e) => setWithdrawAmount(e.target.value)}
-            style={{ width: '6rem', padding: '0.25rem', fontSize: '1rem' }}
-          />
+        <label style={{ display: 'block', marginBottom: '0.25rem' }}>
+          How many tokens to withdraw?
         </label>
+        <input
+          type="number"
+          value={withdrawAmount}
+          min="1"
+          step="1"
+          max={tokenBalance ?? undefined}
+          onChange={(e) => setWithdrawAmount(e.target.value)}
+          style={{
+            display: 'block',
+            width: '6rem',
+            padding: '0.25rem',
+            fontSize: '1rem',
+            marginBottom: '0.5rem'
+          }}
+        />
       </div>
 
       <button
         type="button"
         style={{
-          marginTop: '1rem',
           padding: '0.5rem 1rem',
           fontSize: '1rem',
           fontWeight: 'bold',
