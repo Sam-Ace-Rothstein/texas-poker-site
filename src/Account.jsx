@@ -398,7 +398,7 @@ const handleWithdraw = async () => {
 return (
   <div
     style={{
-      width: '100%',             // span the full width of the viewport
+      width: '100%',             // span the full viewport
       boxSizing: 'border-box',   // include padding in that width
       padding: '0 1rem',         // horizontal gutter on mobile
       marginTop: '1rem',
@@ -412,7 +412,8 @@ return (
     {/* Left: Deposit Section */}
     <div
       style={{
-        flex: '0 0 400px',
+        flex: '1 1 400px',       // allow shrink on mobile
+        maxWidth: '400px',       // but never grow beyond 400px
         textAlign: 'left',
         border: '1px solid #000',
         borderRadius: '8px',
@@ -440,7 +441,7 @@ return (
           min="0"
           step="0.01"
           max={solBalance ?? undefined}
-          onChange={(e) => setDepositAmountSol(e.target.value)}
+          onChange={e => setDepositAmountSol(e.target.value)}
           style={{
             display: 'block',
             width: '6rem',
@@ -473,7 +474,8 @@ return (
     {/* Right: Withdraw Section */}
     <div
       style={{
-        flex: '0 0 400px',
+        flex: '1 1 400px',       // same responsive behaviour
+        maxWidth: '400px',
         textAlign: 'left',
         border: '1px solid #000',
         borderRadius: '8px',
@@ -501,7 +503,7 @@ return (
           min="1"
           step="1"
           max={tokenBalance ?? undefined}
-          onChange={(e) => setWithdrawAmount(e.target.value)}
+          onChange={e => setWithdrawAmount(e.target.value)}
           style={{
             display: 'block',
             width: '6rem',
@@ -533,7 +535,6 @@ return (
   </div>
 );
 }
-
 
 // ─────────────────────────────────────────────
 // Main App
