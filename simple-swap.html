@@ -50,9 +50,9 @@
     <p>
       • Rake: <strong>5%</strong> of pot, capped at <strong>50 tokens</strong><br>
       • Token Conversion: <strong>1,000 tokens = 1 SOL</strong><br>
-      • SOL Price: <strong>$100</strong><br>
       • Hands per Player per Day: <strong>30</strong><br>
-      • Players per Table: <strong>4</strong>
+      • Players per Table: <strong>4</strong><br>
+      • SOL Price: <input type="number" id="solPrice" value="145" min="1" style="width: 80px;"> USD
     </p>
   </div>
 
@@ -98,11 +98,11 @@
 
   <script>
     const scenarios = {
-      1: { players: 35, handsPerPlayer: 30, solPrice: 100, defaultPot: 50 },
-      2: { players: 75, handsPerPlayer: 30, solPrice: 100, defaultPot: 75 },
-      3: { players: 150, handsPerPlayer: 30, solPrice: 100, defaultPot: 100 },
-      4: { players: 300, handsPerPlayer: 30, solPrice: 100, defaultPot: 125 },
-      5: { players: 600, handsPerPlayer: 30, solPrice: 100, defaultPot: 150 }
+      1: { players: 35, handsPerPlayer: 30, defaultPot: 50 },
+      2: { players: 75, handsPerPlayer: 30, defaultPot: 75 },
+      3: { players: 150, handsPerPlayer: 30, defaultPot: 100 },
+      4: { players: 300, handsPerPlayer: 30, defaultPot: 125 },
+      5: { players: 600, handsPerPlayer: 30, defaultPot: 150 }
     };
 
     function updateScenario(id, pot) {
@@ -114,8 +114,9 @@
       const dailySOL = dailyRakeTokens / 1000;
       const weeklySOL = dailySOL * 7;
       const monthlySOL = dailySOL * 30;
-      const dailyUSD = dailySOL * s.solPrice;
-      const monthlyUSD = monthlySOL * s.solPrice;
+      const solPrice = parseFloat(document.getElementById('solPrice').value);
+      const dailyUSD = dailySOL * solPrice;
+      const monthlyUSD = monthlySOL * solPrice;
       const tables = Math.ceil(s.players / 4);
 
       document.getElementById(`output${id}`).innerHTML = `
@@ -131,6 +132,13 @@
         • <span class="highlight">Monthly Revenue (USD)</span>: ~$${monthlyUSD.toFixed(2)}
       `;
     }
+
+    document.getElementById('solPrice').addEventListener('input', () => {
+      for (let i = 1; i <= 5; i++) {
+        const potInput = document.querySelector(`#scenario${i} input[type=number]`);
+        updateScenario(i, potInput.value);
+      }
+    });
 
     for (let i = 1; i <= 5; i++) {
       updateScenario(i, scenarios[i].defaultPot);
