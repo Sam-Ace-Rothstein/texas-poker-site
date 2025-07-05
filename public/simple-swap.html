@@ -7,38 +7,44 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f8f9fa;
       padding: 2rem;
-      max-width: 900px;
+      max-width: 960px;
       margin: auto;
     }
     h1, h2 {
-      margin-top: 2rem;
+      color: #212529;
     }
     .scenario {
+      background: white;
+      border-radius: 6px;
+      padding: 1.5rem;
+      box-shadow: 0 0 12px rgba(0,0,0,0.05);
       margin-bottom: 2rem;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 1rem;
-    }
-    .summary {
-      font-weight: bold;
-      margin-top: 2rem;
-    }
-    canvas {
-      margin-top: 2rem;
-    }
-    .pot-control {
-      margin-top: 1rem;
     }
     .constants {
-      background: #f4f4f4;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 6px;
       padding: 1rem;
-      border: 1px solid #ccc;
       margin-bottom: 2rem;
+    }
+    label, p {
+      line-height: 1.6;
+    }
+    input[type="number"] {
+      padding: 0.25rem 0.5rem;
+      font-size: 1rem;
+      margin-left: 0.5rem;
     }
     .highlight {
       font-weight: bold;
       color: #d63384;
+    }
+    .value-block {
+      margin-top: 1rem;
+      padding-left: 1rem;
     }
   </style>
 </head>
@@ -58,42 +64,42 @@
 
   <div class="scenario" id="scenario1">
     <h2>🔹 Scenario 1: Initial Launch</h2>
-    <div class="pot-control">
-      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="50" min="10" max="500" step="1" onchange="updateScenario(1, this.value)"> tokens
-    </div>
-    <p id="output1"></p>
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
+      <input type="number" value="50" min="10" max="500" step="1" onchange="updateScenario(1, this.value)"> tokens
+    </label>
+    <div class="value-block" id="output1"></div>
   </div>
 
   <div class="scenario" id="scenario2">
     <h2>🔹 Scenario 2: Early Growth</h2>
-    <div class="pot-control">
-      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="75" min="10" max="500" step="1" onchange="updateScenario(2, this.value)"> tokens
-    </div>
-    <p id="output2"></p>
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
+      <input type="number" value="75" min="10" max="500" step="1" onchange="updateScenario(2, this.value)"> tokens
+    </label>
+    <div class="value-block" id="output2"></div>
   </div>
 
   <div class="scenario" id="scenario3">
     <h2>🔹 Scenario 3: Mid-Tier Expansion</h2>
-    <div class="pot-control">
-      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="100" min="10" max="500" step="1" onchange="updateScenario(3, this.value)"> tokens
-    </div>
-    <p id="output3"></p>
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
+      <input type="number" value="100" min="10" max="500" step="1" onchange="updateScenario(3, this.value)"> tokens
+    </label>
+    <div class="value-block" id="output3"></div>
   </div>
 
   <div class="scenario" id="scenario4">
     <h2>🔹 Scenario 4: Major Community Activation</h2>
-    <div class="pot-control">
-      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="125" min="10" max="500" step="1" onchange="updateScenario(4, this.value)"> tokens
-    </div>
-    <p id="output4"></p>
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
+      <input type="number" value="125" min="10" max="500" step="1" onchange="updateScenario(4, this.value)"> tokens
+    </label>
+    <div class="value-block" id="output4"></div>
   </div>
 
   <div class="scenario" id="scenario5">
     <h2>🔹 Scenario 5: High Performance Network</h2>
-    <div class="pot-control">
-      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="150" min="10" max="500" step="1" onchange="updateScenario(5, this.value)"> tokens
-    </div>
-    <p id="output5"></p>
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
+      <input type="number" value="150" min="10" max="500" step="1" onchange="updateScenario(5, this.value)"> tokens
+    </label>
+    <div class="value-block" id="output5"></div>
   </div>
 
   <script>
@@ -112,24 +118,24 @@
       const totalHands = s.players * s.handsPerPlayer;
       const dailyRakeTokens = rakePerHand * totalHands;
       const dailySOL = dailyRakeTokens / 1000;
-      const weeklySOL = dailySOL * 7;
       const monthlySOL = dailySOL * 30;
+      const yearlySOL = dailySOL * 365;
       const solPrice = parseFloat(document.getElementById('solPrice').value);
       const dailyUSD = dailySOL * solPrice;
       const monthlyUSD = monthlySOL * solPrice;
       const tables = Math.ceil(s.players / 4);
 
       document.getElementById(`output${id}`).innerHTML = `
-        • <span class="highlight">Average Pot</span>: ${pot} tokens<br>
-        • <span class="highlight">Estimated Players</span>: ~${s.players}/day<br>
-        • Total Hands per Day: ${totalHands}<br>
-        • <span class="highlight">Rake per Hand</span>: ${rakePerHand.toFixed(2)} tokens<br>
-        • <span class="highlight">Daily Rake</span>: ${dailyRakeTokens.toLocaleString()} tokens = ${dailySOL.toFixed(2)} SOL<br>
-        • <span class="highlight">Weekly Rake</span>: ${weeklySOL.toFixed(2)} SOL<br>
-        • <span class="highlight">Monthly Rake</span>: ${monthlySOL.toFixed(2)} SOL<br>
-        • Estimated Tables (4 players/table): ~${tables}<br>
-        • <span class="highlight">Daily Revenue (USD)</span>: ~$${dailyUSD.toFixed(2)}<br>
-        • <span class="highlight">Monthly Revenue (USD)</span>: ~$${monthlyUSD.toFixed(2)}
+        • <span class="highlight">Average Pot Size:</span> ${pot} tokens<br>
+        • <span class="highlight">Average number of Players:</span> ~${s.players}/day<br>
+        • <span class="highlight">Average number of Tables:</span> ~${tables}<br>
+        • <span class="highlight">Average number of Hands per Day:</span> ${totalHands}<br>
+        • <span class="highlight">Average Rake per Hand:</span> ${rakePerHand.toFixed(2)} tokens<br>
+        • <span class="highlight">Daily Rake:</span> ${dailyRakeTokens.toLocaleString()} tokens = ${dailySOL.toFixed(2)} SOL<br>
+        • <span class="highlight">Monthly Rake:</span> ${monthlySOL.toFixed(2)} SOL<br>
+        • <span class="highlight">Yearly Rake:</span> ${yearlySOL.toFixed(2)} SOL<br>
+        • <span class="highlight">Daily Revenue (USD):</span> ~$${dailyUSD.toFixed(2)}<br>
+        • <span class="highlight">Monthly Revenue (USD):</span> ~$${monthlyUSD.toFixed(2)}
       `;
     }
 
