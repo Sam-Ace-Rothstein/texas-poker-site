@@ -32,8 +32,66 @@
 <body>
   <h1>♠️ Poker Bot Revenue Scenarios ♠️</h1>
 
-  <div class="scenario">
-  <h2>🔹 Scenario 1: Initial Launch</h2>
+  
+  <label style="display:block; margin-top:1rem;">Adjust Average Pot Size (tokens):
+    <input type="range" min="10" max="200" value="50" id="potSlider" style="width:100%;">
+    <span id="potValue">50</span> tokens
+  </label>
+  <canvas id="projection4yrChart" width="800" height="300"></canvas>
+  <script>
+    const ctx4yr = document.getElementById('projection4yrChart').getContext('2d');
+    let potProjectionChart;
+
+    function renderPotProjection(avgPot) {
+      const rakePerHand = Math.min(avgPot * 0.05, 50);
+      const dailyHands = 1000;
+      const yearlyProjection = [];
+      for (let year = 1; year <= 4; year++) {
+        const tokens = rakePerHand * dailyHands * 365 * year;
+        yearlyProjection.push(tokens / 1000); // SOL
+      }
+
+      const data = {
+        labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4'],
+        datasets: [{
+          label: 'Cumulative Revenue (SOL)',
+          data: yearlyProjection,
+          fill: true,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          tension: 0.3
+        }]
+      };
+
+      if (potProjectionChart) potProjectionChart.destroy();
+      potProjectionChart = new Chart(ctx4yr, {
+        type: 'line',
+        data: data,
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: '4-Year Revenue Projection by Avg Pot Size'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+    document.getElementById('potSlider').addEventListener('input', (e) => {
+      const val = e.target.value;
+      document.getElementById('potValue').innerText = val;
+      renderPotProjection(parseFloat(val));
+    });
+
+    renderPotProjection(50);
+  </script>
   <p>
     • Average Pot: 50 tokens<br>
     • Estimated Players: ~25–50/day<br>
