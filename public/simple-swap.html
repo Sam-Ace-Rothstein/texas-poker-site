@@ -27,233 +27,93 @@
     canvas {
       margin-top: 2rem;
     }
+    .pot-control {
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
   <h1>♠️ Poker Bot Revenue Scenarios ♠️</h1>
 
-  
-  <label style="display:block; margin-top:1rem;">Adjust Average Pot Size (tokens):
-    <input type="range" min="10" max="200" value="50" id="potSlider" style="width:100%;">
-    <span id="potValue">50</span> tokens
-  </label>
-  <canvas id="projection4yrChart" width="800" height="300"></canvas>
+  <div class="scenario" id="scenario1">
+    <h2>🔹 Scenario 1: Initial Launch</h2>
+    <div class="pot-control">
+      Adjust Avg Pot: <input type="number" value="50" min="10" max="500" step="1" onchange="updateScenario(1, this.value)"> tokens
+    </div>
+    <p id="output1"></p>
+  </div>
+
+  <div class="scenario" id="scenario2">
+    <h2>🔹 Scenario 2: Early Growth</h2>
+    <div class="pot-control">
+      Adjust Avg Pot: <input type="number" value="75" min="10" max="500" step="1" onchange="updateScenario(2, this.value)"> tokens
+    </div>
+    <p id="output2"></p>
+  </div>
+
+  <div class="scenario" id="scenario3">
+    <h2>🔹 Scenario 3: Mid-Tier Expansion</h2>
+    <div class="pot-control">
+      Adjust Avg Pot: <input type="number" value="100" min="10" max="500" step="1" onchange="updateScenario(3, this.value)"> tokens
+    </div>
+    <p id="output3"></p>
+  </div>
+
+  <div class="scenario" id="scenario4">
+    <h2>🔹 Scenario 4: Major Community Activation</h2>
+    <div class="pot-control">
+      Adjust Avg Pot: <input type="number" value="125" min="10" max="500" step="1" onchange="updateScenario(4, this.value)"> tokens
+    </div>
+    <p id="output4"></p>
+  </div>
+
+  <div class="scenario" id="scenario5">
+    <h2>🔹 Scenario 5: High Performance Network</h2>
+    <div class="pot-control">
+      Adjust Avg Pot: <input type="number" value="150" min="10" max="500" step="1" onchange="updateScenario(5, this.value)"> tokens
+    </div>
+    <p id="output5"></p>
+  </div>
+
   <script>
-    const ctx4yr = document.getElementById('projection4yrChart').getContext('2d');
-    let potProjectionChart;
+    const scenarios = {
+      1: { players: 35, handsPerPlayer: 30, solPrice: 100, defaultPot: 50 },
+      2: { players: 75, handsPerPlayer: 30, solPrice: 100, defaultPot: 75 },
+      3: { players: 150, handsPerPlayer: 30, solPrice: 100, defaultPot: 100 },
+      4: { players: 300, handsPerPlayer: 30, solPrice: 100, defaultPot: 125 },
+      5: { players: 600, handsPerPlayer: 30, solPrice: 100, defaultPot: 150 }
+    };
 
-    function renderPotProjection(avgPot) {
-      const rakePerHand = Math.min(avgPot * 0.05, 50);
-      const dailyHands = 1000;
-      const yearlyProjection = [];
-      for (let year = 1; year <= 4; year++) {
-        const tokens = rakePerHand * dailyHands * 365 * year;
-        yearlyProjection.push(tokens / 1000); // SOL
-      }
+    function updateScenario(id, pot) {
+      const s = scenarios[id];
+      pot = parseFloat(pot);
+      const rakePerHand = Math.min(pot * 0.05, 50);
+      const totalHands = s.players * s.handsPerPlayer;
+      const dailyRakeTokens = rakePerHand * totalHands;
+      const dailySOL = dailyRakeTokens / 1000;
+      const weeklySOL = dailySOL * 7;
+      const monthlySOL = dailySOL * 30;
+      const dailyUSD = dailySOL * s.solPrice;
+      const monthlyUSD = monthlySOL * s.solPrice;
+      const tables = Math.ceil(s.players / 4);
 
-      const data = {
-        labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4'],
-        datasets: [{
-          label: 'Cumulative Revenue (SOL)',
-          data: yearlyProjection,
-          fill: true,
-          borderColor: 'rgba(54, 162, 235, 1)',
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          tension: 0.3
-        }]
-      };
-
-      if (potProjectionChart) potProjectionChart.destroy();
-      potProjectionChart = new Chart(ctx4yr, {
-        type: 'line',
-        data: data,
-        options: {
-          responsive: true,
-          plugins: {
-            title: {
-              display: true,
-              text: '4-Year Revenue Projection by Avg Pot Size'
-            }
-          },
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
+      document.getElementById(`output${id}`).innerHTML = `
+        • Average Pot: ${pot} tokens<br>
+        • Estimated Players: ~${s.players}/day<br>
+        • Hands per Player per Day: ~${s.handsPerPlayer}<br>
+        • Total Hands per Day: ${totalHands}<br>
+        • Rake per Hand: ${rakePerHand.toFixed(2)} tokens (5% capped)<br>
+        • Total Daily Rake: ${dailyRakeTokens.toLocaleString()} tokens = ${dailySOL.toFixed(2)} SOL<br>
+        • Total Weekly Rake: ${weeklySOL.toFixed(2)} SOL<br>
+        • Total Monthly Rake: ${monthlySOL.toFixed(2)} SOL<br>
+        • Estimated Tables (at 4 players/table): ~${tables}<br>
+        • Daily Revenue (USD): ~$${dailyUSD.toFixed(2)}/day<br>
+        • Monthly Revenue (USD): ~$${monthlyUSD.toFixed(2)}/month`
     }
 
-    document.getElementById('potSlider').addEventListener('input', (e) => {
-      const val = e.target.value;
-      document.getElementById('potValue').innerText = val;
-      renderPotProjection(parseFloat(val));
-    });
-
-    renderPotProjection(50);
-  </script>
-  <p>
-    • Average Pot: 50 tokens<br>
-    • Estimated Players: ~25–50/day<br>
-    • Hands per Player per Day: ~30<br>
-    • Total Hands per Day: 1,000<br>
-    • Rake per Hand: 2.5 tokens (5% capped)<br>
-    • Total Daily Rake: 2,500 tokens = 2.5 SOL<br>
-    • Total Weekly Rake: 17,500 tokens = 17.5 SOL<br>
-    • Total Monthly Rake: 75,000 tokens = 75 SOL<br>
-    • Estimated Tables (at 4 players/table): ~10<br>
-    • Daily Revenue (USD): ~$250/day<br>
-    • Monthly Revenue (USD): ~$7,500/month
-  </p>
-</div>
-
-  <div class="scenario">
-  <h2>🔹 Scenario 2: Early Growth</h2>
-  <p>
-    • Average Pot: 75 tokens<br>
-    • Estimated Players: ~60–90/day<br>
-    • Hands per Player per Day: ~30<br>
-    • Total Hands per Day: 2,500<br>
-    • Rake per Hand: 3.75 tokens (5% capped)<br>
-    • Total Daily Rake: 9,375 tokens = 9.375 SOL<br>
-    • Total Weekly Rake: 65,625 tokens = 65.625 SOL<br>
-    • Total Monthly Rake: 281,250 tokens = 281.25 SOL<br>
-    • Estimated Tables (at 4 players/table): ~25<br>
-    • Daily Revenue (USD): ~$937.50/day<br>
-    • Monthly Revenue (USD): ~$28,125/month
-  </p>
-</div>
-
-  <div class="scenario">
-  <h2>🔹 Scenario 3: Mid-Tier Expansion</h2>
-  <p>
-    • Average Pot: 100 tokens<br>
-    • Estimated Players: ~150/day<br>
-    • Hands per Player per Day: ~30<br>
-    • Total Hands per Day: 5,000<br>
-    • Rake per Hand: 5 tokens (5% capped)<br>
-    • Total Daily Rake: 25,000 tokens = 25 SOL<br>
-    • Total Weekly Rake: 175,000 tokens = 175 SOL<br>
-    • Total Monthly Rake: 750,000 tokens = 750 SOL<br>
-    • Estimated Tables (at 4 players/table): ~38<br>
-    • Daily Revenue (USD): ~$2,500/day<br>
-    • Monthly Revenue (USD): ~$75,000/month
-  </p>
-</div>
-
-  <div class="scenario">
-  <h2>🔹 Scenario 4: Major Community Activation</h2>
-  <p>
-    • Average Pot: 125 tokens<br>
-    • Estimated Players: ~300/day<br>
-    • Hands per Player per Day: ~30<br>
-    • Total Hands per Day: 10,000<br>
-    • Rake per Hand: 6.25 tokens (5% capped)<br>
-    • Total Daily Rake: 62,500 tokens = 62.5 SOL<br>
-    • Total Weekly Rake: 437,500 tokens = 437.5 SOL<br>
-    • Total Monthly Rake: 1,875,000 tokens = 1,875 SOL<br>
-    • Estimated Tables (at 4 players/table): ~75<br>
-    • Daily Revenue (USD): ~$6,250/day<br>
-    • Monthly Revenue (USD): ~$187,500/month
-  </p>
-</div>
-
-  <div class="scenario">
-  <h2>🔹 Scenario 5: High Performance Network</h2>
-  <p>
-    • Average Pot: 150 tokens<br>
-    • Estimated Players: ~600/day<br>
-    • Hands per Player per Day: ~30<br>
-    • Total Hands per Day: 36,000<br>
-    • Rake per Hand: 7.5 tokens (5% capped)<br>
-    • Total Daily Rake: 270,000 tokens = 270 SOL<br>
-    • Total Weekly Rake: 1,890,000 tokens = 1,890 SOL<br>
-    • Total Monthly Rake: 8,100,000 tokens = 8,100 SOL<br>
-    • Estimated Tables (at 4 players/table): ~150<br>
-    • Daily Revenue (USD): ~$27,000/day<br>
-    • Monthly Revenue (USD): ~$810,000/month
-  </p>
-</div>
-
-  <h2 class="summary">📊 Revenue Overview</h2>
-  <canvas id="projectionChart" width="800" height="400"></canvas>
-
-  <script>
-    const scenarioLabels = [
-      "Initial Launch",
-      "Early Growth",
-      "Mid-Tier Expansion",
-      "Community Activation",
-      "High Performance"
-    ];
-
-    const dailySOL = [2.5, 9.375, 25, 62.5, 270];
-    const monthlySOL = dailySOL.map(val => val * 30);
-    const yearlySOL = dailySOL.map(val => val * 365);
-
-    const ctx = document.getElementById('projectionChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: scenarioLabels,
-        datasets: [
-          {
-            label: 'Daily Revenue (SOL)',
-            data: dailySOL,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            fill: true,
-            tension: 0.3
-          },
-          {
-            label: 'Monthly Revenue (SOL)',
-            data: monthlySOL,
-            borderColor: 'rgba(255, 159, 64, 1)',
-            backgroundColor: 'rgba(255, 159, 64, 0.2)',
-            fill: true,
-            tension: 0.3
-          },
-          {
-            label: 'Yearly Revenue (SOL)',
-            data: yearlySOL,
-            borderColor: 'rgba(153, 102, 255, 1)',
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            fill: true,
-            tension: 0.3
-          },
-          {
-            label: 'Average Revenue Curve (SOL)',
-            data: dailySOL.map((d, i) => (d + monthlySOL[i] / 30 + yearlySOL[i] / 365) / 3),
-            borderColor: 'rgba(0,0,0,0.7)',
-            backgroundColor: 'rgba(0,0,0,0.1)',
-            borderDash: [5, 5],
-            fill: false,
-            tension: 0.3
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Poker Bot Revenue Projections (SOL)'
-          },
-          tooltip: {
-            mode: 'index',
-            intersect: false
-          },
-          legend: {
-            position: 'bottom'
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
+    for (let i = 1; i <= 5; i++) {
+      updateScenario(i, scenarios[i].defaultPot);
+    }
   </script>
 </body>
 </html>
