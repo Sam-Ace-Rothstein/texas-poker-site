@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Poker Bot Revenue Projection Tool</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -29,62 +30,99 @@
     h1 {
       font-size: 1.5rem;
     }
+    canvas {
+      margin-top: 2rem;
+    }
   </style>
 </head>
 <body>
   <h1>♠️ Poker Bot Revenue Projection Tool ♠️</h1>
 
-  <label>Token Price (SOL per 1000 tokens)
-    <input type="number" id="tokenPrice" value="1" step="0.01">
+  <label>Number of Daily Players
+    <input type="number" id="totalPlayers" value="100">
+  </label>
+
+  <label>Average Buy-In (tokens)
+    <input type="number" id="buyIn" value="1000">
   </label>
 
   <label>Average Pot Size (tokens)
     <input type="number" id="avgPot" value="100">
   </label>
 
-  <label>Rake Percentage (%)
-    <input type="number" id="rakePercent" value="5">
-  </label>
-
-  <label>Rake Cap (tokens)
-    <input type="number" id="rakeCap" value="50">
-  </label>
-
   <label>Average Hands Per Player Per Day
     <input type="number" id="handsPerPlayer" value="30">
-  </label>
-
-  <label>Total Active Players
-    <input type="number" id="totalPlayers" value="100">
   </label>
 
   <button onclick="calculate()">Calculate Revenue</button>
 
   <div class="output" id="results"></div>
 
+  <canvas id="revenueChart" width="400" height="200"></canvas>
+
   <script>
+    const TOKEN_TO_SOL = 1000;
+    const RAKE_PERCENT = 0.05;
+    const RAKE_CAP = 50;
+    const SOL_PRICE_USD = 100;
+
+    let chart;
+
     function calculate() {
-      const tokenPrice = parseFloat(document.getElementById('tokenPrice').value);
       const avgPot = parseFloat(document.getElementById('avgPot').value);
-      const rakePercent = parseFloat(document.getElementById('rakePercent').value) / 100;
-      const rakeCap = parseFloat(document.getElementById('rakeCap').value);
       const handsPerPlayer = parseInt(document.getElementById('handsPerPlayer').value);
       const totalPlayers = parseInt(document.getElementById('totalPlayers').value);
+      const buyIn = parseFloat(document.getElementById('buyIn').value);
 
       const totalHands = handsPerPlayer * totalPlayers;
-      const rakePerHand = Math.min(avgPot * rakePercent, rakeCap);
+      const rakePerHand = Math.min(avgPot * RAKE_PERCENT, RAKE_CAP);
       const totalRakeTokens = rakePerHand * totalHands;
-      const totalRakeSOL = totalRakeTokens / 1000;
-      const totalRevenueUSD = totalRakeSOL * tokenPrice;
+      const totalRakeSOL = totalRakeTokens / TOKEN_TO_SOL;
+      const totalRevenueUSD = totalRakeSOL * SOL_PRICE_USD;
 
       const results = `
         <strong>Total Hands/Day:</strong> ${totalHands.toLocaleString()}<br>
         <strong>Rake/Hand:</strong> ${rakePerHand.toFixed(2)} tokens<br>
         <strong>Daily Rake:</strong> ${totalRakeTokens.toLocaleString()} tokens<br>
-        <strong>Daily Revenue:</strong> ${totalRakeSOL.toFixed(2)} SOL (~$${totalRevenueUSD.toFixed(2)} USD)
+        <strong>Daily Revenue:</strong> ${totalRakeSOL.toFixed(2)} SOL (~$${totalRevenueUSD.toFixed(2)} USD)<br>
+        <strong>Total Buy-in Value:</strong> ${(buyIn * totalPlayers / TOKEN_TO_SOL).toFixed(2)} SOL (~$${(buyIn * totalPlayers / TOKEN_TO_SOL * SOL_PRICE_USD).toFixed(2)} USD)
       `;
 
       document.getElementById('results').innerHTML = results;
+
+      const chartData = {
+        labels: ['Rake (SOL)', 'Total Buy-In (SOL)'],
+        datasets: [{
+          label: 'Daily Value in SOL',
+          data: [totalRakeSOL, (buyIn * totalPlayers / TOKEN_TO_SOL)],
+          backgroundColor: ['#4caf50', '#2196f3']
+        }]
+      };
+
+      if (chart) chart.destroy();
+
+      const ctx = document.getElementById('revenueChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            },
+            title: {
+              display: true,
+              text: 'Daily SOL Value Overview'
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
     }
   </script>
 </body>
