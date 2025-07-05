@@ -30,15 +30,36 @@
     .pot-control {
       margin-top: 1rem;
     }
+    .constants {
+      background: #f4f4f4;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      margin-bottom: 2rem;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #d63384;
+    }
   </style>
 </head>
 <body>
   <h1>♠️ Poker Bot Revenue Scenarios ♠️</h1>
 
+  <div class="constants">
+    <h2>📌 Constant Variables</h2>
+    <p>
+      • Rake: <strong>5%</strong> of pot, capped at <strong>50 tokens</strong><br>
+      • Token Conversion: <strong>1,000 tokens = 1 SOL</strong><br>
+      • SOL Price: <strong>$100</strong><br>
+      • Hands per Player per Day: <strong>30</strong><br>
+      • Players per Table: <strong>4</strong>
+    </p>
+  </div>
+
   <div class="scenario" id="scenario1">
     <h2>🔹 Scenario 1: Initial Launch</h2>
     <div class="pot-control">
-      Adjust Avg Pot: <input type="number" value="50" min="10" max="500" step="1" onchange="updateScenario(1, this.value)"> tokens
+      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="50" min="10" max="500" step="1" onchange="updateScenario(1, this.value)"> tokens
     </div>
     <p id="output1"></p>
   </div>
@@ -46,7 +67,7 @@
   <div class="scenario" id="scenario2">
     <h2>🔹 Scenario 2: Early Growth</h2>
     <div class="pot-control">
-      Adjust Avg Pot: <input type="number" value="75" min="10" max="500" step="1" onchange="updateScenario(2, this.value)"> tokens
+      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="75" min="10" max="500" step="1" onchange="updateScenario(2, this.value)"> tokens
     </div>
     <p id="output2"></p>
   </div>
@@ -54,7 +75,7 @@
   <div class="scenario" id="scenario3">
     <h2>🔹 Scenario 3: Mid-Tier Expansion</h2>
     <div class="pot-control">
-      Adjust Avg Pot: <input type="number" value="100" min="10" max="500" step="1" onchange="updateScenario(3, this.value)"> tokens
+      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="100" min="10" max="500" step="1" onchange="updateScenario(3, this.value)"> tokens
     </div>
     <p id="output3"></p>
   </div>
@@ -62,7 +83,7 @@
   <div class="scenario" id="scenario4">
     <h2>🔹 Scenario 4: Major Community Activation</h2>
     <div class="pot-control">
-      Adjust Avg Pot: <input type="number" value="125" min="10" max="500" step="1" onchange="updateScenario(4, this.value)"> tokens
+      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="125" min="10" max="500" step="1" onchange="updateScenario(4, this.value)"> tokens
     </div>
     <p id="output4"></p>
   </div>
@@ -70,7 +91,7 @@
   <div class="scenario" id="scenario5">
     <h2>🔹 Scenario 5: High Performance Network</h2>
     <div class="pot-control">
-      Adjust Avg Pot: <input type="number" value="150" min="10" max="500" step="1" onchange="updateScenario(5, this.value)"> tokens
+      Adjust <span class="highlight">Avg Pot</span>: <input type="number" value="150" min="10" max="500" step="1" onchange="updateScenario(5, this.value)"> tokens
     </div>
     <p id="output5"></p>
   </div>
@@ -98,17 +119,17 @@
       const tables = Math.ceil(s.players / 4);
 
       document.getElementById(`output${id}`).innerHTML = `
-        • Average Pot: ${pot} tokens<br>
-        • Estimated Players: ~${s.players}/day<br>
-        • Hands per Player per Day: ~${s.handsPerPlayer}<br>
+        • <span class="highlight">Average Pot</span>: ${pot} tokens<br>
+        • <span class="highlight">Estimated Players</span>: ~${s.players}/day<br>
         • Total Hands per Day: ${totalHands}<br>
-        • Rake per Hand: ${rakePerHand.toFixed(2)} tokens (5% capped)<br>
-        • Total Daily Rake: ${dailyRakeTokens.toLocaleString()} tokens = ${dailySOL.toFixed(2)} SOL<br>
-        • Total Weekly Rake: ${weeklySOL.toFixed(2)} SOL<br>
-        • Total Monthly Rake: ${monthlySOL.toFixed(2)} SOL<br>
-        • Estimated Tables (at 4 players/table): ~${tables}<br>
-        • Daily Revenue (USD): ~$${dailyUSD.toFixed(2)}/day<br>
-        • Monthly Revenue (USD): ~$${monthlyUSD.toFixed(2)}/month`
+        • <span class="highlight">Rake per Hand</span>: ${rakePerHand.toFixed(2)} tokens<br>
+        • <span class="highlight">Daily Rake</span>: ${dailyRakeTokens.toLocaleString()} tokens = ${dailySOL.toFixed(2)} SOL<br>
+        • <span class="highlight">Weekly Rake</span>: ${weeklySOL.toFixed(2)} SOL<br>
+        • <span class="highlight">Monthly Rake</span>: ${monthlySOL.toFixed(2)} SOL<br>
+        • Estimated Tables (4 players/table): ~${tables}<br>
+        • <span class="highlight">Daily Revenue (USD)</span>: ~$${dailyUSD.toFixed(2)}<br>
+        • <span class="highlight">Monthly Revenue (USD)</span>: ~$${monthlyUSD.toFixed(2)}
+      `;
     }
 
     for (let i = 1; i <= 5; i++) {
