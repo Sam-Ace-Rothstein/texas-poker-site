@@ -126,17 +126,21 @@
       const tables = Math.ceil(s.players / 4);
 
       document.getElementById(`output${id}`).innerHTML = `
-        • <span class="highlight">Average Pot Size:</span> ${pot} tokens<br>
-        • <span class="highlight">Average number of Players:</span> ~${s.players}/day<br>
-        • <span class="highlight">Average number of Tables:</span> ~${tables}<br>
-        • <span class="highlight">Average number of Hands per Day:</span> ${totalHands}<br>
-        • <span class="highlight">Average Rake per Hand:</span> ${rakePerHand.toFixed(2)} tokens<br>
-        • <span class="highlight">Daily Rake:</span> ${dailyRakeTokens.toLocaleString()} tokens = ${dailySOL.toFixed(2)} SOL<br>
-        • <span class="highlight">Monthly Rake:</span> ${monthlySOL.toFixed(2)} SOL<br>
-        • <span class="highlight">Yearly Rake:</span> ${yearlySOL.toFixed(2)} SOL<br>
-        • <span class="highlight">Daily Revenue (USD):</span> ~$${dailyUSD.toFixed(2)}<br>
-        • <span class="highlight">Monthly Revenue (USD):</span> ~$${monthlyUSD.toFixed(2)}
-      `;
+        <table style='width:100%; border-collapse:collapse;'>
+          <thead>
+            <tr>
+              <th style='text-align:left; padding:4px;'>🧮 Averages</th>
+              <th style='text-align:left; padding:4px;'>📊 Totals</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style='padding:4px;'>Average Pot Size: <span class='highlight'>${pot} tokens</span></td><td style='padding:4px;'>Daily Rake: <span class='highlight'>${dailyRakeTokens.toLocaleString()} tokens = ${dailySOL.toFixed(2)} SOL</span></td></tr>
+            <tr><td style='padding:4px;'>Players per Day: <span class='highlight'>~${s.players}</span></td><td style='padding:4px;'>Monthly Rake: <span class='highlight'>${monthlySOL.toFixed(2)} SOL</span></td></tr>
+            <tr><td style='padding:4px;'>Tables (4p/table): <span class='highlight'>~${tables}</span></td><td style='padding:4px;'>Yearly Rake: <span class='highlight'>${yearlySOL.toFixed(2)} SOL</span></td></tr>
+            <tr><td style='padding:4px;'>Hands per Day: <span class='highlight'>${totalHands}</span></td><td style='padding:4px;'>Daily Revenue: <span class='highlight'>$${dailyUSD.toFixed(2)}</span></td></tr>
+            <tr><td style='padding:4px;'>Rake per Hand: <span class='highlight'>${rakePerHand.toFixed(2)} tokens</span></td><td style='padding:4px;'>Monthly Revenue: <span class='highlight'>$${monthlyUSD.toFixed(2)}</span></td></tr>
+          </tbody>
+        </table>`;
     }
 
     document.getElementById('solPrice').addEventListener('input', () => {
