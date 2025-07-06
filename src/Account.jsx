@@ -52,19 +52,18 @@ const VaultSchema = new Map([
 ]);
 
 
-function TransactionTable({ username }) {
-  const [transactions, setTransactions] = useState([]);
-
-  useEffect(() => {
-    if (!username) return;
-
-    fetch(`https://texas-poker-production.up.railway.app/api/transactions?username=${username}`)
-      .then(res => res.json())
-      .then(data => setTransactions(data.transactions || []))
-      .catch(err => console.error("🛠 transaction fetch error", err));
-  }, [username]);
-
-  if (!username) return null;
+  export default function TransactionTable({ username, refreshSignal }) {
+    const [transactions, setTransactions] = useState([]);
+  
+    useEffect(() => {
+      if (!username) return;
+      fetch(`https://texas-poker-production.up.railway.app/api/transactions?username=${username}`)
+        .then(res => res.json())
+        .then(data => setTransactions(data.transactions || []))
+        .catch(err => console.error(err));
+    }, [username, refreshSignal]);  // ← now re-runs on every new transaction
+  
+    if (!username) return null;
 
   return (
     <div style={{ marginTop: '2rem', width: '100%', overflowX: 'auto' }}>
@@ -117,7 +116,7 @@ function TransactionTable({ username }) {
 
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
-function BalanceDisplay({ username }) {
+function BalanceDisplay({ username, onNewTx }) {
   console.log("🌱 VITE_VAULT_PROGRAM_ID:", import.meta.env.VITE_VAULT_PROGRAM_ID)
 console.log("🌱 VITE_BOT_PUBKEY:      ", import.meta.env.VITE_BOT_PUBKEY)
 console.log("🌱 VITE_TREASURY_PUBKEY: ", import.meta.env.VITE_TREASURY_PUBKEY)
@@ -256,9 +255,11 @@ const handleDeposit = async () => {
         refreshBalances();
       }, 1500);
       alert("✅ Deposit confirmed! Signature: " + signature);
-    } else {
-      console.warn("⚠️ DepositEvent missing in logs");
-      alert("Deposit failed on-chain: no confirmation event");
+    // signal the UI to re-fetch the tx list
+       onNewTx();
+     } else {
+       console.warn("⚠️ DepositEvent missing in logs");
+       alert("Deposit failed on-chain: no confirmation event");
     }
 
   } catch (err) {
@@ -617,13 +618,24 @@ const App = () => {
   const params = new URLSearchParams(window.location.search);
   const username = params.get('username');
 
+  const [refreshCounter, setRefreshCounter] = useState(0);
+
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <WalletMultiButton />
-          <BalanceDisplay username={username} />
-          <TransactionTable username={username} />
+        <WalletMultiButton />
+           {/* pass down a signal so BalanceDisplay can trigger a list-refresh */}
+           {/* tell BalanceDisplay to bump our counter on a new on-chain tx */}
+           <BalanceDisplay
+             username={username}
+             onNewTx={() => setRefreshCounter(c => c + 1)}
+           />
+           {/* re-fetch whenever refreshCounter changes */}
+           <TransactionTable
+             username={username}
+             refreshSignal={refreshCounter}
+           />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
