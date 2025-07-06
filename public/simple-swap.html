@@ -38,16 +38,10 @@
       font-size: 1rem;
       margin-left: 0.5rem;
     }
-    /* Base highlight: bold only */
     .highlight {
       font-weight: bold;
+      color: #d63384;
     }
-    /* Scenario-specific suit colours */
-    #scenario1 .highlight { color: #2c3e50; } /* ♠️ Spades */
-    #scenario2 .highlight { color: #e74c3c; } /* ♥️ Hearts */
-    #scenario3 .highlight { color: #3498db; } /* ♦️ Diamonds */
-    #scenario4 .highlight { color: #27ae60; } /* ♣️ Clubs */
-    #scenario5 .highlight { color: #2c3e50; } /* ♠️ Spades */
     .value-block {
       margin-top: 1rem;
       padding-left: 1rem;
@@ -72,7 +66,7 @@
 
   <div class="scenario" id="scenario1">
     <h2>🔹 Scenario 1: Initial Launch</h2>
-    <label>Adjust Average Pot Size:
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
       <input type="number" value="50" min="10" max="500" step="1" onchange="updateScenario(1, this.value)"> tokens
     </label>
     <div class="value-block" id="output1"></div>
@@ -80,7 +74,7 @@
 
   <div class="scenario" id="scenario2">
     <h2>🔹 Scenario 2: Early Growth</h2>
-    <label>Adjust Average Pot Size:
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
       <input type="number" value="75" min="10" max="500" step="1" onchange="updateScenario(2, this.value)"> tokens
     </label>
     <div class="value-block" id="output2"></div>
@@ -88,7 +82,7 @@
 
   <div class="scenario" id="scenario3">
     <h2>🔹 Scenario 3: Mid-Tier Expansion</h2>
-    <label>Adjust Average Pot Size:
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
       <input type="number" value="100" min="10" max="500" step="1" onchange="updateScenario(3, this.value)"> tokens
     </label>
     <div class="value-block" id="output3"></div>
@@ -96,7 +90,7 @@
 
   <div class="scenario" id="scenario4">
     <h2>🔹 Scenario 4: Major Community Activation</h2>
-    <label>Adjust Average Pot Size:
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
       <input type="number" value="125" min="10" max="500" step="1" onchange="updateScenario(4, this.value)"> tokens
     </label>
     <div class="value-block" id="output4"></div>
@@ -104,7 +98,7 @@
 
   <div class="scenario" id="scenario5">
     <h2>🔹 Scenario 5: High Performance Network</h2>
-    <label>Adjust Average Pot Size:
+    <label>Adjust <span class="highlight">Average Pot Size</span>:
       <input type="number" value="150" min="10" max="500" step="1" onchange="updateScenario(5, this.value)"> tokens
     </label>
     <div class="value-block" id="output5"></div>
@@ -142,18 +136,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td style='padding:4px;'>Average Pot Size: <span class='highlight'>${pot} tokens</span></td><td style='padding:4px;'>Daily Rake: <span class='highlight'>${dailyRakeTokens.toLocaleString()} tokens = ${dailySOL.toFixed(2)} SOL</span></td></tr>
-            <tr><td style='padding:4px;'>Players per Day: <span class='highlight'>~${s.players}</span></td><td style='padding:4px;'>Monthly Rake: <span class='highlight'>${monthlySOL.toFixed(2)} SOL</span></td></tr>
-            <tr><td style='padding:4px;'>Tables (4p/table): <span class='highlight'>~${tables}</span></td><td style='padding:4px;'>Yearly Rake: <span class='highlight'>${yearlySOL.toFixed(2)} SOL</span></td></tr>
-            <tr><td style='padding:4px;'>Hands per Day: <span class='highlight'>${totalHands}</span></td><td style='padding:4px;'>Daily Revenue: <span class='highlight'>$${dailyUSD.toFixed(2)}</span></td></tr>
-            <tr><td style='padding:4px;'>Rake per Hand: <span class='highlight'>${rakePerHand.toFixed(2)} tokens</span></td><td style='padding:4px;'>Monthly Revenue: <span class='highlight'>$${monthlyUSD.toFixed(2)}</span></td></tr>
+            <tr><td style='padding:4px;'>Average Pot Size: <span class='highlight'>\${pot} tokens</span></td><td style='padding:4px;'>Daily Rake: <span class='highlight'>\${dailyRakeTokens.toLocaleString()} tokens = \${dailySOL.toFixed(2)} SOL</span></td></tr>
+            <tr><td style='padding:4px;'>Players per Day: <span class='highlight'>~\${s.players}</span></td><td style='padding:4px;'>Monthly Rake: <span class='highlight'>\${monthlySOL.toFixed(2)} SOL</span></td></tr>
+            <tr><td style='padding:4px;'>Tables (4p/table): <span class='highlight'>~\${tables}</span></td><td style='padding:4px;'>Yearly Rake: <span class='highlight'>\${yearlySOL.toFixed(2)} SOL</span></td></tr>
+            <tr><td style='padding:4px;'>Hands per Day: <span class='highlight'>\${totalHands}</span></td><td style='padding:4px;'>Daily Revenue: <span class='highlight'>$\${dailyUSD.toFixed(2)}</span></td></tr>
+            <tr><td style='padding:4px;'>Rake per Hand: <span class='highlight'>\${rakePerHand.toFixed(2)} tokens</span></td><td style='padding:4px;'>Monthly Revenue: <span class='highlight'>$\${monthlyUSD.toFixed(2)}</span></td></tr>
           </tbody>
         </table>`;
     }
 
     document.getElementById('solPrice').addEventListener('input', () => {
       for (let i = 1; i <= 5; i++) {
-        const potInput = document.querySelector(`#scenario${i} input[type=number]`);
+        const potInput = document.querySelector(`#scenario\${i} input[type=number]`);
         updateScenario(i, potInput.value);
       }
     });
@@ -162,9 +156,86 @@
       updateScenario(i, scenarios[i].defaultPot);
     }
   </script>
+<div class="scenario" style="background:#eaf7ea; border:1px solid #b9e0b9;">
+  <h2>📈 Investor Summary: Why Hold $TEXAS?</h2>
+  <ul>
+    <li><strong>Real Revenue:</strong> 100% of rake generated by the bot is distributed to $TEXAS holders.</li>
+    <li><strong>Scalable Model:</strong> More groups using the bot = more hands played = more revenue shared.</li>
+    <li><strong>Transparent Payouts:</strong> On-chain distribution of SOL rewards tracked live.</li>
+    <li><strong>Community Growth:</strong> As Telegram groups adopt the bot, token demand increases organically.</li>
+    <li><strong>Investor Alignment:</strong> All incentives are built to reward activity and long-term holding.</li>
+  </ul>
+  <p>Get in early, stake your $TEXAS, and earn from every hand played.</p>
+</div>
 
-  <div class="scenario" style="background:#eaf7ea; border:1px solid #b9e0b9;">
-    <h2>📈 Investor Summary: Why Hold $TEXAS?</h2>
-    <ul>
-      <li><strong>Real Revenue:</strong> 100% of rake generated by the bot is distributed to $TEXAS holders.</li>
-      <li><strong>Scalable Model:</strong> More groups using the bot = more hands played = more revenue shared.</
+<div class="scenario" style="background:#fff0f5; border:1px solid #f8c6da;">
+  <h2>🪙 $TEXAS Tokenomics</h2>
+  <p>
+    The $TEXAS token is the backbone of the poker ecosystem, tightly integrated with both bot usage and revenue distribution. Here's how it's structured:
+  </p>
+  <ul>
+    <li><strong>Total Supply:</strong> 1,000,000,000 $TEXAS</li>
+    <li><strong>Fair Launch:</strong> No pre-sale, no VCs — fully community-owned</li>
+    <li><strong>Initial Liquidity:</strong> Provided at launch on Solana DEXs</li>
+    <li><strong>Revenue Sharing:</strong> All bot rake fees distributed to $TEXAS holders</li>
+    <li><strong>Staking:</strong> $TEXAS can be staked to receive proportional share of bot revenue</li>
+    <li><strong>Deflationary Burn:</strong> A portion of fees may be burned to reduce supply</li>
+    <li><strong>Governance:</strong> Token holders vote on future bot upgrades and staking strategies</li>
+  </ul>
+  <p>
+    By combining powerful tokenomics with real revenue, $TEXAS sets a new standard for meme tokens that earn while they entertain.
+  </p>
+</div>
+<div class="scenario" style="background:#f0f7ff; border:1px solid #cde2f9;">
+  <h2>📈 $TEXAS Market Cap Projections</h2>
+  <p>
+    Based on projected bot revenue and applying a conservative 10× revenue multiple, here’s an estimated valuation range for $TEXAS in each growth scenario:
+  </p>
+  <table style="width:100%; border-collapse:collapse; margin-top:1rem;">
+    <thead>
+      <tr>
+        <th style="text-align:left; padding:8px; border-bottom:1px solid #ccc;">Scenario</th>
+        <th style="text-align:right; padding:8px; border-bottom:1px solid #ccc;">Daily Revenue (USD)</th>
+        <th style="text-align:right; padding:8px; border-bottom:1px solid #ccc;">Annual Revenue (USD)</th>
+        <th style="text-align:right; padding:8px; border-bottom:1px solid #ccc;">Est. Market Cap (10×)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:6px;">Scenario 1 – Initial Launch</td>
+        <td style="text-align:right; padding:6px;">$262.50</td>
+        <td style="text-align:right; padding:6px;">$95,812</td>
+        <td style="text-align:right; padding:6px;">$958,000</td>
+      </tr>
+      <tr>
+        <td style="padding:6px;">Scenario 2 – Early Growth</td>
+        <td style="text-align:right; padding:6px;">$1,031.25</td>
+        <td style="text-align:right; padding:6px;">$376,406</td>
+        <td style="text-align:right; padding:6px;">$3.76M</td>
+      </tr>
+      <tr>
+        <td style="padding:6px;">Scenario 3 – Mid-Tier Expansion</td>
+        <td style="text-align:right; padding:6px;">$2,175.00</td>
+        <td style="text-align:right; padding:6px;">$793,875</td>
+        <td style="text-align:right; padding:6px;">$7.94M</td>
+      </tr>
+      <tr>
+        <td style="padding:6px;">Scenario 4 – Community Activation</td>
+        <td style="text-align:right; padding:6px;">$4,531.25</td>
+        <td style="text-align:right; padding:6px;">$1,654,906</td>
+        <td style="text-align:right; padding:6px;">$16.55M</td>
+      </tr>
+      <tr>
+        <td style="padding:6px;">Scenario 5 – High Performance</td>
+        <td style="text-align:right; padding:6px;">$19,575.00</td>
+        <td style="text-align:right; padding:6px;">$7,143,375</td>
+        <td style="text-align:right; padding:6px;">$71.43M</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="margin-top:1rem;">
+    These values represent a revenue-backed floor for $TEXAS and can serve as a benchmark when evaluating early-stage investment potential.
+  </p>
+</div>
+</body>
+</html>
