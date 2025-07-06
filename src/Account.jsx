@@ -54,6 +54,31 @@ const VaultSchema = new Map([
 
   export default function TransactionTable({ username, refreshSignal }) {
     const [transactions, setTransactions] = useState([]);
+
+     // ─────── Add this above your useEffect ───────
+   const handleClaim = async (nonce) => {
+       try {
+         const res = await fetch(
+           'https://texas-poker-production.up.railway.app/api/claim-voucher',
+           {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({ username, nonce }),
+           }
+         );
+         if (!res.ok) throw new Error('Claim failed');
+         const { txid } = await res.json();
+         // refresh the table locally
+         setTransactions((txs) =>
+           txs.map((tx) =>
+             tx.nonce === nonce ? { ...tx, status: 'completed', txid } : tx
+           )
+         );
+       } catch (err) {
+         alert(err.message);
+       }
+     };
+     // ──────────────────────────────────────────────
   
     useEffect(() => {
       if (!username) return;
@@ -75,6 +100,7 @@ const VaultSchema = new Map([
         <th style={{ textAlign: 'left', padding: '0.5rem' }}>Amount</th>
         <th style={{ textAlign: 'left', padding: '0.5rem' }}>Timestamp</th>
         <th style={{ textAlign: 'left', padding: '0.5rem' }}>Tx ID</th>
+        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -105,6 +131,24 @@ const VaultSchema = new Map([
               <span style={{ color: '#777' }}>—</span>
             )}
           </td>
+          <td style={{ padding: '0.5rem' }}>
+           {tx.status === 'pending' && (
+             <button
+               onClick={() => handleClaim(tx.nonce)}
+               style={{
+                 padding: '0.25rem 0.5rem',
+                 fontSize: '0.8rem',
+                 color: '#fff',
+                 background: '#007bff',
+                 border: 'none',
+                 borderRadius: '4px',
+                 cursor: 'pointer'
+               }}
+             >
+               CLAIM VOUCHER
+             </button>
+           )}
+         </td>
         </tr>
       ))}
     </tbody>
