@@ -51,6 +51,58 @@ const VaultSchema = new Map([
   }]
 ]);
 
+
+function TransactionTable({ username }) {
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    if (!username) return;
+
+    fetch(`https://texas-poker-production.up.railway.app/api/transactions?username=${username}`)
+      .then(res => res.json())
+      .then(data => setTransactions(data.transactions || []))
+      .catch(err => console.error("🛠 transaction fetch error", err));
+  }, [username]);
+
+  if (!username) return null;
+
+  return (
+    <div style={{ marginTop: '2rem', width: '100%', overflowX: 'auto' }}>
+      <h3>📜 Recent Transactions</h3>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+        <thead>
+          <tr style={{ borderBottom: '1px solid #ccc' }}>
+            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Type</th>
+            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Amount</th>
+            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Timestamp</th>
+            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Tx ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.length === 0 && (
+            <tr>
+              <td colSpan="4" style={{ padding: '0.5rem', color: '#777' }}>No transactions yet.</td>
+            </tr>
+          )}
+          {transactions.map((tx, i) => (
+            <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
+              <td style={{ padding: '0.5rem' }}>{tx.type}</td>
+              <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
+              <td style={{ padding: '0.5rem' }}>{new Date(tx.timestamp).toLocaleString()}</td>
+              <td style={{ padding: '0.5rem' }}>
+                <a href={`https://explorer.solana.com/tx/${tx.txid}?cluster=devnet`} target="_blank" rel="noreferrer">
+                  {tx.txid.slice(0, 10)}...
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
 function BalanceDisplay({ username }) {
@@ -559,6 +611,7 @@ const App = () => {
         <WalletModalProvider>
           <WalletMultiButton />
           <BalanceDisplay username={username} />
+          <TransactionTable username={username} />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
