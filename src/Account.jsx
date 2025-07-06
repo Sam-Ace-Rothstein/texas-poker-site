@@ -18,67 +18,148 @@ import { clusterApiUrl } from '@solana/web3.js';
 
 import '@solana/wallet-adapter-react-ui/styles.css';
 
-import BN from 'bn.js'; 
+import BN from 'bn.js';
 
 import {
-     Transaction,
-     TransactionInstruction,
-     SystemProgram,
-     Connection,
-     PublicKey,
-     SendTransactionError,
-     SYSVAR_INSTRUCTIONS_PUBKEY
-   } from '@solana/web3.js';
-   import { Ed25519Program } from '@solana/web3.js';
+  Transaction,
+  TransactionInstruction,
+  SystemProgram,
+  Connection,
+  PublicKey,
+  SendTransactionError,
+  SYSVAR_INSTRUCTIONS_PUBKEY,
+  Ed25519Program
+} from '@solana/web3.js';
+
 import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
 if (!window.Buffer) window.Buffer = Buffer;
 
-class VaultInstruction {
+// ── Withdraw voucher payload/schema (needed by handleClaim) ──
+class WithdrawPayload {
   constructor(fields) {
-    this.variant = fields.variant;
-    this.amount = fields.amount;
+    this.variant     = fields.variant;
+    this.amount      = fields.amount;
+    this.nonce       = fields.nonce;
+    this.telegram_id = fields.telegram_id;
+    this.signature   = fields.signature;
   }
 }
-
-const VaultSchema = new Map([
-  [VaultInstruction, {
+const WithdrawSchema = new Map([
+  [WithdrawPayload, {
     kind: 'struct',
     fields: [
-      ['variant', 'u8'],     // enum tag
-      ['amount', 'u64'],     // only used for Deposit
-    ]
+      ['variant',     'u8'],
+      ['amount',      'u64'],
+      ['nonce',       'u64'],
+      ['telegram_id', 'u64'],
+      ['signature',   [64]],
+    ],
   }]
 ]);
 
+export default function TransactionTable({ username, refreshSignal }) {
+  // now you can safely call useWallet() once and use WithdrawSchema in handleClaim:
+  const { publicKey, sendTransaction } = useWallet();
+  const [transactions, setTransactions] = useState([]);
 
-  export default function TransactionTable({ username, refreshSignal }) {
-    const [transactions, setTransactions] = useState([]);
-
-     // ─────── Add this above your useEffect ───────
-   const handleClaim = async (nonce) => {
-       try {
-         const res = await fetch(
-           'https://texas-poker-production.up.railway.app/api/claim-voucher',
-           {
-             method: 'POST',
-             headers: { 'Content-Type': 'application/json' },
-             body: JSON.stringify({ username, nonce }),
-           }
-         );
-         if (!res.ok) throw new Error('Claim failed');
-         const { txid } = await res.json();
-         // refresh the table locally
-         setTransactions((txs) =>
-           txs.map((tx) =>
-             tx.nonce === nonce ? { ...tx, status: 'completed', txid } : tx
-           )
-         );
-       } catch (err) {
-         alert(err.message);
+//—you’ll also need these two in this file:—
+   class WithdrawPayload {
+       constructor(f) {
+         this.variant     = f.variant;
+         this.amount      = f.amount;
+         this.nonce       = f.nonce;
+         this.telegram_id = f.telegram_id;
+         this.signature   = f.signature;
        }
-     };
-     // ──────────────────────────────────────────────
+     }
+     const WithdrawSchema = new Map([
+       [WithdrawPayload, {
+         kind: "struct",
+         fields: [
+           ["variant",     "u8"],
+           ["amount",      "u64"],
+           ["nonce",       "u64"],
+           ["telegram_id", "u64"],
+           ["signature",   [64]],
+         ],
+       }],
+     ]);
+   
+     // build & send the “claim” tx on‐chain
+const handleClaim = async (tx) => {
+  if (!publicKey) return alert("Connect wallet first");
+
+  // unpack voucher
+  const { amount, nonce, signature: sigB58 } = tx;
+  const programId      = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
+  const [vaultPDA]     = PublicKey.findProgramAddressSync(
+    [Buffer.from("vault_v2")],
+    programId
+  );
+  const treasuryPubkey = new PublicKey(import.meta.env.VITE_TREASURY_PUBKEY);
+
+  // recreate the message buffer
+  const sigBytes = bs58.decode(sigB58);
+  const msgBuf   = Buffer.concat([
+    publicKey.toBuffer(),
+    Buffer.from(new BN(amount).toArray("le", 8)),
+    Buffer.from(new BN(nonce).toArray("le", 8)),
+    Buffer.from(new BN(parseInt(username, 10)).toArray("le", 8)),
+  ]);
+
+  // ed25519 verify ix
+  const verifyIx = Ed25519Program.createInstructionWithPublicKey({
+    publicKey: bs58.decode(import.meta.env.VITE_BOT_PUBKEY),
+    message:   msgBuf,
+    signature: sigBytes,
+  });
+
+  // withdraw ix
+  const withdrawData = Buffer.from(
+    borsh.serialize(
+      WithdrawSchema, // already defined next to handleWithdraw
+      new WithdrawPayload({
+        variant:     2,
+        amount:      BigInt(amount),
+        nonce:       BigInt(nonce),
+        telegram_id: BigInt(parseInt(username, 10)),
+        signature:   sigBytes,
+      })
+    )
+  );
+  const withdrawIx = new TransactionInstruction({
+    programId,
+    keys: [
+      { pubkey: publicKey,               isSigner: true,  isWritable: true  },
+      { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
+      { pubkey: treasuryPubkey,          isSigner: false, isWritable: true  },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_INSTRUCTIONS_PUBKEY, isSigner: false, isWritable: false },
+    ],
+    data: withdrawData,
+  });
+
+  // assemble & send
+  const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+  const txObj = new Transaction().add(verifyIx, withdrawIx);
+  txObj.feePayer = publicKey;
+  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+  txObj.recentBlockhash = blockhash;
+
+  try {
+    const sig = await sendTransaction(txObj, connection);
+    await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight });
+    // mark it completed in the UI
+    setTransactions((txs) =>
+      txs.map((t) => t.nonce === nonce ? { ...t, status: "completed", txid: sig } : t)
+    );
+    alert("Voucher claimed on-chain: " + sig);
+  } catch (e) {
+    console.error("Claim failed", e);
+    alert("Claim failed: " + e.message);
+  }
+};
   
     useEffect(() => {
       if (!username) return;
@@ -132,21 +213,10 @@ const VaultSchema = new Map([
             )}
           </td>
           <td style={{ padding: '0.5rem' }}>
-           {tx.status === 'pending' && (
-             <button
-               onClick={() => handleClaim(tx.nonce)}
-               style={{
-                 padding: '0.25rem 0.5rem',
-                 fontSize: '0.8rem',
-                 color: '#fff',
-                 background: '#007bff',
-                 border: 'none',
-                 borderRadius: '4px',
-                 cursor: 'pointer'
-               }}
-             >
-               CLAIM VOUCHER
-             </button>
+          {tx.status === 'pending' && (
+               <button onClick={() => handleClaim(tx)}>
+                 CLAIM VOUCHER
+               </button>
            )}
          </td>
         </tr>
@@ -594,7 +664,7 @@ return (
     >
       <h3 style={{ marginBottom: '0.5rem' }}>♦️ Withdraw Solana ♦️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
-        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Please wait 45 s between transactions.
+        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Ensure to sign the transaction with the wallet saved in your poker bot. 
       </p>
 
       <p id="token-balance">
