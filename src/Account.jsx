@@ -587,6 +587,7 @@ if (evt) {
          } else {
            alert("Withdraw failed: " + (err.message || err));
          }
+         onNewTx();
   } finally {
     setIsWithdrawing(false);
   }
