@@ -90,9 +90,17 @@ function TransactionTable({ username }) {
               <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
               <td style={{ padding: '0.5rem' }}>{new Date(tx.timestamp).toLocaleString()}</td>
               <td style={{ padding: '0.5rem' }}>
-                <a href={`https://explorer.solana.com/tx/${tx.txid}?cluster=devnet`} target="_blank" rel="noreferrer">
-                  {tx.txid.slice(0, 10)}...
-                </a>
+              { (tx.txid || tx.signature) ? (
+              <a
+                href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {(tx.txid ?? tx.signature).slice(0, 10)}…
+              </a>
+            ) : (
+              <span style={{ color: '#777' }}>—</span>
+            ) }
               </td>
             </tr>
           ))}
