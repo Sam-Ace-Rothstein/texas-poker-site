@@ -769,7 +769,7 @@ return (
     >
       <h3 style={{ marginBottom: '0.5rem' }}>♦️ Withdraw Solana ♦️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
-        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Ensure to sign the transaction with the wallet saved in your poker bot. 
+        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Sign with the same wallet saved in your poker bot. 
       </p>
 
       <p id="token-balance">
