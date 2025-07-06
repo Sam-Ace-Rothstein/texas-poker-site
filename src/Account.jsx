@@ -181,85 +181,110 @@ const handleClaim = async (tx) => {
   
     if (!username) return null;
 
-  return (
-    <div style={{ marginTop: '2rem', width: '100%', overflowX: 'auto' }}>
-  <h3>📜 Recent Transactions</h3>
-  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-    <thead>
-      <tr style={{ borderBottom: '1px solid #ccc' }}>
-        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Type</th>
-        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Amount</th>
-        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Timestamp</th>
-        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Tx ID</th>
-        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {transactions.length === 0 && (
-        <tr>
-          <td colSpan="4" style={{ padding: '0.5rem', color: '#777' }}>
-            No transactions yet.
-          </td>
-        </tr>
-      )}
-      {transactions.map((tx, i) => (
-        <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-          <td style={{ padding: '0.5rem' }}>
-             {tx.type === 'voucher'
-               ? 'Withdraw'
-               : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
-          </td>
-          <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
-          <td style={{ padding: '0.5rem' }}>
-            {new Date(tx.timestamp).toLocaleString()}
-          </td>
-          <td style={{ padding: '0.5rem' }}>
-            {(tx.txid || tx.signature) ? (
-              <a
-                href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {(tx.txid ?? tx.signature).slice(0, 10)}…
-              </a>
-            ) : (
-              <span style={{ color: '#777' }}>—</span>
+    return (
+      <div style={{ marginTop: '2rem', width: '100%', overflowX: 'hidden' }}>
+        <h3>📜 Recent Transactions</h3>
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: window.innerWidth < 600 ? '0.8rem' : '0.9rem',
+            tableLayout: 'fixed',
+          }}
+        >
+          <thead>
+            <tr style={{ borderBottom: '1px solid #ccc' }}>
+              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Type</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Amount</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Timestamp</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Tx ID</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ padding: '0.5rem', color: '#777' }}>
+                  No transactions yet.
+                </td>
+              </tr>
             )}
-          </td>
-          <td style={{ padding: '0.5rem' }}>
-  <div
-    style={{
-      display: 'flex',
-      flexDirection: window.innerWidth < 600 ? 'column' : 'row',
-      alignItems: 'flex-start',
-      gap: '0.25rem',
-    }}
-  >
-    {tx.status === 'pending' ? (
-      <button
-        onClick={() => handleClaim(tx)}
-        style={{
-          padding: '0.25rem 0.5rem',
-          fontSize: '0.85rem',
-          borderRadius: '4px',
-          border: '1px solid #ccc',
-          cursor: 'pointer',
-        }}
-      >
-        CLAIM VOUCHER
-      </button>
-    ) : (
-      <span style={{ color: '#0a0', fontSize: '0.85rem' }}>COMPLETED</span>
-    )}
-  </div>
-</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-);
-}    
+            {transactions.map((tx, i) => (
+              <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: '0.5rem' }}>
+                  {tx.type === 'voucher'
+                    ? 'Withdraw'
+                    : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+                </td>
+                <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
+                <td
+                  style={{
+                    padding: '0.5rem',
+                    maxWidth: '130px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {new Date(tx.timestamp).toLocaleString()}
+                </td>
+                <td
+                  style={{
+                    padding: '0.5rem',
+                    maxWidth: '100px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {(tx.txid || tx.signature) ? (
+                    <a
+                      href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ display: 'inline-block', color: '#007bff' }}
+                    >
+                      {(tx.txid ?? tx.signature).slice(0, 10)}…
+                    </a>
+                  ) : (
+                    <span style={{ color: '#777' }}>—</span>
+                  )}
+                </td>
+                <td style={{ padding: '0.5rem' }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: window.innerWidth < 600 ? 'column' : 'row',
+                      alignItems: 'flex-start',
+                      gap: '0.25rem',
+                    }}
+                  >
+                    {tx.status === 'pending' ? (
+                      <button
+                        onClick={() => handleClaim(tx)}
+                        style={{
+                          padding: '0.25rem 0.5rem',
+                          fontSize: '0.85rem',
+                          borderRadius: '4px',
+                          border: '1px solid #ccc',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        CLAIM VOUCHER
+                      </button>
+                    ) : (
+                      <span style={{ color: '#0a0', fontSize: '0.85rem' }}>
+                        COMPLETED
+                      </span>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
 
 
 // ─────────────────────────────────────────────
