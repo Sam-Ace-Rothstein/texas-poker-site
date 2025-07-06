@@ -132,6 +132,11 @@ const handleClaim = async (tx) => {
     )
   );
 
+  const [userVaultAccount] = PublicKey.findProgramAddressSync(
+    [Buffer.from("user"), publicKey.toBuffer()],
+    programId
+  );
+  
   const withdrawIx = new TransactionInstruction({
     programId,
     keys: [
@@ -140,6 +145,7 @@ const handleClaim = async (tx) => {
       { pubkey: treasuryPubkey,          isSigner: false, isWritable: true  },
       { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
       { pubkey: SYSVAR_INSTRUCTIONS_PUBKEY, isSigner: false, isWritable: false },
+      { pubkey: userVaultAccount,        isSigner: false, isWritable: true  },  // ← add this
     ],
     data: withdrawData,
   });
@@ -500,8 +506,8 @@ const handleWithdraw = async () => {
                { pubkey: vaultPDA,                isSigner: false, isWritable: true  },
                { pubkey: treasuryPubkey,          isSigner: false, isWritable: true  },
                { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
-                { pubkey: SYSVAR_INSTRUCTIONS_PUBKEY, isSigner: false, isWritable: false },
-              { pubkey: userVaultAccount,        isSigner: false, isWritable: true  },
+               { pubkey: SYSVAR_INSTRUCTIONS_PUBKEY, isSigner: false, isWritable: false },
+               { pubkey: userVaultAccount,        isSigner: false, isWritable: true  },
              ],
              data: withdrawData,
            });
