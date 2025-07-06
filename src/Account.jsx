@@ -285,7 +285,7 @@ const handleClaim = async (tx) => {
         </table>
       </div>
     );
-
+  }
 
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
