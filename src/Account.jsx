@@ -364,7 +364,7 @@ console.log("🌱 VITE_TREASURY_PUBKEY: ", import.meta.env.VITE_TREASURY_PUBKEY)
 // ─── Deposit Handler ─────────────────────────────────
 const handleDeposit = async () => {
   if (!publicKey || !username) {
-    alert('Wallet or username not connected');
+    toast.error("❌ Wallet or username not connected");
     return;
   }
 
@@ -465,7 +465,7 @@ const handleDeposit = async () => {
       setTimeout(() => {
         refreshBalances();
       }, 1500);
-      alert("✅ Deposit confirmed! Signature: " + signature);
+      toast.success("✅ Deposit confirmed!", { autoClose: 4000 });
     // signal the UI to re-fetch the tx list
        onNewTx();
      } else {
