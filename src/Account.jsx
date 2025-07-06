@@ -295,21 +295,22 @@ const handleClaim = async (tx) => {
                 {tx.status === 'pending' && window.innerWidth < 600 && (
                   <tr>
                     <td colSpan="5" style={{ padding: '0.5rem 0.5rem 1rem' }}>
-                      <button
-                        onClick={() => handleClaim(tx)}
-                        style={{
-                          width: '100%',
-                          padding: '0.5rem',
-                          fontSize: '0.85rem',
-                          fontWeight: '600',
-                          borderRadius: '6px',
-                          border: '1px solid #ccc',
-                          cursor: 'pointer',
-                          backgroundColor: '#fffbe6',
-                        }}
-                      >
-                        CLAIM VOUCHER
-                      </button>
+                    <button
+  onClick={() => handleClaim(tx)}
+  style={{
+    width: '100%',
+    padding: '0.5rem 1rem',
+    fontSize: '0.85rem',
+    fontWeight: '600',
+    borderRadius: '6px',
+    border: '1px solid #ccc',
+    cursor: 'pointer',
+    backgroundColor: '#f2f2f2',
+    color: '#000',
+  }}
+>
+  CLAIM VOUCHER
+</button>
                     </td>
                   </tr>
                 )}
