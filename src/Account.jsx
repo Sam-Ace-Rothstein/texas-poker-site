@@ -289,15 +289,16 @@ const handleClaim = async (tx) => {
                   }}
                 >
                   {window.innerWidth < 600 ? '✅' : 'COMPLETED'}
-                </span>
-              )}
-            </div>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
+                  </span>
+                )}
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
 }
 
 // ─────────────────────────────────────────────
