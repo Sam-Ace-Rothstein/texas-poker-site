@@ -87,44 +87,51 @@ export default function TransactionTable({ username, refreshSignal }) {
 const handleClaim = async (tx) => {
   if (!publicKey) return alert("Connect wallet first");
 
-  // unpack voucher
-  const { amount, nonce, signature: sigB58 } = tx;
-  const programId      = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
-  const [vaultPDA]     = PublicKey.findProgramAddressSync(
-    [Buffer.from("vault_v2")],
-    programId
+  // 1) fetch signed voucher from your API
+  const resp = await fetch(
+    "https://texas-poker-production.up.railway.app/api/claim-voucher",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, nonce: tx.nonce }),
+    }
   );
+  const { success, voucher, error } = await resp.json();
+  if (!success) {
+    return alert("Could not fetch voucher: " + error);
+  }
+
+  // 2) unpack
+  const { amount, nonce, signature: sigB58 } = voucher;
+  const sigBytes = bs58.decode(sigB58);
+
+  // …then the rest of your on-chain logic exactly as before, using sigBytes…
+
+  const programId      = new PublicKey(import.meta.env.VITE_VAULT_PROGRAM_ID);
+  const [vaultPDA]     = PublicKey.findProgramAddressSync([Buffer.from("vault_v2")], programId);
   const treasuryPubkey = new PublicKey(import.meta.env.VITE_TREASURY_PUBKEY);
 
-  // recreate the message buffer
-  const sigBytes = bs58.decode(sigB58);
-  const msgBuf   = Buffer.concat([
+  const msgBuf = Buffer.concat([
     publicKey.toBuffer(),
     Buffer.from(new BN(amount).toArray("le", 8)),
     Buffer.from(new BN(nonce).toArray("le", 8)),
     Buffer.from(new BN(parseInt(username, 10)).toArray("le", 8)),
   ]);
 
-  // ed25519 verify ix
   const verifyIx = Ed25519Program.createInstructionWithPublicKey({
     publicKey: bs58.decode(import.meta.env.VITE_BOT_PUBKEY),
     message:   msgBuf,
     signature: sigBytes,
   });
 
-  // withdraw ix
   const withdrawData = Buffer.from(
     borsh.serialize(
-      WithdrawSchema, // already defined next to handleWithdraw
-      new WithdrawPayload({
-        variant:     2,
-        amount:      BigInt(amount),
-        nonce:       BigInt(nonce),
-        telegram_id: BigInt(parseInt(username, 10)),
-        signature:   sigBytes,
-      })
+      WithdrawSchema,
+      new WithdrawPayload({ variant: 2, amount: BigInt(amount), nonce: BigInt(nonce),
+                            telegram_id: BigInt(parseInt(username, 10)), signature: sigBytes })
     )
   );
+
   const withdrawIx = new TransactionInstruction({
     programId,
     keys: [
@@ -137,7 +144,7 @@ const handleClaim = async (tx) => {
     data: withdrawData,
   });
 
-  // assemble & send
+  // assemble & send…
   const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
   const txObj = new Transaction().add(verifyIx, withdrawIx);
   txObj.feePayer = publicKey;
@@ -147,9 +154,8 @@ const handleClaim = async (tx) => {
   try {
     const sig = await sendTransaction(txObj, connection);
     await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight });
-    // mark it completed in the UI
-    setTransactions((txs) =>
-      txs.map((t) => t.nonce === nonce ? { ...t, status: "completed", txid: sig } : t)
+    setTransactions(txs =>
+      txs.map(t => t.nonce === nonce ? { ...t, status: "completed", txid: sig } : t)
     );
     alert("Voucher claimed on-chain: " + sig);
   } catch (e) {
