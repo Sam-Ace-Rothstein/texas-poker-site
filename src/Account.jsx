@@ -68,29 +68,33 @@ function TransactionTable({ username }) {
 
   return (
     <div style={{ marginTop: '2rem', width: '100%', overflowX: 'auto' }}>
-      <h3>📜 Recent Transactions</h3>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
-        <thead>
-          <tr style={{ borderBottom: '1px solid #ccc' }}>
-            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Type</th>
-            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Amount</th>
-            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Timestamp</th>
-            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Tx ID</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.length === 0 && (
-            <tr>
-              <td colSpan="4" style={{ padding: '0.5rem', color: '#777' }}>No transactions yet.</td>
-            </tr>
-          )}
-          {transactions.map((tx, i) => (
-            <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-              <td style={{ padding: '0.5rem' }}>{tx.type}</td>
-              <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
-              <td style={{ padding: '0.5rem' }}>{new Date(tx.timestamp).toLocaleString()}</td>
-              <td style={{ padding: '0.5rem' }}>
-              { (tx.txid || tx.signature) ? (
+  <h3>📜 Recent Transactions</h3>
+  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+    <thead>
+      <tr style={{ borderBottom: '1px solid #ccc' }}>
+        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Type</th>
+        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Amount</th>
+        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Timestamp</th>
+        <th style={{ textAlign: 'left', padding: '0.5rem' }}>Tx ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      {transactions.length === 0 && (
+        <tr>
+          <td colSpan="4" style={{ padding: '0.5rem', color: '#777' }}>
+            No transactions yet.
+          </td>
+        </tr>
+      )}
+      {transactions.map((tx, i) => (
+        <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
+          <td style={{ padding: '0.5rem' }}>{tx.type}</td>
+          <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
+          <td style={{ padding: '0.5rem' }}>
+            {new Date(tx.timestamp).toLocaleString()}
+          </td>
+          <td style={{ padding: '0.5rem' }}>
+            {(tx.txid || tx.signature) ? (
               <a
                 href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
                 target="_blank"
@@ -100,15 +104,15 @@ function TransactionTable({ username }) {
               </a>
             ) : (
               <span style={{ color: '#777' }}>—</span>
-            ) }
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+);
+}    
 
 
 // ─────────────────────────────────────────────
