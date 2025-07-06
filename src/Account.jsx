@@ -203,7 +203,11 @@ const handleClaim = async (tx) => {
       )}
       {transactions.map((tx, i) => (
         <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-          <td style={{ padding: '0.5rem' }}>{tx.type}</td>
+          <td style={{ padding: '0.5rem' }}>
+             {tx.type === 'voucher'
+               ? 'Withdraw'
+               : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+          </td>
           <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
           <td style={{ padding: '0.5rem' }}>
             {new Date(tx.timestamp).toLocaleString()}
@@ -222,12 +226,12 @@ const handleClaim = async (tx) => {
             )}
           </td>
           <td style={{ padding: '0.5rem' }}>
-          {tx.status === 'pending' && (
-               <button onClick={() => handleClaim(tx)}>
-                 CLAIM VOUCHER
-               </button>
-           )}
-         </td>
+  {tx.status === 'pending' ? (
+    <button onClick={() => handleClaim(tx)}>CLAIM VOUCHER</button>
+  ) : (
+    <span style={{ color: '#0a0' }}>COMPLETED</span>
+  )}
+</td>
         </tr>
       ))}
     </tbody>
@@ -549,22 +553,29 @@ const handleWithdraw = async () => {
     const logs = confirmed?.meta?.logMessages || [];
     console.log("🪵 On-chain logs:", logs);
 
-    // 7️⃣ Find and alert
-    const evt = logs.find((l) => l.includes("WithdrawEvent:"));
-    if (evt) {
-          console.log("✅ WithdrawEvent found:", evt);
-          setTimeout(() => {
-            refreshBalances();
-          }, 1500);
-          alert("✅ Withdraw confirmed! Signature: " + signature);
-        } else {
-      console.warn("⚠️ WithdrawEvent missing in logs");
-      alert(
-        "Withdraw likely succeeded but no on-chain event found—" +
-        "check Explorer:\n" +
-        `https://explorer.solana.com/tx/${signature}?cluster=devnet`
-      );
-    }
+   // 7️⃣ Find and alert
+const evt = logs.find((l) => l.includes("WithdrawEvent:"));
+if (evt) {
+  console.log("✅ WithdrawEvent found:", evt);
+
+  // refresh on-chain balances shortly after
+  setTimeout(() => {
+    refreshBalances();
+  }, 1500);
+
+  // notify user
+  alert("✅ Withdraw confirmed! Signature: " + signature);
+
+  // signal the UI to re-fetch the transaction list
+  onNewTx();
+} else {
+  console.warn("⚠️ WithdrawEvent missing in logs");
+  alert(
+    "Withdraw likely succeeded but no on-chain event found—" +
+    "check Explorer:\n" +
+    `https://explorer.solana.com/tx/${signature}?cluster=devnet`
+  );
+}
 
   } catch (err) {
          console.error("Withdraw failed:", err);
