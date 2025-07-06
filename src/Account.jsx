@@ -210,91 +210,88 @@ const handleClaim = async (tx) => {
         </tr>
       )}
       {transactions.map((tx, i) => (
-        <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-          <td style={{ padding: '0.5rem' }}>
-            {tx.type === 'voucher'
-              ? 'Withdraw'
-              : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
-          </td>
-          <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
-          <td
-            style={{
-              padding: '0.5rem',
-              maxWidth: '130px',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
+  <React.Fragment key={i}>
+    <tr style={{ borderBottom: '1px solid #eee' }}>
+      <td style={{ padding: '0.5rem' }}>
+        {tx.type === 'voucher'
+          ? 'Withdraw'
+          : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+      </td>
+      <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
+      <td
+        style={{
+          padding: '0.5rem',
+          maxWidth: '130px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {new Date(tx.timestamp).toLocaleString()}
+      </td>
+      <td
+        style={{
+          padding: '0.5rem',
+          maxWidth: '100px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {(tx.txid || tx.signature) ? (
+          <a
+            href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
+            target="_blank"
+            rel="noreferrer"
+            style={{ display: 'inline-block', color: '#007bff' }}
           >
-            {new Date(tx.timestamp).toLocaleString()}
-          </td>
-          <td
-            style={{
-              padding: '0.5rem',
-              maxWidth: '100px',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {(tx.txid || tx.signature) ? (
-              <a
-                href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
-                target="_blank"
-                rel="noreferrer"
-                style={{ display: 'inline-block', color: '#007bff' }}
-              >
-                {(tx.txid ?? tx.signature).slice(0, 10)}…
-              </a>
-            ) : (
-              <span style={{ color: '#777' }}>—</span>
-            )}
-          </td>
-          <td style={{ padding: '0.5rem' }}>
-            <div
+            {(tx.txid ?? tx.signature).slice(0, 10)}…
+          </a>
+        ) : (
+          <span style={{ color: '#777' }}>—</span>
+        )}
+      </td>
+      <td style={{ padding: '0.5rem' }}>
+        {tx.status === 'pending' ? (
+          window.innerWidth < 600 ? (
+            <span style={{ fontSize: '1.2rem' }}>❗️</span>
+          ) : (
+            <button
+              onClick={() => handleClaim(tx)}
               style={{
-                display: 'flex',
-                flexDirection: window.innerWidth < 600 ? 'column' : 'row',
-                alignItems: 'flex-start',
-                gap: '0.25rem',
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.85rem',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+                cursor: 'pointer',
               }}
             >
-              {tx.status === 'pending' ? (
-                window.innerWidth < 600 ? (
-                  <>
-                    <span style={{ fontSize: '1.2rem' }}>❗️</span>
-                    <span style={{ fontSize: '0.75rem', color: '#c00' }}>
-                      Withdraw Incomplete. Resubmit Voucher
-                    </span>
-                  </>
-                ) : (
-                  <button
-                    onClick={() => handleClaim(tx)}
-                    style={{
-                      padding: '0.25rem 0.5rem',
-                      fontSize: '0.85rem',
-                      borderRadius: '4px',
-                      border: '1px solid #ccc',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    CLAIM VOUCHER
-                  </button>
-                )
-              ) : (
-                <span
-                  style={{
-                    color: '#0a0',
-                    fontSize: window.innerWidth < 600 ? '1.2rem' : '0.85rem',
-                  }}
-                >
-                  {window.innerWidth < 600 ? '✅' : 'COMPLETED'}
-                  </span>
-                )}
-              </div>
-            </td>
-          </tr>
-        ))}
+              CLAIM VOUCHER
+            </button>
+          )
+        ) : (
+          <span
+            style={{
+              color: '#0a0',
+              fontSize: window.innerWidth < 600 ? '1.2rem' : '0.85rem',
+            }}
+          >
+            {window.innerWidth < 600 ? '✅' : 'COMPLETED'}
+          </span>
+        )}
+      </td>
+    </tr>
+
+    {/* Second row only on mobile for error message */}
+    {tx.status === 'pending' && window.innerWidth < 600 && (
+      <tr>
+        <td colSpan="5" style={{ padding: '0.5rem 0.5rem 1rem', color: '#c00', fontSize: '0.75rem' }}>
+          Withdraw Incomplete. Resubmit Voucher
+        </td>
+      </tr>
+    )}
+  </React.Fragment>
+))}
       </tbody>
     </table>
   </div>
