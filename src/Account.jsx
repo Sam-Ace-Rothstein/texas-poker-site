@@ -26,6 +26,9 @@ import {
   Ed25519Program
 } from '@solana/web3.js';
 
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 import BN from 'bn.js';
@@ -85,7 +88,7 @@ export default function TransactionTable({ username, refreshSignal }) {
    
      // build & send the “claim” tx on‐chain
 const handleClaim = async (tx) => {
-  if (!publicKey) return alert("Connect wallet first");
+  if (!publicKey) return toast.error("Connect wallet first");
 
   // 1) fetch signed voucher from your API
   const resp = await fetch(
@@ -98,7 +101,7 @@ const handleClaim = async (tx) => {
   );
   const { success, voucher, error } = await resp.json();
   if (!success) {
-    return alert("Could not fetch voucher: " + error);
+    return toast.error("❌ Could not fetch voucher: " + error);
   }
 
   // 2) unpack
@@ -164,10 +167,10 @@ const handleClaim = async (tx) => {
       txs.map(t => t.nonce === nonce ? { ...t, status: "completed", txid: sig } : t)
     );
 
-    alert("Voucher claimed on-chain: " + sig);
+    toast.success("✅ Voucher claimed on-chain", { autoClose: 4000 });
   } catch (e) {
     console.error("Claim failed", e);
-    alert("Claim failed: " + e.message);
+    toast.error("❌ Claim failed: " + (e.message || "Unknown error"));
   }
 };
   
@@ -367,11 +370,11 @@ const handleDeposit = async () => {
 
   const depositAmount = Math.round(parseFloat(depositAmountSol) * 1e9);
   if (isNaN(depositAmount) || depositAmount <= 0) {
-    alert("Please enter a valid deposit amount.");
+    toast.error("❌ Please enter a valid deposit amount.");
     return;
   }
   if (solBalance != null && parseFloat(depositAmountSol) > solBalance) {
-    alert("You cannot deposit more SOL than your wallet balance.");
+    toast.error("❌ You cannot deposit more SOL than your wallet balance.");
     return;
   }
 
@@ -438,7 +441,7 @@ const handleDeposit = async () => {
     console.log("📡 Simulation logs:", sim.value.logs);
     if (sim.value.err) {
       console.error("❌ Simulation error:", sim.value.err);
-      alert("Simulation failed: " + JSON.stringify(sim.value.err));
+      toast.error("❌ Simulation failed: " + JSON.stringify(sim.value.err));
       return;
     }
 
@@ -467,12 +470,12 @@ const handleDeposit = async () => {
        onNewTx();
      } else {
        console.warn("⚠️ DepositEvent missing in logs");
-       alert("Deposit failed on-chain: no confirmation event");
+       toast.error("⚠️ Deposit failed on-chain: no confirmation event");
     }
 
   } catch (err) {
     console.error("❌ Deposit failed", err);
-    alert("Deposit failed. See console for details.");
+    toast.error("❌ Deposit failed. See console for details.");
   } finally {
     setIsDepositing(false);
   }
@@ -489,11 +492,11 @@ const handleWithdraw = async () => {
   // 1️⃣ Validate input
   const amount = parseInt(withdrawAmount, 10);
   if (isNaN(amount) || amount < 100) {
-    alert("Minumum withdraw = 100 tokens. Please enter a valid token amount to withdraw.");
+    toast.error("❌ Minimum withdraw = 100 tokens.");
     return;
   }
   if (amount > tokenBalance) {
-    alert("Cannot withdraw more than your total tokens.");
+    toast.error("❌ Cannot withdraw more than your total tokens.");
     return;
   }
 
@@ -517,7 +520,7 @@ const handleWithdraw = async () => {
     );
     const { success, voucher, error } = await res.json();
     if (!success) {
-      alert("Voucher rejected: " + error);
+      toast.error("❌ Voucher rejected: " + error);
       return;
     }
     console.log("✅ Voucher received:", voucher);
@@ -611,7 +614,7 @@ const handleWithdraw = async () => {
     console.log("💡 Simulation logs:", sim.value.logs);
     if (sim.value.err) {
       console.error("❌ Preflight error:", sim.value.err);
-      alert("Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
+      toast.error("❌ Withdraw simulation failed:\n" + JSON.stringify(sim.value.err));
       return;
     }
 
@@ -645,7 +648,7 @@ if (evt) {
   }, 1500);
 
   // notify user
-  alert("✅ Withdraw confirmed! Signature: " + signature);
+  toast.success("✅ Withdraw confirmed!", { autoClose: 4000 });
 
   // signal the UI to re-fetch the transaction list
   onNewTx();
@@ -664,9 +667,9 @@ if (evt) {
            err instanceof SendTransactionError ||
            err.message?.includes("already been processed")
          ) {
-           alert("Looks like that withdrawal already went through—please check your wallet or try a different amount.");
+          toast.info("ℹ️ Withdrawal likely already processed. Check your wallet.");
          } else {
-           alert("Withdraw failed: " + (err.message || err));
+          toast.error("❌ Withdraw failed: " + (err.message || err));
          }
          onNewTx();
   } finally {
@@ -840,22 +843,37 @@ const App = () => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-        <WalletMultiButton />
-           {/* pass down a signal so BalanceDisplay can trigger a list-refresh */}
-           {/* tell BalanceDisplay to bump our counter on a new on-chain tx */}
-           <BalanceDisplay
-             username={username}
-             onNewTx={() => setRefreshCounter(c => c + 1)}
-           />
-           {/* re-fetch whenever refreshCounter changes */}
-           <TransactionTable
-             username={username}
-             refreshSignal={refreshCounter}
-           />
+          <WalletMultiButton />
+          
+          {/* Toast notification container */}
+          <ToastContainer
+            position="top-center"
+            autoClose={4000}
+            hideProgressBar={false}
+            newestOnTop={true}
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+  
+          {/* pass down a signal so BalanceDisplay can trigger a list-refresh */}
+          {/* tell BalanceDisplay to bump our counter on a new on-chain tx */}
+          <BalanceDisplay
+            username={username}
+            onNewTx={() => setRefreshCounter(c => c + 1)}
+          />
+          
+          {/* re-fetch whenever refreshCounter changes */}
+          <TransactionTable
+            username={username}
+            refreshSignal={refreshCounter}
+          />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
   );
+
 };
 
 const container = document.getElementById('root');
