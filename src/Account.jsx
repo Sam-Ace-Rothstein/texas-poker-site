@@ -14,13 +14,8 @@ import {
   PhantomWalletAdapter,
   SolflareWalletAdapter
 } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl } from '@solana/web3.js';
-
-import '@solana/wallet-adapter-react-ui/styles.css';
-
-import BN from 'bn.js';
-
 import {
+  clusterApiUrl,
   Transaction,
   TransactionInstruction,
   SystemProgram,
@@ -31,11 +26,14 @@ import {
   Ed25519Program
 } from '@solana/web3.js';
 
+import '@solana/wallet-adapter-react-ui/styles.css';
+
+import BN from 'bn.js';
 import * as borsh from 'borsh';
 import { Buffer } from 'buffer';
 if (!window.Buffer) window.Buffer = Buffer;
 
-// ── Withdraw voucher payload/schema (needed by handleClaim) ──
+// ── Voucher withdraw payload/schema (needed by handleClaim) ──
 class WithdrawPayload {
   constructor(fields) {
     this.variant     = fields.variant;
@@ -59,7 +57,6 @@ const WithdrawSchema = new Map([
 ]);
 
 export default function TransactionTable({ username, refreshSignal }) {
-  // now you can safely call useWallet() once and use WithdrawSchema in handleClaim:
   const { publicKey, sendTransaction } = useWallet();
   const [transactions, setTransactions] = useState([]);
 
