@@ -163,6 +163,7 @@ const handleClaim = async (tx) => {
     setTransactions(txs =>
       txs.map(t => t.nonce === nonce ? { ...t, status: "completed", txid: sig } : t)
     );
+
     alert("Voucher claimed on-chain: " + sig);
   } catch (e) {
     console.error("Claim failed", e);
@@ -194,47 +195,74 @@ const handleClaim = async (tx) => {
       </tr>
     </thead>
     <tbody>
-      {transactions.length === 0 && (
-        <tr>
-          <td colSpan="4" style={{ padding: '0.5rem', color: '#777' }}>
-            No transactions yet.
-          </td>
-        </tr>
-      )}
-      {transactions.map((tx, i) => (
-        <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-          <td style={{ padding: '0.5rem' }}>
-             {tx.type === 'voucher'
-               ? 'Withdraw'
-               : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
-          </td>
-          <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
-          <td style={{ padding: '0.5rem' }}>
-            {new Date(tx.timestamp).toLocaleString()}
-          </td>
-          <td style={{ padding: '0.5rem' }}>
+  {transactions.length === 0 && (
+    <tr>
+      <td colSpan="2" style={{ padding: '0.5rem', color: '#777' }}>
+        No transactions yet.
+      </td>
+    </tr>
+  )}
+  {transactions.map((tx, i) => (
+    <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
+      <td colSpan="5" style={{ padding: '0.5rem' }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: window.innerWidth < 768 ? 'column' : 'row',
+          justifyContent: 'space-between',
+          alignItems: window.innerWidth < 768 ? 'flex-start' : 'center',
+          gap: '0.25rem'
+        }}>
+          {/* First row: Type, Amount, Timestamp */}
+          <div style={{
+            display: 'flex',
+            flexDirection: window.innerWidth < 768 ? 'column' : 'row',
+            gap: '1rem',
+            fontSize: '0.9rem'
+          }}>
+            <span><strong>{tx.type === 'voucher' ? 'Withdraw' : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}</strong></span>
+            <span>{tx.amount} tokens</span>
+            <span>{new Date(tx.timestamp).toLocaleString()}</span>
+          </div>
+
+          {/* Second row: Tx ID and Action */}
+          <div style={{
+            display: 'flex',
+            flexDirection: window.innerWidth < 768 ? 'column' : 'row',
+            gap: '0.5rem',
+            fontSize: '0.8rem'
+          }}>
             {(tx.txid || tx.signature) ? (
               <a
                 href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
                 target="_blank"
                 rel="noreferrer"
+                style={{ color: '#007bff', textDecoration: 'none' }}
               >
-                {(tx.txid ?? tx.signature).slice(0, 10)}…
+                Tx: {(tx.txid ?? tx.signature).slice(0, 10)}…
               </a>
             ) : (
               <span style={{ color: '#777' }}>—</span>
             )}
-          </td>
-          <td style={{ padding: '0.5rem' }}>
-  {tx.status === 'pending' ? (
-    <button onClick={() => handleClaim(tx)}>CLAIM VOUCHER</button>
-  ) : (
-    <span style={{ color: '#0a0' }}>COMPLETED</span>
-  )}
-</td>
-        </tr>
-      ))}
-    </tbody>
+
+            {tx.status === 'pending' ? (
+              <button onClick={() => handleClaim(tx)} style={{
+                fontSize: '0.8rem',
+                padding: '0.25rem 0.5rem',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+                cursor: 'pointer'
+              }}>
+                CLAIM VOUCHER
+              </button>
+            ) : (
+              <span style={{ color: '#0a0' }}>COMPLETED</span>
+            )}
+          </div>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
   </table>
 </div>
 );
