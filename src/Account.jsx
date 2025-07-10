@@ -703,9 +703,9 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Deposit Solana ♣️</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Buy Tokens with Solana ♣️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
-        Swap your SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot Wallet Balance.
+        Swap SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot Wallet Balance.
       </p>
 
       <p id="sol-balance">
@@ -767,9 +767,9 @@ return (
         boxSizing: 'border-box',
       }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>♦️ Withdraw Solana ♦️</h3>
+      <h3 style={{ marginBottom: '0.5rem' }}>♦️ Sell Tokens into Solana ♦️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
-        Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Sign with the same wallet saved in your poker bot. 
+        Swap gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Sign with the same wallet saved in the poker bot.
       </p>
 
       <p id="token-balance">
