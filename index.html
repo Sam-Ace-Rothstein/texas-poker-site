@@ -248,10 +248,12 @@
                    </a>
                 </p>
               
-                <p>Type <strong>“menu”</strong> → <strong>View Live Games</strong> to explore all live public tables.</p>
+                <p>Type <strong>“menu”</strong> → <strong>View Live Games</strong> to explore all live public tables & <strong>Top-Up</strong> with SOL.</p>
               
                 <p>To create your own private table, add the bot as an <strong>admin</strong> to a group you manage, fund your account, then hit <strong>Take a Seat</strong> (in the pinned message or menu).</p>
               
+                <p>Host a table in your group and earn tokens that can be withdrawn for SOL. Group admins are automatically credited with 30% of the rake. </p>
+
                 <p>Once 2 players are seated, send <code>/ready</code> to start the first hand. The bot shuffles, deals, tracks bets, and enforces timers—no slow-rolling allowed.</p>
               
                 <p>Whether you’re here for a casual spin or chasing that whale purse, the game’s always <strong>live</strong> and <strong>fair</strong>.</p>
@@ -262,7 +264,7 @@
                   <h3>💰 Ante Up and Place Your Bets</h3>
                 </header>
               
-                <p>Got <strong>$SOL</strong>? Use our built-in Simple Swap to load up with chips (1 SOL = 1000 tokens).</p>
+                <p>Got <strong>$SOL</strong>? Use our built-in Solana Smart contract to trustlessly load up with gameplay tokens (1 SOL = 1000 tokens).</p>
               
                 <p>Each table shows its <strong>buy-in</strong> and blind structure, so you know exactly what you’re risking. When you take a seat, your buy-in moves from your off-table wallet into your in-play stack. </p>
               </section>
@@ -272,7 +274,7 @@
                   <h3>Cash Out with Confidence</h3>
                 </header>
               
-                <p>Ready to cash out? Our Solana smart contract sends your chips right back to your wallet—instantly, no waiting at the cage.</p>
+                <p>Ready to cash out? Our Solana smart contract sends your Solana right back to your wallet—instantly, no waiting at the cage.</p>
               
                 <p>Just don’t get wrecked: this is real <strong>$SOL</strong> on the line, so play responsibly. Be a shark—know your odds, read the table, and master the art of bluff. </p>
               </section>
@@ -335,6 +337,7 @@
                   <li><strong>RAISE</strong>: Increase the current bet.</li>
                   <li><strong>FOLD</strong>: Fold your hand.</li>
                   <li><strong>CHECK</strong>: Check if no bet is required.</li>
+                  <li><strong>Timebank</strong>: Extra 60s for 1 token (added to pot)</li>
                   <li><strong>MY HAND</strong>: Reveal your hole cards in private pop-up.</li>
                 </ul>
               </article><!-- Slash Commands -->
@@ -366,7 +369,7 @@
 
 <p>Blinds post automatically each deal: Small Blind = 1 % of buy-in (min 1 chip), Big Blind = 2 % (min 2 chips).</p>
 
-<p>At showdown the bot takes a 5 % rake (capped at 50 chips)—only if the pot meets the table’s minimum play (20 chips), so hands with no bets have no rake.</p>
+<p>Rake (House Fee): No Flop, No Drop. Up to a maximum of 3x the big blind (default cap). The rake only applies if the final pot meets the table’s minimum-pot threshold (20 tokens). All collected rake is split between the house (50%), The table host/group admin (30%) and user buybacks (20%).</p>
 
 <p>Betting rounds flow Pre-Flop → Flop → Turn → River, with action rotating from left of the dealer.</p>
 
