@@ -801,7 +801,7 @@ return (
       <button
         type="button"
         onClick={handleWithdraw}
-        disabled={isWithdrawing}
+        disabled={isWithdrawing || tokenBalance === 0}
         style={{
           padding: '0.75rem 1.5rem',
           fontSize: '1rem',
@@ -811,7 +811,7 @@ return (
           border: 'none',
           borderRadius: '6px',
           boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-          cursor: isWithdrawing ? 'not-allowed' : 'pointer',
+          cursor: isWithdrawing || tokenBalance === 0 ? 'not-allowed' : 'pointer',
           transition: 'background 0.2s ease',
         }}
       >
