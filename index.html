@@ -475,55 +475,53 @@
   if (userId) {
   // logged-in view
   greetingEl.innerHTML = `
-    <div style="text-align:center;">
-      <p style="font-size:1rem; margin:0;">
-        Hello, <strong>${handle || 'Anonymous'}</strong> (TG ID: <strong>${userId}</strong>)
-      </p>
-      <div style="margin-top:0.5rem; color:#555;">
-        <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
-          Swap your Solana for gameplay tokens below and take a seat at any public table.
-        </p>
-        <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
-          Host a table in a group you manage and automatically earn 30% of the rake 🔥
-        </p>
-        <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
-          Easily create and manage your own tables (public or private). Full casino rules Texas Hold’em gameplay.
-        </p>
-        <p style="font-size:1.1rem; font-weight:600;">
-          Trustless smart contract 🧬
-        </p>
-      </div>
-    </div>
+    <p style="font-size:1rem; margin:0;">
+      Hello, <strong>${handle || 'Anonymous'}</strong> (TG ID: <strong>${userId}</strong>)
+    </p>
+    <p style="margin-top:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+      Swap your Solana for gameplay tokens below and take a seat at any public table.
+    </p>
+    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+      Host a table in a group you manage and automatically earn 30% of the rake 🔥
+    </p>
+    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+      Easily create and manage your own tables (public or private). Full casino rules Texas Hold’em gameplay.
+    </p>
+    <p style="color:#555; font-size:1.1rem; font-weight:600;">
+      Trustless smart contract 🧬
+    </p>
   `;
-  walletUi.style.display = "";        // un-hide
+  walletUi.style.display = ""; // un-hide
 } else {
   // public visitor view
   greetingEl.innerHTML = `
-  <div style="margin-bottom:1rem; text-align:center;">
-    <p style="margin-bottom:0.5rem; font-size:1.5rem; font-weight:600;">
+    <p style="font-size:1.5rem; font-weight:600; margin-bottom:0.5rem;">
       Welcome! ♤ Shuffle Up Your Solana and Deal High Roller!
     </p>
-  </div>
-  <div style="color:#555; text-align:center; line-height:1.5;">
-    <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
+    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Play Full Casino rules Texas Hold'em poker with <strong>$SOL</strong> in any TG group.
     </p>
-    <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
+    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Launch the bot, type “menu” and select “🧬 Top-Up”.
     </p>
-    <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
+    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Swap Solana for Gameplay tokens via the trustless Smart Contract.
     </p>
-    <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
+    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Host a table in a group you manage and automatically earn 30% of the rake 🔥
     </p>
-    <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
-      Join and create private or public tables.
-    </p>
-    <p style="font-size:1.1rem; font-weight:600;">
+    <p style="color:#555; font-size:1.1rem; font-weight:600;">
       Trustless smart contract 🧬
     </p>
-  </div>
+    <div style="margin-top:0.75rem; font-size:1.5rem; font-weight:600;">
+      Launch the Bot → 
+      <a href="https://t.me/texas_holdem_dealer_bot"
+         target="_blank"
+         rel="noopener"
+         style="text-decoration:underline;">
+        @texas_holdem_dealer_bot
+      </a>
+    </div>
       <div style="margin-top:0.75rem; font-size:1.5rem;">
         Launch the Bot → 
         <a
