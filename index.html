@@ -475,20 +475,24 @@
   if (userId) {
   // logged-in view
   greetingEl.innerHTML = `
-    Hello, <strong>${handle || 'Anonymous'}</strong> (TG ID: <strong>${userId}</strong>)<br/>
-    <div style="margin-top:0.5rem; color:#555; text-align:center;">
-      <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
-        Swap your Solana for gameplay tokens below and take a seat at any public table.
+    <div style="text-align:center;">
+      <p style="font-size:1rem; margin:0;">
+        Hello, <strong>${handle || 'Anonymous'}</strong> (TG ID: <strong>${userId}</strong>)
       </p>
-      <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
-        Host a table in a group you manage and automatically earn 30% of the rake 🔥
-      </p>
-      <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
-        Easily create and manage your own tables (public or private). Full casino rules Texas Hold’em gameplay.
-      </p>
-      <p style="font-size:1.1rem; font-weight:600;">
-        Trustless smart contract 🧬
-      </p>
+      <div style="margin-top:0.5rem; color:#555;">
+        <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
+          Swap your Solana for gameplay tokens below and take a seat at any public table.
+        </p>
+        <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
+          Host a table in a group you manage and automatically earn 30% of the rake 🔥
+        </p>
+        <p style="margin-bottom:0.5rem; font-size:1.1rem; font-weight:600;">
+          Easily create and manage your own tables (public or private). Full casino rules Texas Hold’em gameplay.
+        </p>
+        <p style="font-size:1.1rem; font-weight:600;">
+          Trustless smart contract 🧬
+        </p>
+      </div>
     </div>
   `;
   walletUi.style.display = "";        // un-hide
