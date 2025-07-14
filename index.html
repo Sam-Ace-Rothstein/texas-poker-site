@@ -473,19 +473,19 @@
   if (userId) {
   // logged-in view
   greetingEl.innerHTML = `
-    <p style="font-size:1rem; margin:0;">
+    <p style="text-align:center; font-size:1rem; margin:0;">
       Hello, <strong>${handle || 'Anonymous'}</strong> (TG ID: <strong>${userId}</strong>)
     </p>
-    <p style="margin-top:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; margin-top:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Swap your Solana for gameplay tokens below and take a seat at any public table.
     </p>
-    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Host a table in a group you manage and automatically earn 30% of the rake 🔥
     </p>
-    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Easily create and manage your own tables (public or private). Full casino rules Texas Hold’em gameplay.
     </p>
-    <p style="color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; color:#555; font-size:1.1rem; font-weight:600;">
       Trustless smart contract 🧬
     </p>
   `;
@@ -493,45 +493,36 @@
 } else {
   // public visitor view
   greetingEl.innerHTML = `
-    <p style="font-size:1.5rem; font-weight:600; margin-bottom:0.5rem;">
+    <p style="text-align:center; font-size:1.5rem; font-weight:600; margin-bottom:0.5rem;">
       Welcome! ♤ Shuffle Up Your Solana and Deal High Roller!
     </p>
-    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Play Full Casino rules Texas Hold'em poker with <strong>$SOL</strong> in any TG group.
     </p>
-    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Launch the bot, type “menu” > “🧬 Top-Up”.
     </p>
-    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Swap Solana for Gameplay tokens via the trustless Smart Contract.
     </p>
-    <p style="margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; margin-bottom:0.5rem; color:#555; font-size:1.1rem; font-weight:600;">
       Host a table in a group you manage and automatically earn 30% of the rake 🔥
     </p>
-    <p style="color:#555; font-size:1.1rem; font-weight:600;">
+    <p style="text-align:center; color:#555; font-size:1.1rem; font-weight:600;">
       Trustless smart contract 🧬
     </p>
-    <div style="margin-top:0.75rem; font-size:1.5rem; font-weight:600;">
+    <div style="display:flex; justify-content:center; margin-top:0.75rem; font-size:1.5rem;">
       Launch the Bot → 
-      <a href="https://t.me/texas_holdem_dealer_bot"
-         target="_blank"
-         rel="noopener"
-         style="text-decoration:underline;">
-        @texas_holdem_dealer_bot
-      </a>
+      <a
+        href="https://t.me/texas_holdem_dealer_bot"
+        target="_blank"
+        rel="noopener"
+        style="text-decoration:underline; font-weight:600;"
+      >@texas_holdem_dealer_bot</a>
     </div>
-      <div style="margin-top:0.75rem; font-size:1.5rem;">
-        Launch the Bot → 
-        <a
-          href="https://t.me/texas_holdem_dealer_bot"
-          target="_blank"
-          rel="noopener"
-          style="text-decoration: underline; font-weight:600;"
-        >@texas_holdem_dealer_bot</a>
-      </div>
-    `;
-    walletUi.style.display = "none";    // ensure hidden
-  }
+  `;
+  walletUi.style.display = "none";  // ensure hidden
+}
 </script>
 
 <!-- Debug script to print out whatever is in those elements -->
