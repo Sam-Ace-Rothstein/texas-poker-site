@@ -185,36 +185,48 @@ const handleClaim = async (tx) => {
     if (!username) return null;
 
     return (
-      <div style={{ marginTop: '2rem', width: '100%', overflowX: 'hidden' }}>
-        <h3>📜 Recent Transactions</h3>
+      <div
+        style={{
+          marginTop: '2rem',
+          width: '100%',
+          overflowX: 'hidden',
+          padding: '1rem',
+          backgroundColor: '#1a1a1a', // dark background
+          borderRadius: '8px',
+          boxSizing: 'border-box',
+        }}
+      >
+        <h3 style={{ color: '#ddd' }}>📜 Recent Transactions</h3>
         <table
           style={{
             width: '100%',
             borderCollapse: 'collapse',
             fontSize: window.innerWidth < 600 ? '0.8rem' : '0.9rem',
             tableLayout: 'fixed',
+            backgroundColor: '#2a2a2a', // body of table
+            color: '#ddd',              // text
           }}
         >
           <thead>
-            <tr style={{ borderBottom: '1px solid #ccc' }}>
-              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Type</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Amount</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Timestamp</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Tx ID</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem' }}>Action</th>
+            <tr style={{ borderBottom: '1px solid #444' }}>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Type</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Amount</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Timestamp</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Tx ID</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {transactions.length === 0 && (
               <tr>
-                <td colSpan="5" style={{ padding: '0.5rem', color: '#777' }}>
+                <td colSpan="5" style={{ padding: '0.5rem', color: '#888' }}>
                   No transactions yet.
                 </td>
               </tr>
             )}
             {transactions.map((tx, i) => (
               <React.Fragment key={i}>
-                <tr style={{ borderBottom: '1px solid #eee' }}>
+                <tr style={{ borderBottom: '1px solid #333' }}>
                   <td style={{ padding: '0.5rem' }}>
                     {tx.type === 'voucher'
                       ? 'Withdraw'
@@ -246,12 +258,12 @@ const handleClaim = async (tx) => {
                         href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
                         target="_blank"
                         rel="noreferrer"
-                        style={{ display: 'inline-block', color: '#007bff' }}
+                        style={{ display: 'inline-block', color: '#4ea8de' }}
                       >
                         {(tx.txid ?? tx.signature).slice(0, 10)}…
                       </a>
                     ) : (
-                      <span style={{ color: '#777' }}>—</span>
+                      <span style={{ color: '#888' }}>—</span>
                     )}
                   </td>
                   <td style={{ padding: '0.5rem' }}>
@@ -265,7 +277,7 @@ const handleClaim = async (tx) => {
                     >
                       {tx.status === 'pending' ? (
                         window.innerWidth < 600 ? (
-                          <span style={{ fontSize: '1.2rem' }}>❗️</span>
+                          <span style={{ fontSize: '1.2rem', color: '#f39c12' }}>❗️</span>
                         ) : (
                           <button
                             onClick={() => handleClaim(tx)}
@@ -273,7 +285,9 @@ const handleClaim = async (tx) => {
                               padding: '0.25rem 0.5rem',
                               fontSize: '0.85rem',
                               borderRadius: '4px',
-                              border: '1px solid #ccc',
+                              border: '1px solid #555',
+                              backgroundColor: '#444',
+                              color: '#ddd',
                               cursor: 'pointer',
                             }}
                           >
@@ -283,7 +297,7 @@ const handleClaim = async (tx) => {
                       ) : (
                         <span
                           style={{
-                            color: '#0a0',
+                            color: '#27ae60',
                             fontSize: window.innerWidth < 600 ? '1.2rem' : '0.85rem',
                           }}
                         >
@@ -298,22 +312,22 @@ const handleClaim = async (tx) => {
                 {tx.status === 'pending' && window.innerWidth < 600 && (
                   <tr>
                     <td colSpan="5" style={{ padding: '0.5rem 0.5rem 1rem' }}>
-                    <button
-  onClick={() => handleClaim(tx)}
-  style={{
-    width: '100%',
-    padding: '0.5rem 1rem',
-    fontSize: '0.85rem',
-    fontWeight: '600',
-    borderRadius: '6px',
-    border: '1px solid #ccc',
-    cursor: 'pointer',
-    backgroundColor: '#f2f2f2',
-    color: '#000',
-  }}
->
-  CLAIM VOUCHER
-</button>
+                      <button
+                        onClick={() => handleClaim(tx)}
+                        style={{
+                          width: '100%',
+                          padding: '0.5rem 1rem',
+                          fontSize: '0.85rem',
+                          fontWeight: '600',
+                          borderRadius: '6px',
+                          border: '1px solid #555',
+                          cursor: 'pointer',
+                          backgroundColor: '#444',
+                          color: '#ddd',
+                        }}
+                      >
+                        CLAIM VOUCHER
+                      </button>
                     </td>
                   </tr>
                 )}
@@ -323,8 +337,8 @@ const handleClaim = async (tx) => {
         </table>
       </div>
     );
-}
-
+  }
+  
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
 function BalanceDisplay({ username, onNewTx }) {
@@ -693,15 +707,17 @@ return (
   >
     {/* Left: Deposit Section */}
     <div
-      style={{
-        flex: '1 1 400px',
-        maxWidth: '400px',
-        textAlign: 'left',
-        border: '1px solid #000',
-        borderRadius: '8px',
-        padding: '1rem',
-        boxSizing: 'border-box',
-      }}
+    style={{
+      flex: '1 1 400px',
+      maxWidth: '400px',
+      textAlign: 'left',
+      backgroundColor: '#1e1e1e',    // dark card
+      border: '1px solid #444',      // softer border
+      borderRadius: '8px',
+      padding: '1rem',
+      boxSizing: 'border-box',
+      color: '#ddd',                 // light text by default
+    }}
     >
       <h3 style={{ marginBottom: '0.5rem' }}>♣️ Buy Tokens with Solana ♣️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
@@ -730,6 +746,10 @@ return (
             padding: '0.25rem',
             fontSize: '1rem',
             marginBottom: '0.5rem',
+            backgroundColor: '#333',      // dark background
+            color: '#eee',                // light text
+            border: '1px solid #555',     // subtle border
+            borderRadius: '4px',
           }}
         />
       </div>
@@ -757,15 +777,17 @@ return (
 
     {/* Right: Withdraw Section */}
     <div
-      style={{
-        flex: '1 1 400px',
-        maxWidth: '400px',
-        textAlign: 'left',
-        border: '1px solid #000',
-        borderRadius: '8px',
-        padding: '1rem',
-        boxSizing: 'border-box',
-      }}
+    style={{
+      flex: '1 1 400px',
+      maxWidth: '400px',
+      textAlign: 'left',
+      backgroundColor: '#1e1e1e',    // dark card
+      border: '1px solid #444',      // softer border
+      borderRadius: '8px',
+      padding: '1rem',
+      boxSizing: 'border-box',
+      color: '#ddd',                 // light text by default
+    }}
     >
       <h3 style={{ marginBottom: '0.5rem' }}>♦️ Sell Tokens into Solana ♦️</h3>
       <p style={{ margin: 0, marginBottom: '1rem', color: '#555' }}>
@@ -794,6 +816,10 @@ return (
             padding: '0.25rem',
             fontSize: '1rem',
             marginBottom: '0.5rem',
+            backgroundColor: '#333',      // dark background
+            color: '#eee',                // light text
+            border: '1px solid #555',     // subtle border
+            borderRadius: '4px',
           }}
         />
       </div>
@@ -855,6 +881,7 @@ const App = () => {
             pauseOnFocusLoss
             draggable
             pauseOnHover
+            theme="dark"  
           />
   
           {/* pass down a signal so BalanceDisplay can trigger a list-refresh */}
