@@ -185,129 +185,19 @@ const handleClaim = async (tx) => {
     if (!username) return null;
 
     return (
-      <div style={{ backgroundColor: '#121212', padding: '2rem', borderRadius: '12px' }}>
-        {/* Buy / Sell Token Boxes */}
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: '2rem',
-            marginBottom: '2rem',
-          }}
-        >
-          {/* Buy Box */}
-          <div
-            style={{
-              backgroundColor: '#161616',
-              border: '1px solid #333',
-              borderRadius: '8px',
-              padding: '1.5rem',
-              color: '#e0e0e0',
-              flex: '1 1 300px',
-              minWidth: '280px',
-            }}
-          >
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#fff' }}>
-              ♣️ Buy Tokens with Solana ♣️
-            </h3>
-            <p style={{ fontSize: '0.95rem', color: '#aaa', marginTop: '0.5rem' }}>
-              Swap SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot Wallet Balance.
-            </p>
-            <p style={{ fontSize: '1rem', color: '#b480ff', marginTop: '1rem' }}>
-              Your available SOL balance: <strong>2.9305</strong>
-            </p>
-            <label style={{ display: 'block', marginTop: '1rem', marginBottom: '0.5rem' }}>
-              How many SOL to deposit?
-            </label>
-            <input
-              type="number"
-              value="0.1"
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '6px',
-                border: '1px solid #444',
-                backgroundColor: '#1e1e1e',
-                color: '#fff',
-                marginBottom: '1rem',
-              }}
-            />
-            <button
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: '6px',
-                backgroundColor: '#2ecc71',
-                color: '#000',
-                fontWeight: 600,
-                border: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              ♣️ Swap SOL → Tokens
-            </button>
-          </div>
-    
-          {/* Sell Box */}
-          <div
-            style={{
-              backgroundColor: '#161616',
-              border: '1px solid #333',
-              borderRadius: '8px',
-              padding: '1.5rem',
-              color: '#e0e0e0',
-              flex: '1 1 300px',
-              minWidth: '280px',
-            }}
-          >
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#fff' }}>
-              ♦️ Sell Tokens into Solana ♦️
-            </h3>
-            <p style={{ fontSize: '0.95rem', color: '#aaa', marginTop: '0.5rem' }}>
-              Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Sign with the same wallet saved in the poker bot.
-            </p>
-            <p style={{ fontSize: '1rem', color: '#b480ff', marginTop: '1rem' }}>
-              Your available token balance: <strong>129310</strong>
-            </p>
-            <label style={{ display: 'block', marginTop: '1rem', marginBottom: '0.5rem' }}>
-              How many tokens to withdraw?
-            </label>
-            <input
-              type="number"
-              value="100"
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '6px',
-                border: '1px solid #444',
-                backgroundColor: '#1e1e1e',
-                color: '#fff',
-                marginBottom: '1rem',
-              }}
-            />
-            <button
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                borderRadius: '6px',
-                backgroundColor: '#e74c3c',
-                color: '#fff',
-                fontWeight: 600,
-                border: 'none',
-                cursor: 'pointer',
-              }}
-            >
-              ♦️ Swap Tokens → SOL
-            </button>
-          </div>
-        </div>
-    
+      <div
+        style={{
+          backgroundColor: '#121212',
+          padding: '2rem',
+          borderRadius: '12px',
+          boxSizing: 'border-box',
+        }}
+      >
         {/* 📜 Recent Transactions Table */}
         <div
           style={{
             width: '100%',
-            overflowX: 'hidden',
+            overflowX: 'auto',
             padding: '1.5rem',
             backgroundColor: '#161616',
             border: '1px solid #333',
@@ -460,7 +350,11 @@ const handleClaim = async (tx) => {
         </div>
       </div>
     );
-  }
+
+}
+
+
+
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
 function BalanceDisplay({ username, onNewTx }) {
