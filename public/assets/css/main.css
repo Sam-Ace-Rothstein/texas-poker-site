@@ -2171,6 +2171,7 @@ input, select, textarea {
 
 		.wrapper.style2 {
 			padding-top: 0;
+			background-color: inherit;
 		}
 
 /* Header */
@@ -2354,7 +2355,7 @@ input, select, textarea {
 				}
 
 	.dropotron {
-		background: rgba(255, 255, 255, 0.975);
+		background: rgba(32, 32, 32, 0.975);
 		padding: 1em 1.25em 1em 1.25em;
 		line-height: 1em;
 		height: auto;
@@ -2401,7 +2402,7 @@ input, select, textarea {
 				left: 50%;
 				top: -0.7em;
 				margin-left: -0.75em;
-				border-bottom: solid 0.75em rgba(255, 255, 255, 0.975);
+				border-bottom: solid 0.75em rgba(32, 32, 32, 0.975);
 				border-left: solid 0.75em rgba(64, 64, 64, 0);
 				border-right: solid 0.75em rgba(64, 64, 64, 0);
 			}
@@ -2409,7 +2410,7 @@ input, select, textarea {
 /* Banner */
 
 	#banner {
-		background: #fff;
+		background: #121212;
 		text-align: center;
 		padding: 4.5em 0 4.5em 0;
 		margin-bottom: 0;
@@ -2591,7 +2592,7 @@ input, select, textarea {
 		.carousel article {
 			display: inline-block;
 			width: 18em;
-			background: #fff;
+			background: #1a1a1a;
 			text-align: center;
 			padding: 0 1em 3em 1em;
 			margin: 0 2em 0 0;
