@@ -185,162 +185,279 @@ const handleClaim = async (tx) => {
     if (!username) return null;
 
     return (
-      <div
-        style={{
-          marginTop: '2rem',
-          width: '100%',
-          overflowX: 'hidden',
-          padding: '1.5rem',
-          backgroundColor: '#121212', // dark base
-          borderRadius: '12px',
-          boxSizing: 'border-box',
-          boxShadow: '0 0 15px rgba(0,0,0,0.3)',
-        }}
-      >
-        <h3 style={{ color: '#f2f2f2', marginBottom: '1rem', fontSize: '1.2rem' }}>
-          📜 Recent Transactions
-        </h3>
-        <table
+      <div style={{ backgroundColor: '#121212', padding: '2rem', borderRadius: '12px' }}>
+        {/* Buy / Sell Token Boxes */}
+        <div
           style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            fontSize: window.innerWidth < 600 ? '0.8rem' : '0.9rem',
-            tableLayout: 'fixed',
-            backgroundColor: '#1e1e1e', // table body
-            color: '#eee',
-            borderRadius: '8px',
-            overflow: 'hidden',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '2rem',
+            marginBottom: '2rem',
           }}
         >
-          <thead>
-            <tr style={{ borderBottom: '1px solid #444' }}>
-              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Type</th>
-              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Amount</th>
-              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Timestamp</th>
-              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Tx ID</th>
-              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions.length === 0 && (
-              <tr>
-                <td colSpan="5" style={{ padding: '1rem', color: '#888', textAlign: 'center' }}>
-                  No transactions yet.
-                </td>
+          {/* Buy Box */}
+          <div
+            style={{
+              backgroundColor: '#161616',
+              border: '1px solid #333',
+              borderRadius: '8px',
+              padding: '1.5rem',
+              color: '#e0e0e0',
+              flex: '1 1 300px',
+              minWidth: '280px',
+            }}
+          >
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#fff' }}>
+              ♣️ Buy Tokens with Solana ♣️
+            </h3>
+            <p style={{ fontSize: '0.95rem', color: '#aaa', marginTop: '0.5rem' }}>
+              Swap SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot Wallet Balance.
+            </p>
+            <p style={{ fontSize: '1rem', color: '#b480ff', marginTop: '1rem' }}>
+              Your available SOL balance: <strong>2.9305</strong>
+            </p>
+            <label style={{ display: 'block', marginTop: '1rem', marginBottom: '0.5rem' }}>
+              How many SOL to deposit?
+            </label>
+            <input
+              type="number"
+              value="0.1"
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                borderRadius: '6px',
+                border: '1px solid #444',
+                backgroundColor: '#1e1e1e',
+                color: '#fff',
+                marginBottom: '1rem',
+              }}
+            />
+            <button
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                borderRadius: '6px',
+                backgroundColor: '#2ecc71',
+                color: '#000',
+                fontWeight: 600,
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              ♣️ Swap SOL → Tokens
+            </button>
+          </div>
+    
+          {/* Sell Box */}
+          <div
+            style={{
+              backgroundColor: '#161616',
+              border: '1px solid #333',
+              borderRadius: '8px',
+              padding: '1.5rem',
+              color: '#e0e0e0',
+              flex: '1 1 300px',
+              minWidth: '280px',
+            }}
+          >
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: '#fff' }}>
+              ♦️ Sell Tokens into Solana ♦️
+            </h3>
+            <p style={{ fontSize: '0.95rem', color: '#aaa', marginTop: '0.5rem' }}>
+              Swap your gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Sign with the same wallet saved in the poker bot.
+            </p>
+            <p style={{ fontSize: '1rem', color: '#b480ff', marginTop: '1rem' }}>
+              Your available token balance: <strong>129310</strong>
+            </p>
+            <label style={{ display: 'block', marginTop: '1rem', marginBottom: '0.5rem' }}>
+              How many tokens to withdraw?
+            </label>
+            <input
+              type="number"
+              value="100"
+              style={{
+                width: '100%',
+                padding: '0.5rem',
+                borderRadius: '6px',
+                border: '1px solid #444',
+                backgroundColor: '#1e1e1e',
+                color: '#fff',
+                marginBottom: '1rem',
+              }}
+            />
+            <button
+              style={{
+                width: '100%',
+                padding: '0.75rem 1rem',
+                borderRadius: '6px',
+                backgroundColor: '#e74c3c',
+                color: '#fff',
+                fontWeight: 600,
+                border: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              ♦️ Swap Tokens → SOL
+            </button>
+          </div>
+        </div>
+    
+        {/* 📜 Recent Transactions Table */}
+        <div
+          style={{
+            width: '100%',
+            overflowX: 'hidden',
+            padding: '1.5rem',
+            backgroundColor: '#161616',
+            border: '1px solid #333',
+            borderRadius: '12px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <h3 style={{ color: '#fff', marginBottom: '1rem', fontSize: '1.2rem' }}>
+            📜 Recent Transactions
+          </h3>
+          <table
+            style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              fontSize: window.innerWidth < 600 ? '0.8rem' : '0.9rem',
+              tableLayout: 'fixed',
+              backgroundColor: '#161616',
+              color: '#eee',
+            }}
+          >
+            <thead>
+              <tr style={{ borderBottom: '1px solid #444' }}>
+                <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Type</th>
+                <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Amount</th>
+                <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Timestamp</th>
+                <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Tx ID</th>
+                <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Action</th>
               </tr>
-            )}
-            {transactions.map((tx, i) => (
-              <React.Fragment key={i}>
-                <tr style={{ borderBottom: '1px solid #333' }}>
-                  <td style={{ padding: '0.75rem' }}>
-                    {tx.type === 'voucher'
-                      ? 'Withdraw'
-                      : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
-                  </td>
-                  <td style={{ padding: '0.75rem' }}>{tx.amount}</td>
-                  <td
-                    style={{
-                      padding: '0.75rem',
-                      maxWidth: '130px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {new Date(tx.timestamp).toLocaleString()}
-                  </td>
-                  <td
-                    style={{
-                      padding: '0.75rem',
-                      maxWidth: '100px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {(tx.txid || tx.signature) ? (
-                      <a
-                        href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ display: 'inline-block', color: '#66b2ff' }}
-                      >
-                        {(tx.txid ?? tx.signature).slice(0, 10)}…
-                      </a>
-                    ) : (
-                      <span style={{ color: '#666' }}>—</span>
-                    )}
-                  </td>
-                  <td style={{ padding: '0.75rem' }}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        flexDirection: window.innerWidth < 600 ? 'column' : 'row',
-                        alignItems: 'flex-start',
-                        gap: '0.25rem',
-                      }}
-                    >
-                      {tx.status === 'pending' ? (
-                        window.innerWidth < 600 ? (
-                          <span style={{ fontSize: '1.2rem', color: '#f39c12' }}>❗️</span>
-                        ) : (
-                          <button
-                            onClick={() => handleClaim(tx)}
-                            style={{
-                              padding: '0.35rem 0.75rem',
-                              fontSize: '0.85rem',
-                              borderRadius: '6px',
-                              border: '1px solid #666',
-                              backgroundColor: '#2a2a2a',
-                              color: '#eee',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            CLAIM VOUCHER
-                          </button>
-                        )
-                      ) : (
-                        <span
-                          style={{
-                            color: '#2ecc71',
-                            fontSize: window.innerWidth < 600 ? '1.2rem' : '0.85rem',
-                            fontWeight: 600,
-                          }}
-                        >
-                          {window.innerWidth < 600 ? '✅' : 'COMPLETED'}
-                        </span>
-                      )}
-                    </div>
+            </thead>
+            <tbody>
+              {transactions.length === 0 && (
+                <tr>
+                  <td colSpan="5" style={{ padding: '1rem', color: '#888', textAlign: 'center' }}>
+                    No transactions yet.
                   </td>
                 </tr>
-    
-                {/* Mobile full-width CLAIM button */}
-                {tx.status === 'pending' && window.innerWidth < 600 && (
-                  <tr>
-                    <td colSpan="5" style={{ padding: '0.75rem 0.75rem 1rem' }}>
-                      <button
-                        onClick={() => handleClaim(tx)}
+              )}
+              {transactions.map((tx, i) => (
+                <React.Fragment key={i}>
+                  <tr style={{ borderBottom: '1px solid #333' }}>
+                    <td style={{ padding: '0.75rem' }}>
+                      {tx.type === 'voucher'
+                        ? 'Withdraw'
+                        : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+                    </td>
+                    <td style={{ padding: '0.75rem' }}>{tx.amount}</td>
+                    <td
+                      style={{
+                        padding: '0.75rem',
+                        maxWidth: '130px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {new Date(tx.timestamp).toLocaleString()}
+                    </td>
+                    <td
+                      style={{
+                        padding: '0.75rem',
+                        maxWidth: '100px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {(tx.txid || tx.signature) ? (
+                        <a
+                          href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ display: 'inline-block', color: '#66b2ff' }}
+                        >
+                          {(tx.txid ?? tx.signature).slice(0, 10)}…
+                        </a>
+                      ) : (
+                        <span style={{ color: '#666' }}>—</span>
+                      )}
+                    </td>
+                    <td style={{ padding: '0.75rem' }}>
+                      <div
                         style={{
-                          width: '100%',
-                          padding: '0.75rem 1rem',
-                          fontSize: '0.85rem',
-                          fontWeight: '600',
-                          borderRadius: '8px',
-                          border: '1px solid #666',
-                          backgroundColor: '#2a2a2a',
-                          color: '#eee',
-                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: window.innerWidth < 600 ? 'column' : 'row',
+                          alignItems: 'flex-start',
+                          gap: '0.25rem',
                         }}
                       >
-                        CLAIM VOUCHER
-                      </button>
+                        {tx.status === 'pending' ? (
+                          window.innerWidth < 600 ? (
+                            <span style={{ fontSize: '1.2rem', color: '#f39c12' }}>❗️</span>
+                          ) : (
+                            <button
+                              onClick={() => handleClaim(tx)}
+                              style={{
+                                padding: '0.35rem 0.75rem',
+                                fontSize: '0.85rem',
+                                borderRadius: '6px',
+                                border: '1px solid #666',
+                                backgroundColor: '#1e1e1e',
+                                color: '#eee',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              CLAIM VOUCHER
+                            </button>
+                          )
+                        ) : (
+                          <span
+                            style={{
+                              color: '#2ecc71',
+                              fontSize: window.innerWidth < 600 ? '1.2rem' : '0.85rem',
+                              fontWeight: 600,
+                            }}
+                          >
+                            {window.innerWidth < 600 ? '✅' : 'COMPLETED'}
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
-                )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
+    
+                  {/* Mobile full-width CLAIM button */}
+                  {tx.status === 'pending' && window.innerWidth < 600 && (
+                    <tr>
+                      <td colSpan="5" style={{ padding: '0.75rem 0.75rem 1rem' }}>
+                        <button
+                          onClick={() => handleClaim(tx)}
+                          style={{
+                            width: '100%',
+                            padding: '0.75rem 1rem',
+                            fontSize: '0.85rem',
+                            fontWeight: '600',
+                            borderRadius: '8px',
+                            border: '1px solid #666',
+                            backgroundColor: '#1e1e1e',
+                            color: '#eee',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          CLAIM VOUCHER
+                        </button>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }
