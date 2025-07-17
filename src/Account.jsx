@@ -191,35 +191,35 @@ const handleClaim = async (tx) => {
           width: '100%',
           overflowX: 'hidden',
           padding: '1rem',
-          backgroundColor: '#1a1a1a', // dark background
+          backgroundColor: '#121212', // darker background
           borderRadius: '8px',
           boxSizing: 'border-box',
         }}
       >
-        <h3 style={{ color: '#ddd' }}>📜 Recent Transactions</h3>
+        <h3 style={{ color: '#fff' }}>📜 Recent Transactions</h3>
         <table
           style={{
             width: '100%',
             borderCollapse: 'collapse',
             fontSize: window.innerWidth < 600 ? '0.8rem' : '0.9rem',
             tableLayout: 'fixed',
-            backgroundColor: '#2a2a2a', // body of table
-            color: '#ddd',              // text
+            backgroundColor: '#1e1e1e', // darker table body
+            color: '#eee',              // brighter text
           }}
         >
           <thead>
-            <tr style={{ borderBottom: '1px solid #444' }}>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Type</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Amount</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Timestamp</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Tx ID</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#aaa' }}>Action</th>
+            <tr style={{ borderBottom: '1px solid #555' }}>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Type</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Amount</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Timestamp</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Tx ID</th>
+              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {transactions.length === 0 && (
               <tr>
-                <td colSpan="5" style={{ padding: '0.5rem', color: '#888' }}>
+                <td colSpan="5" style={{ padding: '0.5rem', color: '#aaa' }}>
                   No transactions yet.
                 </td>
               </tr>
@@ -258,12 +258,12 @@ const handleClaim = async (tx) => {
                         href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
                         target="_blank"
                         rel="noreferrer"
-                        style={{ display: 'inline-block', color: '#4ea8de' }}
+                        style={{ display: 'inline-block', color: '#7abfff' }}
                       >
                         {(tx.txid ?? tx.signature).slice(0, 10)}…
                       </a>
                     ) : (
-                      <span style={{ color: '#888' }}>—</span>
+                      <span style={{ color: '#aaa' }}>—</span>
                     )}
                   </td>
                   <td style={{ padding: '0.5rem' }}>
@@ -285,9 +285,9 @@ const handleClaim = async (tx) => {
                               padding: '0.25rem 0.5rem',
                               fontSize: '0.85rem',
                               borderRadius: '4px',
-                              border: '1px solid #555',
-                              backgroundColor: '#444',
-                              color: '#ddd',
+                              border: '1px solid #666',
+                              backgroundColor: '#2a2a2a',
+                              color: '#eee',
                               cursor: 'pointer',
                             }}
                           >
@@ -320,10 +320,10 @@ const handleClaim = async (tx) => {
                           fontSize: '0.85rem',
                           fontWeight: '600',
                           borderRadius: '6px',
-                          border: '1px solid #555',
+                          border: '1px solid #666',
                           cursor: 'pointer',
-                          backgroundColor: '#444',
-                          color: '#ddd',
+                          backgroundColor: '#2a2a2a',
+                          color: '#eee',
                         }}
                       >
                         CLAIM VOUCHER
@@ -338,7 +338,7 @@ const handleClaim = async (tx) => {
       </div>
     );
   }
-  
+
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
 function BalanceDisplay({ username, onNewTx }) {
