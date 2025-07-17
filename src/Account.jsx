@@ -800,10 +800,10 @@ return (
       }}
     >
       <h3 style={{ marginBottom: '0.75rem', fontSize: '1.3rem', color: '#fff' }}>
-        ♦️ Check out into Solana ♦️
+        ♦️ Check out ♦️
       </h3>
       <p style={{ marginBottom: '1.25rem', color: '#bbb', fontSize: '0.95rem' }}>
-        Swap gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Sign with the same wallet saved in the poker bot.
+        Swap gameplay tokens back to Solana. 1000 tokens = 1 SOL (fee 1%) ❗ Sign with the same wallet saved in the poker bot.
       </p>
       <p id="token-balance" style={{ fontSize: '1rem', color: '#b480ff', marginBottom: '1rem' }}>
         Your available token balance:{' '}
