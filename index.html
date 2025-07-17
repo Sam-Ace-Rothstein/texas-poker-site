@@ -37,6 +37,27 @@
         }
       }
     </style>
+
+        <!-- Dark-mode overrides: invert everything → then un-invert media -->
+        <style>
+          /* 1) invert the entire page */
+          #page-wrapper {
+            filter: invert(1) hue-rotate(180deg) !important;
+          }
+    
+          /* 2) restore images, videos, canvases */
+          #page-wrapper img,
+          #page-wrapper video,
+          #page-wrapper picture,
+          #page-wrapper canvas {
+            filter: invert(1) hue-rotate(180deg) !important;
+          }
+    
+          /* 3) make the body background a deep dark */
+          body {
+            background-color: #121212 !important;
+          }
+        </style>
     <script type="module" crossorigin src="/texas-poker-site/assets/main-Dl3HA0tP.js"></script>
     <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-sSbTfhZV.css">
   </head>
