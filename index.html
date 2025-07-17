@@ -9,6 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <title>♤ Shuffle Up Your Solana and Deal | Helios</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
     <noscript>
       <link rel="stylesheet" href="assets/css/noscript.css" />
     </noscript>
@@ -36,8 +37,8 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/texas-poker-site/assets/main-B_qpVcK9.js"></script>
-    <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-DUfRKkXD.css">
+    <script type="module" crossorigin src="/texas-poker-site/assets/main-Dl3HA0tP.js"></script>
+    <link rel="stylesheet" crossorigin href="/texas-poker-site/assets/main-sSbTfhZV.css">
   </head>
 	<body class="no-sidebar is-preload">
 		<div id="page-wrapper">
@@ -57,9 +58,6 @@
 							<ul>
 								<li><a href="index.html">Play</a></li>
                 <li><a href="left-sidebar.html">Earn</a></li>
-             <li>
-               <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-             </li>
 							</ul>
 						</nav>
 
@@ -624,32 +622,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 </script>
-
-<!-- Dark Mode toggle script -->
-   <script>
-       (function() {
-         const toggle      = document.getElementById('theme-toggle');
-         const root        = document.documentElement;
-         const saved       = localStorage.getItem('theme');
-         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-   
-         // Initialize based on saved preference or OS setting
-         if (saved === 'dark' || (saved === null && prefersDark)) {
-           root.classList.add('dark-mode');
-         }
-         const updateIcon = () => {
-           toggle.textContent = root.classList.contains('dark-mode') ? '☀️' : '🌙';
-         };
-         updateIcon();
-   
-         // Toggle handler
-         toggle.addEventListener('click', () => {
-           const isDark = root.classList.toggle('dark-mode');
-           localStorage.setItem('theme', isDark ? 'dark' : 'light');
-           updateIcon();
-         });
-       })();
-     </script>
 
 	</body>
 </html>
