@@ -733,7 +733,7 @@ return (
         boxShadow: '0 0 8px rgba(0,0,0,0.3)',
       }}
     >
-      <h3 style={{ marginBottom: '0.75rem', fontSize: '1.3rem', color: '#fff' }}>
+      <h3 style={{ marginBottom: '0.25rem', fontSize: '1.3rem', color: '#fff' }}>
         ♣️ Buy-in with Solana ♣️
       </h3>
       <p style={{ marginBottom: '1.25rem', color: '#bbb', fontSize: '0.95rem' }}>
@@ -799,7 +799,7 @@ return (
         boxShadow: '0 0 8px rgba(0,0,0,0.3)',
       }}
     >
-      <h3 style={{ marginBottom: '0.75rem', fontSize: '1.3rem', color: '#fff' }}>
+      <h3 style={{ marginBottom: '0.25rem', fontSize: '1.3rem', color: '#fff' }}>
         ♦️ Check out ♦️
       </h3>
       <p style={{ marginBottom: '1.25rem', color: '#bbb', fontSize: '0.95rem' }}>
