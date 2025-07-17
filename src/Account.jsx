@@ -877,7 +877,15 @@ const App = () => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <WalletMultiButton />
+        <div style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '6rem', // ensures vertical space
+  marginTop: '1rem',
+}}>
+  <WalletMultiButton />
+</div>
           
           {/* Toast notification container */}
           <ToastContainer
