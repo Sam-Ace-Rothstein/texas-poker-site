@@ -734,7 +734,7 @@ return (
       }}
     >
       <h3 style={{ marginBottom: '0.75rem', fontSize: '1.3rem', color: '#fff' }}>
-        ♣️ Buy Tokens with Solana ♣️
+        ♣️ Buy-in with Solana ♣️
       </h3>
       <p style={{ marginBottom: '1.25rem', color: '#bbb', fontSize: '0.95rem' }}>
         Swap SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot Wallet Balance.
@@ -744,7 +744,7 @@ return (
         <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
       </p>
       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-        How many SOL to deposit?
+        How many SOL to Buy-in?
       </label>
       <input
         type="number"
@@ -782,7 +782,7 @@ return (
           transition: 'background 0.2s ease',
         }}
       >
-        {isDepositing ? '♣️ Depositing…' : '♣️ Swap SOL → Tokens'}
+        {isDepositing ? '♣️ Counting chips…' : '♣️ Buy-in'}
       </button>
     </div>
 
@@ -800,7 +800,7 @@ return (
       }}
     >
       <h3 style={{ marginBottom: '0.75rem', fontSize: '1.3rem', color: '#fff' }}>
-        ♦️ Sell Tokens into Solana ♦️
+        ♦️ Check out into Solana ♦️
       </h3>
       <p style={{ marginBottom: '1.25rem', color: '#bbb', fontSize: '0.95rem' }}>
         Swap gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Sign with the same wallet saved in the poker bot.
@@ -810,7 +810,7 @@ return (
         <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
       </p>
       <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-        How many tokens to withdraw?
+        How many tokens to check out?
       </label>
       <input
         type="number"
@@ -848,7 +848,7 @@ return (
           transition: 'background 0.2s ease',
         }}
       >
-        {isWithdrawing ? '♦️ Withdrawing…' : '♦️ Swap Tokens → SOL'}
+        {isWithdrawing ? '♦️ Counting Chips…' : '♦️ Check out'}
       </button>
     </div>
   </div>
