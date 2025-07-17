@@ -712,77 +712,73 @@ return (
     style={{
       width: '100%',
       boxSizing: 'border-box',
-      padding: '0 0.25rem',      // horizontal gutter on mobile
-      marginTop: '0.25rem',
+      padding: window.innerWidth < 768 ? '1rem 0.5rem' : '2rem',
+      marginTop: '1rem',
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'flex-start',
+      alignItems: 'stretch',
       flexWrap: 'wrap',
-      gap: window.innerWidth >= 768 ? '2rem' : '0.5rem',
+      gap: '2rem',
     }}
   >
-    {/* Left: Deposit Section */}
+    {/* Deposit Section */}
     <div
-    style={{
-      flex: '1 1 400px',
-      maxWidth: '400px',
-      textAlign: 'left',
-      backgroundColor: '#1e1e1e',    // dark card
-      border: '1px solid #444',      // softer border
-      borderRadius: '8px',
-      padding: '1rem',
-      boxSizing: 'border-box',
-      color: '#ddd',                 // light text by default
-    }}
+      style={{
+        flex: '1 1 400px',
+        maxWidth: '480px',
+        backgroundColor: '#1e1e1e',
+        border: '1px solid #444',
+        borderRadius: '12px',
+        padding: '1.5rem',
+        color: '#ddd',
+        boxShadow: '0 0 8px rgba(0,0,0,0.3)',
+      }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>♣️ Buy Tokens with Solana ♣️</h3>
-      <p style={{ margin: 0, marginBottom: '1rem', color: '#ccc' }}>
+      <h3 style={{ marginBottom: '0.75rem', fontSize: '1.3rem', color: '#fff' }}>
+        ♣️ Buy Tokens with Solana ♣️
+      </h3>
+      <p style={{ marginBottom: '1.25rem', color: '#bbb', fontSize: '0.95rem' }}>
         Swap SOL for gameplay tokens. 1 SOL = 1000 tokens. Tokens go straight into your PokerBot Wallet Balance.
       </p>
-
-      <p id="sol-balance">
+      <p id="sol-balance" style={{ fontSize: '1rem', color: '#b480ff', marginBottom: '1rem' }}>
         Your available SOL balance:{' '}
         <strong>{solBalance != null ? solBalance.toFixed(4) : '…'}</strong>
       </p>
-
-      <div style={{ marginTop: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.25rem' }}>
-          How many SOL to deposit?
-        </label>
-        <input
-          type="number"
-          value={depositAmountSol}
-          min="0"
-          step="0.01"
-          max={solBalance ?? undefined}
-          onChange={e => setDepositAmountSol(e.target.value)}
-          style={{
-            display: 'block',
-            width: '6rem',
-            padding: '0.25rem',
-            fontSize: '1rem',
-            marginBottom: '0.5rem',
-            backgroundColor: '#333',      // dark background
-            color: '#eee',                // light text
-            border: '1px solid #555',     // subtle border
-            borderRadius: '4px',
-          }}
-        />
-      </div>
-
+      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+        How many SOL to deposit?
+      </label>
+      <input
+        type="number"
+        value={depositAmountSol}
+        min="0"
+        step="0.01"
+        max={solBalance ?? undefined}
+        onChange={e => setDepositAmountSol(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '0.6rem',
+          fontSize: '1rem',
+          marginBottom: '1rem',
+          backgroundColor: '#2a2a2a',
+          color: '#eee',
+          border: '1px solid #555',
+          borderRadius: '6px',
+        }}
+      />
       <button
         type="button"
         onClick={handleDeposit}
         disabled={isDepositing}
         style={{
-          padding: '0.75rem 1.5rem',
+          width: '100%',
+          padding: '0.85rem',
           fontSize: '1rem',
           fontWeight: '600',
-          background: '#0A6430',                // poker‐table green
-          color: '#FFFFFF',
+          background: '#0A6430',
+          color: '#fff',
           border: 'none',
           borderRadius: '6px',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
           cursor: isDepositing ? 'not-allowed' : 'pointer',
           transition: 'background 0.2s ease',
         }}
@@ -791,68 +787,64 @@ return (
       </button>
     </div>
 
-    {/* Right: Withdraw Section */}
+    {/* Withdraw Section */}
     <div
-    style={{
-      flex: '1 1 400px',
-      maxWidth: '400px',
-      textAlign: 'left',
-      backgroundColor: '#1e1e1e',    // dark card
-      border: '1px solid #444',      // softer border
-      borderRadius: '8px',
-      padding: '1rem',
-      boxSizing: 'border-box',
-      color: '#ddd',                 // light text by default
-    }}
+      style={{
+        flex: '1 1 400px',
+        maxWidth: '480px',
+        backgroundColor: '#1e1e1e',
+        border: '1px solid #444',
+        borderRadius: '12px',
+        padding: '1.5rem',
+        color: '#ddd',
+        boxShadow: '0 0 8px rgba(0,0,0,0.3)',
+      }}
     >
-      <h3 style={{ marginBottom: '0.5rem' }}>♦️ Sell Tokens into Solana ♦️</h3>
-      <p style={{ margin: 0, marginBottom: '1rem', color: '#aaa' }}>
+      <h3 style={{ marginBottom: '0.75rem', fontSize: '1.3rem', color: '#fff' }}>
+        ♦️ Sell Tokens into Solana ♦️
+      </h3>
+      <p style={{ marginBottom: '1.25rem', color: '#bbb', fontSize: '0.95rem' }}>
         Swap gameplay tokens back into SOL. 1000 tokens = 1 SOL (fee 1%). Sign with the same wallet saved in the poker bot.
       </p>
-
-      <p id="token-balance">
+      <p id="token-balance" style={{ fontSize: '1rem', color: '#b480ff', marginBottom: '1rem' }}>
         Your available token balance:{' '}
         <strong>{tokenBalance != null ? tokenBalance : '…'}</strong>
       </p>
-
-      <div style={{ marginTop: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.25rem' }}>
-          How many tokens to withdraw?
-        </label>
-        <input
-          type="number"
-          value={withdrawAmount}
-          min="99"
-          step="1"
-          max={tokenBalance ?? undefined}
-          onChange={e => setWithdrawAmount(e.target.value)}
-          style={{
-            display: 'block',
-            width: '6rem',
-            padding: '0.25rem',
-            fontSize: '1rem',
-            marginBottom: '0.5rem',
-            backgroundColor: '#333',      // dark background
-            color: '#eee',                // light text
-            border: '1px solid #555',     // subtle border
-            borderRadius: '4px',
-          }}
-        />
-      </div>
-
+      <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+        How many tokens to withdraw?
+      </label>
+      <input
+        type="number"
+        value={withdrawAmount}
+        min="99"
+        step="1"
+        max={tokenBalance ?? undefined}
+        onChange={e => setWithdrawAmount(e.target.value)}
+        style={{
+          width: '100%',
+          padding: '0.6rem',
+          fontSize: '1rem',
+          marginBottom: '1rem',
+          backgroundColor: '#2a2a2a',
+          color: '#eee',
+          border: '1px solid #555',
+          borderRadius: '6px',
+        }}
+      />
       <button
         type="button"
         onClick={handleWithdraw}
         disabled={isWithdrawing || tokenBalance === 0}
         style={{
-          padding: '0.75rem 1.5rem',
+          width: '100%',
+          padding: '0.85rem',
           fontSize: '1rem',
           fontWeight: '600',
-          background: '#8B0000',                // deep red
-          color: '#FFFFFF',
+          background: '#8B0000',
+          color: '#fff',
           border: 'none',
           borderRadius: '6px',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+          boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
           cursor: isWithdrawing || tokenBalance === 0 ? 'not-allowed' : 'pointer',
           transition: 'background 0.2s ease',
         }}
