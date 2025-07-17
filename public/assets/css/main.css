@@ -83,8 +83,8 @@ input, select, textarea {
 	}
 
 	body {
-		background: #f0f4f4;
-		color: #5b5b5b;
+		background: #121212;
+        color: #eee;
 		font-size: 15pt;
 		line-height: 1.85em;
 		font-family: 'Source Sans Pro', sans-serif;
@@ -111,7 +111,7 @@ input, select, textarea {
 
 	h1, h2, h3, h4, h5, h6 {
 		font-weight: 400;
-		color: #483949;
+		color: #f0f0f0;
 		line-height: 1.25em;
 	}
 
@@ -140,7 +140,7 @@ input, select, textarea {
 
 	strong, b {
 		font-weight: 400;
-		color: #483949;
+		color: #fff;
 	}
 
 	em, i {
@@ -158,7 +158,7 @@ input, select, textarea {
 	}
 
 		a:hover {
-			color: #ef8376;
+			color: #ff8080;
 			border-bottom-color: transparent;
 		}
 
@@ -1935,7 +1935,7 @@ input, select, textarea {
 			}
 
 				ul.icons li a:hover {
-					color: #ef8376;
+					color: #ff8080;
 				}
 
 /* Form */
@@ -1943,7 +1943,7 @@ input, select, textarea {
 	form label {
 		display: block;
 		font-weight: 400;
-		color: #483949;
+		color: #ccc;
 		margin: 0 0 1em 0;
 	}
 
@@ -1954,8 +1954,9 @@ input, select, textarea {
 	form textarea {
 		-webkit-appearance: none;
 		display: block;
-		border: 0;
-		background: #fafafa;
+		background: #1e1e1e;
+        border: solid 1px #444;
+        color: #eee;
 		width: 100%;
 		border-radius: 0.5em;
 		border: solid 1px #E5E5E5;
@@ -1971,8 +1972,8 @@ input, select, textarea {
 		form input[type="password"]:focus,
 		form select:focus,
 		form textarea:focus {
-			background: #fff;
-			border-color: #df7366;
+			background: #1e1e1e;
+            border-color: #888;
 		}
 
 	form input[type="text"],
@@ -2017,7 +2018,7 @@ input, select, textarea {
 		}
 
 			table.default tbody tr {
-				border-top: solid 1px #e5e5e5;
+				border-top: solid 1px #333;
 			}
 
 				table.default tbody tr:first-child {
@@ -2025,7 +2026,7 @@ input, select, textarea {
 				}
 
 				table.default tbody tr:nth-child(2n+1) {
-					background: #fafafa;
+					background: #161616;
 				}
 
 			table.default td {
@@ -2039,11 +2040,11 @@ input, select, textarea {
 			}
 
 			table.default thead {
-				border-bottom: solid 2px #e5e5e5;
+				border-bottom: solid 2px #444;
 			}
 
 			table.default tfoot {
-				border-top: solid 2px #e5e5e5;
+				border-top: solid 2px #444;
 			}
 
 /* Button */
@@ -2163,7 +2164,7 @@ input, select, textarea {
 /* Wrapper */
 
 	.wrapper {
-		background: #fff;
+		background: #121212;
 		margin: 0 0 2em 0;
 		padding: 6em 0 6em 0;
 	}
@@ -2460,13 +2461,13 @@ input, select, textarea {
 		position: relative;
 		overflow: hidden;
 		padding: 6em 0 6em 0;
-		background: #2b252c;
-		color: #fff;
+		background: #161616;
+        color: #eee;
 	}
 
 		#footer .icon.circled {
-			background: #fff;
-			color: #2b252c;
+			background: #2a2a2a;
+            color: #fff;
 		}
 
 		#footer header {
