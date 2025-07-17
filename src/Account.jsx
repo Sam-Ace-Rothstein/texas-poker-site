@@ -190,36 +190,41 @@ const handleClaim = async (tx) => {
           marginTop: '2rem',
           width: '100%',
           overflowX: 'hidden',
-          padding: '1rem',
-          backgroundColor: '#121212', // darker background
-          borderRadius: '8px',
+          padding: '1.5rem',
+          backgroundColor: '#121212', // dark base
+          borderRadius: '12px',
           boxSizing: 'border-box',
+          boxShadow: '0 0 15px rgba(0,0,0,0.3)',
         }}
       >
-        <h3 style={{ color: '#fff' }}>📜 Recent Transactions</h3>
+        <h3 style={{ color: '#f2f2f2', marginBottom: '1rem', fontSize: '1.2rem' }}>
+          📜 Recent Transactions
+        </h3>
         <table
           style={{
             width: '100%',
             borderCollapse: 'collapse',
             fontSize: window.innerWidth < 600 ? '0.8rem' : '0.9rem',
             tableLayout: 'fixed',
-            backgroundColor: '#1e1e1e', // darker table body
-            color: '#eee',              // brighter text
+            backgroundColor: '#1e1e1e', // table body
+            color: '#eee',
+            borderRadius: '8px',
+            overflow: 'hidden',
           }}
         >
           <thead>
-            <tr style={{ borderBottom: '1px solid #555' }}>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Type</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Amount</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Timestamp</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Tx ID</th>
-              <th style={{ textAlign: 'left', padding: '0.5rem', color: '#ddd' }}>Action</th>
+            <tr style={{ borderBottom: '1px solid #444' }}>
+              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Type</th>
+              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Amount</th>
+              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Timestamp</th>
+              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Tx ID</th>
+              <th style={{ textAlign: 'left', padding: '0.75rem', color: '#bbb' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {transactions.length === 0 && (
               <tr>
-                <td colSpan="5" style={{ padding: '0.5rem', color: '#aaa' }}>
+                <td colSpan="5" style={{ padding: '1rem', color: '#888', textAlign: 'center' }}>
                   No transactions yet.
                 </td>
               </tr>
@@ -227,15 +232,15 @@ const handleClaim = async (tx) => {
             {transactions.map((tx, i) => (
               <React.Fragment key={i}>
                 <tr style={{ borderBottom: '1px solid #333' }}>
-                  <td style={{ padding: '0.5rem' }}>
+                  <td style={{ padding: '0.75rem' }}>
                     {tx.type === 'voucher'
                       ? 'Withdraw'
                       : tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
                   </td>
-                  <td style={{ padding: '0.5rem' }}>{tx.amount}</td>
+                  <td style={{ padding: '0.75rem' }}>{tx.amount}</td>
                   <td
                     style={{
-                      padding: '0.5rem',
+                      padding: '0.75rem',
                       maxWidth: '130px',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -246,7 +251,7 @@ const handleClaim = async (tx) => {
                   </td>
                   <td
                     style={{
-                      padding: '0.5rem',
+                      padding: '0.75rem',
                       maxWidth: '100px',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
@@ -258,15 +263,15 @@ const handleClaim = async (tx) => {
                         href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
                         target="_blank"
                         rel="noreferrer"
-                        style={{ display: 'inline-block', color: '#7abfff' }}
+                        style={{ display: 'inline-block', color: '#66b2ff' }}
                       >
                         {(tx.txid ?? tx.signature).slice(0, 10)}…
                       </a>
                     ) : (
-                      <span style={{ color: '#aaa' }}>—</span>
+                      <span style={{ color: '#666' }}>—</span>
                     )}
                   </td>
-                  <td style={{ padding: '0.5rem' }}>
+                  <td style={{ padding: '0.75rem' }}>
                     <div
                       style={{
                         display: 'flex',
@@ -282,9 +287,9 @@ const handleClaim = async (tx) => {
                           <button
                             onClick={() => handleClaim(tx)}
                             style={{
-                              padding: '0.25rem 0.5rem',
+                              padding: '0.35rem 0.75rem',
                               fontSize: '0.85rem',
-                              borderRadius: '4px',
+                              borderRadius: '6px',
                               border: '1px solid #666',
                               backgroundColor: '#2a2a2a',
                               color: '#eee',
@@ -297,8 +302,9 @@ const handleClaim = async (tx) => {
                       ) : (
                         <span
                           style={{
-                            color: '#27ae60',
+                            color: '#2ecc71',
                             fontSize: window.innerWidth < 600 ? '1.2rem' : '0.85rem',
+                            fontWeight: 600,
                           }}
                         >
                           {window.innerWidth < 600 ? '✅' : 'COMPLETED'}
@@ -308,22 +314,22 @@ const handleClaim = async (tx) => {
                   </td>
                 </tr>
     
-                {/* Second full-width row for mobile CLAIM VOUCHER */}
+                {/* Mobile full-width CLAIM button */}
                 {tx.status === 'pending' && window.innerWidth < 600 && (
                   <tr>
-                    <td colSpan="5" style={{ padding: '0.5rem 0.5rem 1rem' }}>
+                    <td colSpan="5" style={{ padding: '0.75rem 0.75rem 1rem' }}>
                       <button
                         onClick={() => handleClaim(tx)}
                         style={{
                           width: '100%',
-                          padding: '0.5rem 1rem',
+                          padding: '0.75rem 1rem',
                           fontSize: '0.85rem',
                           fontWeight: '600',
-                          borderRadius: '6px',
+                          borderRadius: '8px',
                           border: '1px solid #666',
-                          cursor: 'pointer',
                           backgroundColor: '#2a2a2a',
                           color: '#eee',
+                          cursor: 'pointer',
                         }}
                       >
                         CLAIM VOUCHER
@@ -338,7 +344,6 @@ const handleClaim = async (tx) => {
       </div>
     );
   }
-
 // ─────────────────────────────────────────────
 // Combined display + withdraw logic component
 function BalanceDisplay({ username, onNewTx }) {
