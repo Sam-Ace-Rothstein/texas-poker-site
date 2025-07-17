@@ -187,176 +187,167 @@ const handleClaim = async (tx) => {
     return (
       <div
         style={{
-          backgroundColor: '#121212',
-          padding: window.innerWidth < 600 ? '1rem 1rem 0.5rem' : '2rem',
+          width: '100%',
+          overflowX: 'auto',
+          padding: window.innerWidth < 600 ? '1rem' : '1.5rem',
+          backgroundColor: '#161616',
+          border: '1px solid #333',
           borderRadius: '12px',
           boxSizing: 'border-box',
+          marginTop: '1rem'
         }}
       >
-        {/* 📜 Recent Transactions Table */}
-        <div
+        <h3
           style={{
-            width: '100%',
-            overflowX: 'auto',
-            padding: window.innerWidth < 600 ? '1rem' : '1.5rem',
-            backgroundColor: '#161616',
-            border: '1px solid #333',
-            borderRadius: '12px',
-            boxSizing: 'border-box',
+            color: '#fff',
+            marginBottom: '1rem',
+            fontSize: window.innerWidth < 600 ? '1.1rem' : '1.2rem',
+            textAlign: 'center',
           }}
         >
-          <h3
-            style={{
-              color: '#fff',
-              marginBottom: '1rem',
-              fontSize: window.innerWidth < 600 ? '1.1rem' : '1.2rem',
-              textAlign: 'center',
-            }}
-          >
-            📜 Recent Transactions
-          </h3>
-          <table
-            style={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              fontSize: window.innerWidth < 600 ? '0.85rem' : '0.9rem',
-              tableLayout: 'fixed',
-              backgroundColor: '#161616',
-              color: '#eee',
-            }}
-          >
-            <thead>
-              <tr style={{ borderBottom: '1px solid #444' }}>
-                <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Type</th>
-                <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Amount</th>
-                <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Timestamp</th>
-                <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Tx ID</th>
-                <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Action</th>
+          📜 Recent Transactions
+        </h3>
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: window.innerWidth < 600 ? '0.85rem' : '0.9rem',
+            tableLayout: 'fixed',
+            backgroundColor: '#161616',
+            color: '#eee',
+          }}
+        >
+          <thead>
+            <tr style={{ borderBottom: '1px solid #444' }}>
+              <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Type</th>
+              <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Amount</th>
+              <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Timestamp</th>
+              <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Tx ID</th>
+              <th style={{ textAlign: 'left', padding: '0.6rem', color: '#bbb' }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ padding: '1rem', color: '#888', textAlign: 'center' }}>
+                  No transactions yet.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {transactions.length === 0 && (
-                <tr>
-                  <td colSpan="5" style={{ padding: '1rem', color: '#888', textAlign: 'center' }}>
-                    No transactions yet.
+            )}
+            {transactions.map((tx, i) => (
+              <React.Fragment key={i}>
+                <tr style={{ borderBottom: '1px solid #333' }}>
+                  <td style={{ padding: '0.6rem', wordBreak: 'break-word' }}>
+                    {window.innerWidth < 600
+                      ? tx.type === 'voucher' ? '↩️' : '↪️'
+                      : tx.type === 'voucher' ? 'Withdraw' : 'Deposit'}
                   </td>
-                </tr>
-              )}
-              {transactions.map((tx, i) => (
-                <React.Fragment key={i}>
-                  <tr style={{ borderBottom: '1px solid #333' }}>
-                    <td style={{ padding: '0.6rem', wordBreak: 'break-word' }}>
-                      {window.innerWidth < 600
-                        ? tx.type === 'voucher' ? '↩️' : '↪️'
-                        : tx.type === 'voucher' ? 'Withdraw' : 'Deposit'}
-                    </td>
-                    <td style={{ padding: '0.6rem', wordBreak: 'break-word' }}>{tx.amount}</td>
-                    <td
-                      style={{
-                        padding: '0.6rem',
-                        maxWidth: '130px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        wordBreak: 'break-word',
-                      }}
-                    >
-                      {new Date(tx.timestamp).toLocaleString()}
-                    </td>
-                    <td
-                      style={{
-                        padding: '0.6rem',
-                        maxWidth: '100px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        wordBreak: 'break-word',
-                      }}
-                    >
-                      {(tx.txid || tx.signature) ? (
-                        <a
-                          href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ display: 'inline-block', color: '#66b2ff' }}
-                        >
-                          {(tx.txid ?? tx.signature).slice(0, 10)}…
-                        </a>
-                      ) : (
-                        <span style={{ color: '#666' }}>—</span>
-                      )}
-                    </td>
-                    <td style={{ padding: '0.6rem' }}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: window.innerWidth < 600 ? 'column' : 'row',
-                          alignItems: 'flex-start',
-                          gap: '0.25rem',
-                        }}
+                  <td style={{ padding: '0.6rem', wordBreak: 'break-word' }}>{tx.amount}</td>
+                  <td
+                    style={{
+                      padding: '0.6rem',
+                      maxWidth: '130px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    {new Date(tx.timestamp).toLocaleString()}
+                  </td>
+                  <td
+                    style={{
+                      padding: '0.6rem',
+                      maxWidth: '100px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      wordBreak: 'break-word',
+                    }}
+                  >
+                    {(tx.txid || tx.signature) ? (
+                      <a
+                        href={`https://explorer.solana.com/tx/${tx.txid ?? tx.signature}?cluster=devnet`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ display: 'inline-block', color: '#66b2ff' }}
                       >
-                        {tx.status === 'pending' ? (
-                          window.innerWidth < 600 ? (
-                            <span style={{ fontSize: '1.2rem', color: '#f39c12' }}>❗️</span>
-                          ) : (
-                            <button
-                              onClick={() => handleClaim(tx)}
-                              style={{
-                                padding: '0.35rem 0.75rem',
-                                fontSize: '0.85rem',
-                                borderRadius: '6px',
-                                border: '1px solid #666',
-                                backgroundColor: '#1e1e1e',
-                                color: '#eee',
-                                cursor: 'pointer',
-                              }}
-                            >
-                              CLAIM VOUCHER
-                            </button>
-                          )
+                        {(tx.txid ?? tx.signature).slice(0, 10)}…
+                      </a>
+                    ) : (
+                      <span style={{ color: '#666' }}>—</span>
+                    )}
+                  </td>
+                  <td style={{ padding: '0.6rem' }}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: window.innerWidth < 600 ? 'column' : 'row',
+                        alignItems: 'flex-start',
+                        gap: '0.25rem',
+                      }}
+                    >
+                      {tx.status === 'pending' ? (
+                        window.innerWidth < 600 ? (
+                          <span style={{ fontSize: '1.2rem', color: '#f39c12' }}>❗️</span>
                         ) : (
-                          <span
+                          <button
+                            onClick={() => handleClaim(tx)}
                             style={{
-                              color: '#2ecc71',
-                              fontSize: window.innerWidth < 600 ? '1.2rem' : '0.85rem',
-                              fontWeight: 600,
+                              padding: '0.35rem 0.75rem',
+                              fontSize: '0.85rem',
+                              borderRadius: '6px',
+                              border: '1px solid #666',
+                              backgroundColor: '#1e1e1e',
+                              color: '#eee',
+                              cursor: 'pointer',
                             }}
                           >
-                            {window.innerWidth < 600 ? '✅' : 'COMPLETED'}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-    
-                  {/* Mobile full-width CLAIM button */}
-                  {tx.status === 'pending' && window.innerWidth < 600 && (
-                    <tr>
-                      <td colSpan="5" style={{ padding: '0.6rem 0.6rem 1rem' }}>
-                        <button
-                          onClick={() => handleClaim(tx)}
+                            CLAIM VOUCHER
+                          </button>
+                        )
+                      ) : (
+                        <span
                           style={{
-                            width: '100%',
-                            padding: '0.75rem 1rem',
-                            fontSize: '0.85rem',
-                            fontWeight: '600',
-                            borderRadius: '8px',
-                            border: '1px solid #666',
-                            backgroundColor: '#1e1e1e',
-                            color: '#eee',
-                            cursor: 'pointer',
+                            color: '#2ecc71',
+                            fontSize: window.innerWidth < 600 ? '1.2rem' : '0.85rem',
+                            fontWeight: 600,
                           }}
                         >
-                          CLAIM VOUCHER
-                        </button>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                          {window.innerWidth < 600 ? '✅' : 'COMPLETED'}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+    
+                {/* Mobile full-width CLAIM button */}
+                {tx.status === 'pending' && window.innerWidth < 600 && (
+                  <tr>
+                    <td colSpan="5" style={{ padding: '0.6rem 0.6rem 1rem' }}>
+                      <button
+                        onClick={() => handleClaim(tx)}
+                        style={{
+                          width: '100%',
+                          padding: '0.75rem 1rem',
+                          fontSize: '0.85rem',
+                          fontWeight: '600',
+                          borderRadius: '8px',
+                          border: '1px solid #666',
+                          backgroundColor: '#1e1e1e',
+                          color: '#eee',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        CLAIM VOUCHER
+                      </button>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
 
