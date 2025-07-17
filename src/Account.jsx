@@ -713,7 +713,7 @@ return (
       width: '100%',
       boxSizing: 'border-box',
       padding: window.innerWidth < 768 ? '1rem 0.5rem' : '2rem',
-      marginTop: '1rem',
+      marginTop: '.05rem',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'stretch',
@@ -881,8 +881,8 @@ const App = () => {
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '6rem', // ensures vertical space
-  marginTop: '1rem',
+  minHeight: '4rem',   // reduced from 6rem
+  margin: '1rem 0 0.5rem',  // reduced bottom margin
 }}>
   <WalletMultiButton />
 </div>
